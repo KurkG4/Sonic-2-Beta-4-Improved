@@ -1,5 +1,5 @@
-; Sonic 2 Beta 4 Disassembly (Version 1.0) By Esrael L. G. Neto (www.sonichacking.com) 
-; 
+; Sonic 2 Beta 4 Disassembly (Version 1.0) By Esrael L. G. Neto (www.sonichacking.com)
+;
 ; "Sonic The Hedgehog 2 (Beta 4 - Sep 18,1992,16.26) (hidden-palace.org).bin" Rom by drx (http://www.hidden-palace.org/)
 ; 
 ;
@@ -1481,7 +1481,7 @@ Process_DMA_End:
 ;=============================================================================== 
 NemesisDec: 
 		movem.l	d0-d7/a0/a1/a3-a5,-(sp)
-		lea	(NemesisDec_Output),a3 
+		lea	(NemesisDec_Output),a3
 		lea	($C00000),a4
 		bra.s	loc_19F6
 NemesisDec_ToRAM: 
@@ -1860,7 +1860,7 @@ loc_1C98:
 ; Sub Routine EnigmaDec
 ; [ Begin ] 
 ;=============================================================================== 
-EnigmaDec: 
+EnigmaDec:
 		movem.l	d0-d7/a1-a5,-(sp)
 		move.w	d0,a3
 		move.b	(a0)+,d0
@@ -2669,7 +2669,7 @@ Pal_FadeIn:
 		add.w	d0,a1
 		move.b	($FFFFF627).w,d0
 loc_283C: 
-		bsr.s	Pal_AddColor 
+		bsr.s	Pal_AddColor
 		dbra	d0,loc_283C
 		tst.b	($FFFFF730).w
 		beq.s	loc_2864
@@ -9135,7 +9135,7 @@ loc_96BE:
 		lea	($FFFF0330),a1
 		lea	(loc_9E82),a0
 		move.w	#$80,d0
-		bsr	EnigmaDec 
+		bsr	EnigmaDec
 		lea	($FFFF0498),a2
 		moveq	#$F,d1
 loc_976C: 
@@ -9353,9 +9353,9 @@ Pal_Levels_Icons:
 ; [ Begin ]
 ;=============================================================================== 
 loc_9BD8:
-		incbin 'data/all/vs_menu.eni' 
+		incbin 'data/all/vs_menu.eni'
 loc_9E82:
-		incbin 'data/all/vsmenu2.eni' 
+		incbin 'data/all/vsmenu2.eni'
 loc_9EB4:
 		jmp	ShowVDPGraphics 
 loc_9EBA:
@@ -14553,10 +14553,10 @@ loc_E5DC:
 		jmp	CalcSine 
 		dc.w	$0 ; Filler
 ;------------------------------------------------------------------------------- 
-Obj_0x1A_Collapsing_Platforms: 
+Obj_0x1A_Collapsing_Platforms:
 		include 'data/objects/obj_0x1A.asm'
 ;------------------------------------------------------------------------------- 
-Obj_0x1F_Collapsing_Platforms: 
+Obj_0x1F_Collapsing_Platforms:
 		include 'data/objects/obj_0x1F.asm' 
 		nop ; Filler
 ;------------------------------------------------------------------------------- 
@@ -32308,7 +32308,7 @@ PLC_PB1_18_End:
 OOz_PB1_Sprs_1: 
 PLC_PB1_19: 
 		dc.w	(((PLC_PB1_19_End-PLC_PB1_19-$2)/$6)-$1) ; Auto Detect Number of Sprites Esrael L. G. Neto
-		dc.l	OOz_Collapsing_Platform 
+		dc.l	OOz_Collapsing_Platform
 		dc.w	$73A0
 		dc.l	OOz_Spring_Push_Boost 
 		dc.w	$78A0
@@ -32427,42 +32427,42 @@ Colision_Array_2:
 ; [ Begin ]
 ;=============================================================================== 
 Green_Hill_Colision_1: 
-		incbin 'data/ghz/ghz_col1.dat'
+		incbin 'collide/ghz_col1.dat'
 ;------------------------------------------------------------------------------- 
 Green_Hill_Colision_2: 
-		incbin 'data/ghz/ghz_col2.dat'
+		incbin 'collide/ghz_col2.dat'
 ;------------------------------------------------------------------------------- 
 Metropolis_Colision: 
-		incbin 'data/mz/mz_col.dat' 
+		incbin 'collide/mz_col.dat'
 ;------------------------------------------------------------------------------- 
 Hidden_Palace_Colision: 
-		incbin 'data/hpz/hpz_col.dat' 
+		incbin 'collide/hpz_col.dat'
 ;------------------------------------------------------------------------------- 
 Oil_Ocean_Colision: 
-		incbin 'data/ooz/ooz_col.dat'
+		incbin 'collide/ooz_col.dat'
 ;------------------------------------------------------------------------------- 
 Dust_Hill_Colision: 
-		incbin 'data/dhz/dhz_col.dat'
+		incbin 'collide/dhz_col.dat'
 ;------------------------------------------------------------------------------- 
 Casino_Night_Colision_1: 
-		incbin 'data/cnz/cnz_col1.dat' 
+		incbin 'collide/cnz_col1.dat'
 Casino_Night_Colision_2: 
-		incbin 'data/cnz/cnz_col2.dat'
+		incbin 'collide/cnz_col2.dat'
 ;------------------------------------------------------------------------------- 
 Chemical_Plant_Colision_1: 
-		incbin 'data/cpz/cpz_col1.dat'
+		incbin 'collide/cpz_col1.dat'
 Chemical_Plant_Colision_2: 
-		incbin 'data/cpz/cpz_col2.dat'
+		incbin 'collide/cpz_col2.dat'
 ;------------------------------------------------------------------------------- 
 Neo_Green_Hill_Colision_1: 
-		incbin 'data/nghz/nghzcol1.dat'
+		incbin 'collide/nghzcol1.dat'
 Neo_Green_Hill_Colision_2: 
-		incbin 'data/nghz/nghzcol2.dat' 
+		incbin 'collide/nghzcol2.dat'
 ;------------------------------------------------------------------------------- 
 Sky_Fortress_Colision_1: 
-		incbin 'data/sfz/sfz_col1.dat'
+		incbin 'collide/sfz_col1.dat'
 Sky_Fortress_Colision_2: 
-		incbin 'data/sfz/sfz_col2.dat' 
+		incbin 'collide/sfz_col2.dat' 
 ;-------------------------------------------------------------------------------
 Null_Colision: 
 ;=============================================================================== 
@@ -35614,9 +35614,9 @@ Sega_Spr:
 Sega_Blocks_Spr: 
 		incbin 'data/sprites/sega_blk.nem'
 Sega_Mappings: 
-		incbin 'data/all/sega.eni' 
+		incbin 'data/all/sega.eni'
 TS_Wings_Sonic_Mappings: 
-		incbin 'data/all/titlescr.eni' 
+		incbin 'data/all/titlescr.eni'
 Title_Screen_Bg_Mappings: 
 		incbin 'data/all/titscrbg.eni' 
 Title_Screen_R_Bg_Mappings: 
@@ -35636,7 +35636,7 @@ GHz_Bridge:
 Htz_Teleferic: 
 		incbin 'data/htz/telefrcs.nem' 
 Htz_Automatic_Door: 
-		incbin 'data/htz/autodoor.nem' 
+		incbin 'data/htz/autodoor.nem'
 Htz_See_saw: 
 		incbin 'data/htz/see-saw.nem'
 Unk_Fireball: 
@@ -35756,7 +35756,7 @@ CPz_Metal_Structure:
 CPz_Breakable_Block: 
 		incbin 'data/cpz/brkblock.nem' 
 CPz_Automatic_Door: 
-		incbin 'data/cpz/autodoor.nem' 
+		incbin 'data/cpz/autodoor.nem'
 CPz_Open_Close_Platform: 
 		incbin 'data/cpz/oc_ptfrm.nem' 
 CPz_Platforms: 
@@ -35770,7 +35770,7 @@ NGHz_Leaves:
 NGHz_Arrow_Shooter: 
 		incbin 'data/nghz/arrow_s.nem' 
 NGHz_Automatic_Door: 
-		incbin 'data/nghz/autodoor.nem' 
+		incbin 'data/nghz/autodoor.nem'
 Switch: 
 		incbin 'data/sprites/switch.nem' 
 Vertical_Spring: 
@@ -35824,7 +35824,7 @@ Menu_Font:
 Versus_Result_Font: 
 		incbin 'data/sprites/vsresfnt.nem' 
 Versus_Menu_Bg_Mappings: 
-		incbin 'data/all/vsmenubg.eni' 
+		incbin 'data/all/vsmenubg.eni'
 Sonic_Miles: 
 		incbin 'data/sprites/soncmils.dat' 
 Title_Card_ZONE_123: 
@@ -36198,9 +36198,9 @@ SS_Tiles_8x8_Tiles:
 SS_Background_8x8_Tiles: 
 		incbin 'data/ss/backgnd8.nem'
 SS_Mappings_01: 
-		incbin 'data/ss/ss_map_1.eni' 
+		incbin 'data/ss/ss_map_1.eni'
 SS_Mappings_00: 
-		incbin 'data/ss/ss_map_0.eni' 
+		incbin 'data/ss/ss_map_0.eni'
 SS_HUD_Font: 
 		incbin 'data/ss/hud_font.nem' 
 SS_START: 
