@@ -4415,7 +4415,7 @@ loc_4B2C:
 loc_4B4E: 
 		move.l	d0,(a1)+
 		dbra	d1,loc_4B4E
-		bsr	Load_8x8_Tiles 
+		bsr	Load_8x8_Tiles
 		bset	#2,($FFFFEE50).w
 		bsr	Main_Level_Load_16_128_Blocks 
 		jsr	Load_16x16_Mappings_For_Dyn_Sprites 
@@ -5374,7 +5374,7 @@ Demo_Chemical_Plant:
 ; Sub Routine Load_8x8_Tiles
 ; [ Begin ]
 ;=============================================================================== 
-Load_8x8_Tiles: 
+Load_8x8_Tiles:
 		moveq	#0,d0
 		move.b	($FFFFFE10).w,d0
 		add.w	d0,d0
@@ -35993,27 +35993,27 @@ Tornado_Rocket
 		incbin 'data/sfz/t_rocket.nem'
 ;------------------------------------------------------------------------------- 
 Green_Hill_16x16_Map: 
-		incbin 'data/ghz/ghz_16.kos' 
+		incbin 'map16/ghz_16.kos' 
 		cnop	0,4 ; Filler 
 Green_Hill_8x8_Tiles: 
-		incbin 'data/ghz/ghz_8.kos' 
+		incbin 'artkos/ghz_8.kos'
 		dc.w	$0,$0,$0,$0,$0,$0,$0 ; Filler 
 Hill_Top_16x16_Map: 
-		incbin 'data/htz/htz_16.dat' 
+		incbin 'map16/htz_16.dat'
 Hill_Top_8x8_Tiles: 
-		incbin 'data/htz/htz_8.nem' 
+		incbin 'artnem/htz_8.nem'
 Green_Hill_128x128_Map: 
-		incbin 'data/ghz/ghz_128.kos' 
+		incbin 'map128/ghz_128.kos' 
 		dc.w	$0,$0,$0,$0,$0,$0 ; Filler 
 ;------------------------------------------------------------------------------- 
 Metropolis_16x16_Map: 
-		incbin 'data/mz/mz_16.kos' 
+		incbin 'map16/mz_16.kos'
 		dc.w	$0,$0,$0,$0 ; Filler 
 Metropolis_8x8_Tiles: 
-		incbin 'data/mz/mz_8.kos' 
+		incbin 'artkos/mz_8.kos'
 		dc.w	$0,$0,$0,$0 ; Filler 
 Metropolis_128x128_Map: 
-		incbin 'data/mz/mz_128.kos' 
+		incbin 'map128/mz_128.kos'
 		cnop	0,4 ; Filler 
 ;------------------------------------------------------------------------------- 
 Hidden_Palace_16x16_Map: 
@@ -36021,63 +36021,63 @@ Hidden_Palace_8x8_Tiles:
 Hidden_Palace_128x128_Map: 
 ;------------------------------------------------------------------------------- 
 Oil_Ocean_16x16_Map: 
-		incbin 'data/ooz/ooz_16.kos'
+		incbin 'map16/ooz_16.kos'
 		dc.w	$0,$0,$0,$0 ; Filler 
 Oil_Ocean_8x8_Tiles: 
-		incbin 'data/ooz/ooz_8.kos'
+		incbin 'artkos/ooz_8.kos'
 		dc.w	$0,$0,$0,$0,$0,$0,$0 ; Filler 
 Oil_Ocean_128x128_Map: 
-		incbin 'data/ooz/ooz_128.kos' 
+		incbin 'map128/ooz_128.kos'
 ;------------------------------------------------------------------------------- 
 Dust_Hill_16x16_Map: 
-		incbin 'data/dhz/dhz_16.kos'
+		incbin 'map16/dhz_16.kos'
 		dc.w	$0,$0 ; Filler 
 Dust_Hill_8x8_Tiles: 
-		incbin 'data/dhz/dhz_8.kos'
+		incbin 'artkos/dhz_8.kos'
 		dc.w	$0,$0,$0,$0,$0 ; Filler 
 Dust_Hill_128x128_Map: 
-		incbin 'data/dhz/dhz_128.kos' 
+		incbin 'map128/dhz_128.kos'
 		dc.w	$0,$0 ; Filler 
 ;------------------------------------------------------------------------------- 
 Casino_Night_16x16_Map: 
-		incbin 'data/cnz/cnz_16.kos'
+		incbin 'map16/cnz_16.kos'
 		cnop	0,4 ; Filler 
 Casino_Night_8x8_Tiles: 
-		incbin 'data/cnz/cnz_8.kos'
+		incbin 'artkos/cnz_8.kos'
 		dc.w	$0,$0,$0 ; Filler 
 Casino_Night_128x128_Map: 
-		incbin 'data/cnz/cnz_128.kos'
+		incbin 'map128/cnz_128.kos'
 		dc.w	$0,$0,$0 ; Filler 
 ;------------------------------------------------------------------------------- 
 Chemical_Plant_16x16_Map: 
-		incbin 'data/cpz/cpz_16.kos'
+		incbin 'map16/cpz_16.kos'
 		dc.w	$0,$0,$0,$0,$0 ; Filler 
 Chemical_Plant_8x8_Tiles: 
-		incbin 'data/cpz/cpz_8.kos'
+		incbin 'artkos/cpz_8.kos'
 		dc.w	$0,$0,$0,$0,$0,$0,$0; Filler 
 Chemical_Plant_128x128_Map: 
-		incbin 'data/cpz/cpz_128.kos' 
+		incbin 'map128/cpz_128.kos'
 		cnop	0,4 ; Filler 
 ;------------------------------------------------------------------------------- 
 Neo_Green_Hill_16x16_Map: 
-		incbin 'data/nghz/nghz_16.kos' 
+		incbin 'map16/nghz_16.kos'
 		dc.w	$0,$0,$0 ; Filler 
 Neo_Green_Hill_8x8_Tiles: 
-		incbin 'data/nghz/nghz_8.kos' 
+		incbin 'artkos/nghz_8.kos'
 Neo_Green_Hill_128x128_Map 
-		incbin 'data/nghz/nghz_128.kos' 
+		incbin 'map128/nghz_128.kos'
 		dc.w	$0,$0,$0 ; Filler 
 ;------------------------------------------------------------------------------- 
 Sky_Fortress_16x16_Map: 
-		incbin 'data/sfz/sfz_16.kos'
+		incbin 'map16/sfz_16.kos'
 		dc.w	$0,$0,$0,$0 ; Filler 
 Sky_Fortress_8x8_Tiles: 
-		incbin 'data/sfz/sfz_8.kos' 
+		incbin 'artkos/sfz_8.kos' 
 		dc.w	$0,$0,$0,$0,$0,$0 ; Filler 
 Robotnik_Ship_Spr:
 		incbin 'data/sfz/rbtnkshp.nem' 
 Sky_Fortress_128x128_Map: 
-		incbin 'data/sfz/sfz_128.kos' 
+		incbin 'map128/sfz_128.kos' 
 		dc.w	$0,$0,$0,$0 ; Filler 
 ;-------------------------------------------------------------------------------
 loc_C8310:
@@ -36731,7 +36731,7 @@ Music_84: ; Oil Ocean
 		incbin 'data/sounds/ooz_84.sax'
 Music_8F: ; Sky Fortress 
 		incbin 'data/sounds/sfz_8F.sax'
-Music_8C: ; Green Hill Versus Mode 
+Music_8C: ; Green Hill Versus Mode
 		incbin 'data/sounds/ghzvs_8C.sax'
 Music_81: ; Versus Mode Results 
 		incbin 'data/sounds/vsres_81.sax'
