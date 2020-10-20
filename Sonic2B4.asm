@@ -32572,7 +32572,7 @@ NGHz_Map_Act2:
 		dc.w	$0,$0 ; Filler 
 SCz_Map_Act1: 
 SCz_Map_Act2:
-		incbin 'levels/scz_map.kos' 
+		incbin 'levels/scz_map.kos'
 ;-------------------------------------------------------------------------------
 HTz_1_2_Foreground_Previous_Build: 
 		incbin 'data/htz/htz_1_2.dat' 
@@ -32581,9 +32581,9 @@ HTz_1_2_Foreground_Previous_Build:
 ; [ End ]
 ;=============================================================================== 
 Sonic_Sprites: 
-		incbin 'data/sprites/sonic.dat'
+		incbin 'artunc/sonic.dat'
 Miles_Sprites: 
-		incbin 'data/sprites/miles.dat'
+		incbin 'artunc/miles.dat'
 ;------------------------------------------------------------------------------- 
 Sonic_Mappings: 
 		dc.w	loc_6FD8C-Sonic_Mappings
