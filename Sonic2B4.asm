@@ -32462,7 +32462,7 @@ Neo_Green_Hill_Colision_2:
 Sky_Fortress_Colision_1: 
 		incbin 'collide/sfz_col1.dat'
 Sky_Fortress_Colision_2: 
-		incbin 'collide/sfz_col2.dat' 
+		incbin 'collide/sfz_col2.dat'
 ;-------------------------------------------------------------------------------
 Null_Colision: 
 ;=============================================================================== 
@@ -32510,69 +32510,69 @@ Level_Layout:
 		dc.w	SCz_Map_Act1-Level_Layout 
 		dc.w	SCz_Map_Act2-Level_Layout 
 Ghz_Map_Act1: 
-		incbin 'data/ghz/ghz_map1.kos'
+		incbin 'levels/ghz_map1.kos'
 		dc.w	$0,$0,$0,$0 ; Filler
 Ghz_Map_Act2: 
-		incbin 'data/ghz/ghz_map2.kos'
+		incbin 'levels/ghz_map2.kos'
 		dc.w	$0,$0,$0,$0 ; Filler
 Mz_Map_Act1: 
-		incbin 'data/mz/mz_map1.kos'
+		incbin 'levels/mz_map1.kos'
 		dc.w	$0,$0,$0,$0 ; Filler
 Mz_Map_Act2: 
-		incbin 'data/mz/mz_map2.kos'
+		incbin 'levels/mz_map2.kos'
 		dc.w	$0,$0,$0,$0,$0 ; Filler
 Mz_Map_Act3: 
 Mz_Map_Act4:
-		incbin 'data/mz/mz_map3.kos'
+		incbin 'levels/mz_map3.kos'
 		dc.w	$0,$0,$0,$0,$0 ; Filler
 SFz_Map_Act1: 
 SFz_Map_Act2:
-		incbin 'data/sfz/sfz_map.kos'
+		incbin 'levels/sfz_map.kos'
 HTz_Map_Act1: 
-		incbin 'data/htz/htz_map1.kos'
+		incbin 'levels/htz_map1.kos'
 		dc.w	$0,$0,$0 ; Filler
 HTz_Map_Act2: 
-		incbin 'data/htz/htz_map2.kos' 
+		incbin 'levels/htz_map2.kos'
 HPz_Map_Act1: 
 HPz_Map_Act2:
-		incbin 'data/htz/htz_map2.kos' 
+		incbin 'levels/htz_map2.kos'
 OOz_Map_Act1: 
-		incbin 'data/ooz/ooz_map1.kos' 
+		incbin 'levels/ooz_map1.kos'
 		dc.w	$0 ; Filler
 OOz_Map_Act2: 
-		incbin 'data/ooz/ooz_map2.kos' 
+		incbin 'levels/ooz_map2.kos'
 		dc.w	$0,$0,$0,$0,$0,$0,$0 ; Filler 
 DHz_Map_Act1: 
-		incbin 'data/dhz/dhz_map1.kos' 
+		incbin 'levels/dhz_map1.kos'
 		dc.w	$0,$0,$0,$0,$0 ; Filler 
 DHz_Map_Act2: 
-		incbin 'data/dhz/dhz_map2.kos' 
+		incbin 'levels/dhz_map2.kos'
 		dc.w	$0,$0,$0,$0,$0,$0,$0 ; Filler 
 CNz_Map_Act1: 
-		incbin 'data/cnz/cnz_map1.kos' 
+		incbin 'levels/cnz_map1.kos'
 		dc.w	$0,$0,$0,$0,$0,$0,$0 ; Filler 
 CNz_Map_Act2: 
-		incbin 'data/cnz/cnz_map2.kos' 
+		incbin 'levels/cnz_map2.kos'
 		dc.w	$0,$0,$0,$0,$0,$0 ; Filler
 CPz_Map_Act1: 
-		incbin 'data/cpz/cpz_map1.kos' 
+		incbin 'levels/cpz_map1.kos'
 		dc.w	$0,$0 ; Filler
 CPz_Map_Act2: 
-		incbin 'data/cpz/cpz_map2.kos' 
+		incbin 'levels/cpz_map2.kos'
 		dc.w	$0,$0,$0,$0,$0,$0,$0 ; Filler 
 DEz_Map_Act1: 
 DEz_Map_Act2: 
-		incbin 'data/dez/dez_map.kos' 
+		incbin 'levels/dez_map.kos'
 		dc.w	$0 ; Filler
 NGHz_Map_Act1: 
-		incbin 'data/nghz/nghz_map1.kos' 
+		incbin 'levels/nghz_map1.kos'
 		dc.w	$0,$0,$0 ; Filler 
 NGHz_Map_Act2: 
-		incbin 'data/nghz/nghz_map2.kos' 
+		incbin 'levels/nghz_map2.kos'
 		dc.w	$0,$0 ; Filler 
 SCz_Map_Act1: 
 SCz_Map_Act2:
-		incbin 'data/scz/scz_map.kos' 
+		incbin 'levels/scz_map.kos' 
 ;-------------------------------------------------------------------------------
 HTz_1_2_Foreground_Previous_Build: 
 		incbin 'data/htz/htz_1_2.dat' 
