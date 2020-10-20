@@ -3250,7 +3250,7 @@ Pal_Special_Stage_4:
 Pal_Special_Stage_5: 
 		incbin 'data/ss/ss_5.pal' 
 Pal_Special_Stage_6: 
-		incbin 'data/ss/ss_6.pal' 
+		incbin 'data/ss/ss_6.pal'
 Pal_Special_Stage_7: 
 		incbin 'data/ss/ss_7.pal' 
 Pal_SS_Vs_Mode_1: 
@@ -9058,15 +9058,15 @@ Map_Vs_Mode_Results_Idx:
 		dc.l	Vs_Mode_All_SS_Results 
 ;-------------------------------------------------------------------------------
 Map_Vs_Mode_Current_Act_Results: 
-		incbin 'data/all/vsactres.eni' 
+		incbin 'mapeni/vsactres.eni'
 Map_Vs_Mode_Current_Level_Results: 
-		incbin 'data/all/vslvlres.eni' 
+		incbin 'mapeni/vslvlres.eni'
 Map_Vs_Mode_Global_Results: 
-		incbin 'data/all/vsgblres.eni' 
-Map_Vs_Mode_SS_Results: 
-		incbin 'data/all/vs_ssres.eni' 
+		incbin 'mapeni/vsgblres.eni'
+Map_Vs_Mode_SS_Results:
+		incbin 'mapeni/vs_ssres.eni'
 Map_Vs_Mode_All_SS_Results: 
-		incbin 'data/all/vsall_ss.eni' 
+		incbin 'mapeni/vsall_ss.eni'
 ;-------------------------------------------------------------------------------
 loc_9654:
 		jmp	ModifySpriteAttr_2P 
@@ -9353,9 +9353,9 @@ Pal_Levels_Icons:
 ; [ Begin ]
 ;=============================================================================== 
 loc_9BD8:
-		incbin 'data/all/vs_menu.eni'
+		incbin 'mapeni/vs_menu.eni'
 loc_9E82:
-		incbin 'data/all/vsmenu2.eni'
+		incbin 'mapeni/vsmenu2.eni'
 loc_9EB4:
 		jmp	ShowVDPGraphics 
 loc_9EBA:
@@ -16002,7 +16002,7 @@ Object_List:
 		dc.l	Obj_0x53_Mz_Boss_Balls_Robotniks 
 		dc.l	Obj_0x54_Mz_Boss 
 		dc.l	Obj_0x55_OOz_Boss 
-		dc.l	Obj_0x56_GHz_Boss 
+		dc.l	Obj_0x56_GHz_Boss
 		dc.l	Obj_0x57_DHz_Boss 
 		dc.l	Obj_0x58_Boss_Explosions 
 		dc.l	Obj_0x59_SS_Emerald_Rings_Check 
@@ -16013,7 +16013,7 @@ Object_List:
 		dc.l	Obj_0x5E_SS_Head_Up_Display 
 		dc.l	Obj_0x5F_SS_Start_Flag 
 		dc.l	Obj_0x60_SS_Rings 
-		dc.l	Obj_0x61_SS_Bomb 
+		dc.l	Obj_0x61_SS_Bomb
 		dc.l	Obj_Null 
 		dc.l	Obj_0x63 
 		dc.l	Obj_0x64_Pistons 
@@ -35614,13 +35614,13 @@ Sega_Spr:
 Sega_Blocks_Spr: 
 		incbin 'data/sprites/sega_blk.nem'
 Sega_Mappings: 
-		incbin 'data/all/sega.eni'
+		incbin 'mapeni/sega.eni'
 TS_Wings_Sonic_Mappings: 
-		incbin 'data/all/titlescr.eni'
+		incbin 'mapeni/titlescr.eni'
 Title_Screen_Bg_Mappings: 
-		incbin 'data/all/titscrbg.eni' 
+		incbin 'mapeni/titscrbg.eni'
 Title_Screen_R_Bg_Mappings: 
-		incbin 'data/all/titscrb2.eni' 
+		incbin 'mapeni/titscrb2.eni'
 Title_Screen_Bg_Wings: 
 		incbin 'data/sprites/titlescr.nem' ; Title Screen Wings and background 
 Title_Screen_Sonic_Miles: 
@@ -35824,7 +35824,7 @@ Menu_Font:
 Versus_Result_Font: 
 		incbin 'data/sprites/vsresfnt.nem' 
 Versus_Menu_Bg_Mappings: 
-		incbin 'data/all/vsmenubg.eni'
+		incbin 'mapeni/vsmenubg.eni'
 Sonic_Miles: 
 		incbin 'data/sprites/soncmils.dat' 
 Title_Card_ZONE_123: 
@@ -36198,9 +36198,9 @@ SS_Tiles_8x8_Tiles:
 SS_Background_8x8_Tiles: 
 		incbin 'data/ss/backgnd8.nem'
 SS_Mappings_01: 
-		incbin 'data/ss/ss_map_1.eni'
+		incbin 'mapeni/ss_map_1.eni'
 SS_Mappings_00: 
-		incbin 'data/ss/ss_map_0.eni'
+		incbin 'mapeni/ss_map_0.eni'
 SS_HUD_Font: 
 		incbin 'data/ss/hud_font.nem' 
 SS_START: 
