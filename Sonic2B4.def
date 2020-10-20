@@ -1,0 +1,254 @@
+[Level_Name]=Green Hill 1
+  begin
+    Folder=.\Data\GHz
+    Palette=GHz.Pal
+    Tiles=GHz_8.kos
+    Blocks=GHz_16.kos
+    Chunks=GHz_128.kos
+    Map=GHz_Map1.kos
+    Objects=Obj_Act1.dat
+    Rings=Rng_Act1.dat
+  end=
+
+[Level_Name]=Green Hill 2
+  begin
+    Folder=.\Data\GHz
+    Palette=GHz.Pal
+    Tiles=GHz_8.kos
+    Blocks=GHz_16.kos
+    Chunks=GHz_128.kos
+    Map=GHz_Map2.kos
+    Objects=Obj_Act2.dat
+    Rings=Rng_Act2.dat
+  end=
+
+[Level_Name]=Metropolis 1
+  begin
+    Folder=.\Data\Mz
+    Palette=Mz.Pal
+    Tiles=Mz_8.kos
+    Blocks=mz_16.kos
+    Chunks=Mz_128.kos
+    Map=Mz_Map1.kos
+    Objects=Obj_Act1.dat
+    Rings=Rng_Act1.dat
+  end=
+
+[Level_Name]=Metropolis 2
+  begin
+    Folder=.\Data\Mz
+    Palette=Mz.Pal
+    Tiles=Mz_8.kos
+    Blocks=mz_16.kos
+    Chunks=Mz_128.kos
+    Map=Mz_Map2.kos
+    Objects=Obj_Act2.dat
+    Rings=Rng_Act2.dat
+  end=
+
+[Level_Name]=Metropolis 3
+  begin
+    Folder=.\Data\Mz
+    Palette=Mz.Pal
+    Tiles=Mz_8.kos
+    Blocks=mz_16.kos
+    Chunks=Mz_128.kos
+    Map=Mz_Map3.kos
+    Objects=Obj_Act3.dat
+    Rings=Rng_Act3.dat
+  end=
+
+[Level_Name]=Sky Fortress
+  begin
+    Folder=.\Data\SFz
+    Palette=SFz.Pal
+    Tiles=SFz_8.kos
+    Blocks=SFz_16.kos
+    Chunks=SFz_128.kos
+    Map=SFz_Map.kos
+    Objects=Obj_Act.dat
+    Rings=Rng_Act.dat
+  end=
+
+
+[Level_Name]=Hill Top 1
+  begin
+    Folder=.\Data\HTz
+    Palette=HTz.Pal
+    Tiles=..\GHz\GHz_8.kos
+    Blocks=..\GHz\GHz_16.kos
+    Chunks=..\GHz\GHz_128.kos
+    Map=HTz_Map1.kos
+    Objects=Obj_Act1.dat
+    Rings=Rng_Act1.dat
+  end=
+
+[Level_Name]=Hill Top 2
+  begin
+    Folder=.\Data\HTz
+    Palette=HTz.Pal
+    Tiles=..\GHz\GHz_8.kos
+    Blocks=..\GHz\GHz_16.kos
+    Chunks=..\GHz\GHz_128.kos
+    Map=HTz_Map2.kos
+    Objects=Obj_Act2.dat
+    Rings=Rng_Act2.dat
+  end=
+
+[Level_Name]=Hidden Palace
+  begin
+    Folder=.\Data\HPz
+    Palette=HPz.Pal
+    Tiles=HPz_8.kos
+    Blocks=HPz_16.kos
+    Chunks=HPz_128.kos
+    Map=HPz_Map.kos
+    Objects=Obj_Act.dat
+    Rings=Rng_Act.dat
+  end=
+
+[Level_Name]=Oil Ocean 1
+  begin
+    Folder=.\Data\OOz
+    Palette=OOz.Pal
+    Tiles=OOz_8.kos
+    Blocks=OOz_16.kos
+    Chunks=OOz_128.kos
+    Map=OOz_Map1.kos
+    Objects=Obj_Act1.dat
+    Rings=Rng_Act1.dat
+  end=
+
+[Level_Name]=Oil Ocean 2
+  begin
+    Folder=.\Data\OOz
+    Palette=OOz.Pal
+    Tiles=OOz_8.kos
+    Blocks=OOz_16.kos
+    Chunks=OOz_128.kos
+    Map=OOz_Map2.kos
+    Objects=Obj_Act2.dat
+    Rings=Rng_Act2.dat
+  end=
+
+[Level_Name]=Dust Hill 1
+  begin
+    Folder=.\Data\DHz
+    Palette=DHz.Pal
+    Tiles=DHz_8.kos
+    Blocks=DHz_16.kos
+    Chunks=DHz_128.kos
+    Map=DHz_Map1.kos
+    Objects=Obj_Act1.dat
+    Rings=Rng_Act1.dat
+  end=
+
+[Level_Name]=Dust Hill 2
+  begin
+    Folder=.\Data\DHz
+    Palette=DHz.Pal
+    Tiles=DHz_8.kos
+    Blocks=DHz_16.kos
+    Chunks=DHz_128.kos
+    Map=DHz_Map2.kos
+    Objects=Obj_Act2.dat
+    Rings=Rng_Act2.dat
+  end=
+
+[Level_Name]=Casino Night 1
+  begin
+    Folder=.\Data\CNz
+    Palette=CNz.Pal
+    Tiles=CNz_8.kos
+    Blocks=CNz_16.kos
+    Chunks=CNz_128.kos
+    Map=CNz_Map1.kos
+    Objects=Obj_Act1.dat
+    Rings=Rng_Act1.dat
+  end=
+
+[Level_Name]=Casino Night 2
+  begin
+    Folder=.\Data\CNz
+    Palette=CNz.Pal
+    Tiles=CNz_8.kos
+    Blocks=CNz_16.kos
+    Chunks=CNz_128.kos
+    Map=CNz_Map2.kos
+    Objects=Obj_Act2.dat
+    Rings=Rng_Act2.dat
+  end=
+
+[Level_Name]=Chemical Plant 1
+  begin
+    Folder=.\Data\CPz
+    Palette=CPz.Pal
+    Tiles=CPz_8.kos
+    Blocks=CPz_16.kos
+    Chunks=CPz_128.kos
+    Map=CPz_Map1.kos
+    Objects=Obj_Act1.dat
+    Rings=Rng_Act1.dat
+  end=
+
+[Level_Name]=Chemical Plant 2
+  begin
+    Folder=.\Data\CPz
+    Palette=CPz.Pal
+    Tiles=CPz_8.kos
+    Blocks=CPz_16.kos
+    Chunks=CPz_128.kos
+    Map=CPz_Map2.kos
+    Objects=Obj_Act2.dat
+    Rings=Rng_Act2.dat
+  end=
+
+[Level_Name]=Death Egg
+  begin
+    Folder=.\Data\DEz
+    Palette=DEz.Pal
+    Tiles=..\CPz\CPz_8.kos
+    Blocks=..\CPz\CPz_16.kos
+    Chunks=..\CPz\CPz_128.kos
+    Map=DEz_Map.kos
+    Objects=Obj_Act.dat
+    Rings=Rng_Act.dat
+  end=
+
+[Level_Name]=Neo Green Hill 1
+  begin
+    Folder=.\Data\NGHz
+    Palette=NGHz.Pal
+    Tiles=NGHz_8.kos
+    Blocks=NGHz_16.kos
+    Chunks=NGHz_128.kos
+    Map=NGHz_Map1.kos
+    Objects=Obj_Act1.dat
+    Rings=Rng_Act1.dat
+  end=
+
+[Level_Name]=Neo Green Hill 2
+  begin
+    Folder=.\Data\NGHz
+    Palette=NGHz.Pal
+    Tiles=NGHz_8.kos
+    Blocks=NGHz_16.kos
+    Chunks=NGHz_128.kos
+    Map=NGHz_Map2.kos
+    Objects=Obj_Act2.dat
+    Rings=Rng_Act2.dat
+  end=
+
+[Level_Name]=Sky Chase
+  begin
+    Folder=.\Data\SCz
+    Palette=SCz.Pal
+    Tiles=..\SFz\SFz_8.kos
+    Blocks=..\SFz\SFz_16.kos
+    Chunks=..\SFz\SFz_128.kos
+    Map=SCz_Map.kos
+    Objects=Obj_Act.dat
+    Rings=Rng_Act.dat
+  end=
+
+[Eof]
