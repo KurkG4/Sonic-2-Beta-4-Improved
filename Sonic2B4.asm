@@ -593,11 +593,11 @@ loc_E56:
 		movem.l	d0-d3,($FFFFEEA0).w
 		move.l	($FFFFF61E).w,($FFFFEEEC).w
 		cmp.b	#$5C,($FFFFF625).w
-		bcc.s	DemoTime 
+		bcc.s	DemoTime
 		move.b	#1,($FFFFF64F).w
 		rts
 ;--------------------------------------------------------------------------------
-DemoTime: 
+DemoTime:
 		bsr	J_LoadTilesAsYouMove 
 		jsr	HudUpdate 
 		bsr	loc_1BF8
@@ -3940,7 +3940,7 @@ loc_434A:
 		move.l	#$1388,($FFFFFFC4).w
 		rts
 ;--------------------------------------------------------------------------------
-Demo_Mode_Level_Array: 
+Demo_Mode_Level_Array:
 		dc.w	$D00,$0,$C00,$700,$500,$500,$500,$500
 		dc.w	$400,$400,$400,$400
 LevelSelect_Controls: 
@@ -4494,7 +4494,7 @@ loc_4C34:
 		move.w	#0,($FFFFE500).w
 		move.w	#0,($FFFFF790).w
 		move.w	#0,($FFFFF732).w
-		lea	(Demo_Index),a1 
+		lea	(Demo_Index),a1
 		moveq	#0,d0
 		move.b	($FFFFFE10).w,d0
 		lsl.w	#2,d0
@@ -5001,7 +5001,7 @@ loc_52E6:
 		rts
 ;--------------------------------------------------------------------------------
 Demo_Index: 
-		dc.l	demo_Green_Hill 
+		dc.l	demo_Green_Hill
 		dc.l	demo_Green_Hill 
 		dc.l	demo_Green_Hill 
 		dc.l	demo_Green_Hill 
@@ -5024,7 +5024,7 @@ Demo_Index:
 		dc.l	$FE8000,$FE8000,$FE8000,$FE8000
 		dc.l	$FE8000,$FE8000,$FE8000,$FE8000
 		dc.l	$FE8000
-Demo_End_Index: 
+Demo_End_Index:
 		dc.w	$8B,$837,$42,$85C,$6A,$85F,$2F,$82C
 		dc.w	$21,$803,$2830,$808,$2E,$815,$F,$846
 		dc.w	$1A,$8FF,$8CA,$0,$0,$0,$0,$0 
@@ -5285,7 +5285,7 @@ Skip_End_Level_Art_Load:
 ; Sub Routine End_Level_Art_Load
 ; [ End ]
 ;=============================================================================== 
-Demo_Green_Hill: 
+Demo_Green_Hill:
 		dc.b	$0,$44,$8,$0,$28,$5,$8,$59,$28,$4,$8,$35,$28,$6,$8,$42
 		dc.b	$28,$4,$8,$19,$0,$F,$8,$A,$28,$9,$8,$4A,$28,$9,$8,$10
 		dc.b	$0,$5,$4,$1B,$2,$0,$8,$4B,$28,$2D,$8,$55,$28,$9,$8,$26
@@ -5302,7 +5302,7 @@ Demo_Green_Hill:
 		dc.b	$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0
 		dc.b	$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0
 		dc.b	$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0
-Demo_Green_Hill_Miles: 
+Demo_Green_Hill_Miles:
 		dc.b	$0,$46,$8,$1E,$28,$A,$8,$5E,$28,$30,$8,$66,$0,$F,$8,$F
 		dc.b	$28,$2E,$8,$0,$0,$1F,$8,$12,$0,$13,$8,$A,$0,$16,$4,$D
 		dc.b	$0,$8,$4,$10,$0,$30,$8,$6B,$28,$14,$8,$80,$A,$2,$2,$23
@@ -5319,7 +5319,7 @@ Demo_Green_Hill_Miles:
 		dc.b	$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0
 		dc.b	$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0
 		dc.b	$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0
-Demo_Hill_Top: 
+Demo_Hill_Top:
 		dc.b	$0,$5,$1,$1D,$9,$3,$29,$5,$9,$10,$1,$0,$0,$13,$4,$0
 		dc.b	$5,$A,$25,$7,$5,$10,$4,$1,$0,$C,$8,$4,$9,$C,$29,$A
 		dc.b	$9,$10,$8,$3,$0,$1C,$20,$7,$0,$B,$4,$6,$0,$25,$20,$6
@@ -5336,7 +5336,7 @@ Demo_Hill_Top:
 		dc.b	$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0
 		dc.b	$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0
 		dc.b	$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0
-Demo_Casino_Night: 
+Demo_Casino_Night:
 		dc.b	$0,$40,$8,$33,$28,$6,$8,$39,$28,$5,$8,$D,$0,$25,$8,$10
 		dc.b	$28,$2A,$8,$1C,$2,$0,$26,$3,$22,$0,$2A,$0,$28,$6,$8,$22
 		dc.b	$2,$0,$6,$F,$4,$8,$6,$0,$2,$E,$6,$2F,$2,$79,$6,$1
@@ -8414,7 +8414,7 @@ Obj_0x21_2P_Versus_Results:
 ; Sub Routine Vs_Mode_Current_Act_Results
 ; [ Begin ]
 ;=============================================================================== 
-Vs_Mode_Current_Act_Results: 
+Vs_Mode_Current_Act_Results:
 		move.w	#$1F2,d2
 		moveq	#0,d0
 		bsr	loc_90FE
@@ -18310,8 +18310,8 @@ loc_1414A:
 ;------------------------------------------------------------------------------- 
 CNz_Triangles_Act_1: 
 		incbin 'data/cnz/tri_act1.dat' 
-CNz_Triangles_Act_2: 
-		incbin 'data/cnz/tri_act2.dat' 
+CNz_Triangles_Act_2:
+		incbin 'data/cnz/tri_act2.dat'
 ;===============================================================================
 ; Sub Routine Touch Response Triangles
 ; [ End ]
@@ -36596,23 +36596,23 @@ loc_EC0E6:
 		rts
 ;--------------------------------------------------------------------------------
 Z80_Driver: 
-		incbin 'data/sounds/z80.sax'
+		incbin 'sound/z80.sax'
 		
 		cnop $0,$ED100 
 DAC_Sample_00: 
-		incbin 'data/sounds/dAC_00.bin'
+		incbin 'sound/dAC_00.bin'
 DAC_Sample_01: 
-		incbin 'data/sounds/dAC_01.bin' 
+		incbin 'sound/dAC_01.bin' 
 DAC_Sample_02: 
-		incbin 'data/sounds/dAC_02.bin' 
+		incbin 'sound/dAC_02.bin' 
 DAC_Sample_03: 
-		incbin 'data/sounds/dAC_03.bin' 
+		incbin 'sound/dAC_03.bin' 
 DAC_Sample_04: 
-		incbin 'data/sounds/dAC_04.bin' 
+		incbin 'sound/dAC_04.bin' 
 DAC_Sample_05: 
-		incbin 'data/sounds/dAC_05.bin' 
+		incbin 'sound/dAC_05.bin' 
 DAC_Sample_06: 
-		incbin 'data/sounds/dAC_06.bin' 
+		incbin 'sound/dAC_06.bin' 
 		 
 		
 Music_81_Ptr equ (Music_81&$FFFF)|$8000 
@@ -36652,11 +36652,11 @@ Music_9F_Ptr equ (Music_9F&$FFFF)|$8000
 Music_9C_Idx: 
 		dc.w	(((Music_9C_Ptr>>$8)|(Music_9C_Ptr<<$8))&$FFFF) 
 Music_9C: 
-		incbin 'data/sounds/cont_9C.sax' 
+		incbin 'sound/cont_9C.sax' 
 ;------------------------------------------------------------------------------- 
 		cnop $0,$F1E8C
 Sega_Snd: 
-		incbin 'data/sounds/sega.snd' 
+		incbin 'sound/sega.snd' 
 ;------------------------------------------------------------------------------- 
 		cnop $0,$F8000 
 Music_81_To_9F: 
@@ -36692,65 +36692,65 @@ Music_81_To_9F:
 		dc.w	(((Music_9E_Ptr>>$8)|(Music_9E_Ptr<<$8))&$FFFF) 
 ;------------------------------------------------------------------------------- 
 Music_90: ; Hidden Palace 
-		incbin 'data/sounds/hpz_90.sax' 
+		incbin 'sound/hpz_90.sax' 
 Music_9F: ; Panic 
-		incbin 'data/sounds/pnc_9F.sax'
+		incbin 'sound/pnc_9F.sax'
 Music_97: ; Invencibility 
-		incbin 'data/sounds/invcb_97.sax'
+		incbin 'sound/invcb_97.sax'
 Music_88: ; Casino Night Versus Mode 
-		incbin 'data/sounds/cnzvs_88.sax'
+		incbin 'sound/cnzvs_88.sax'
 Music_82: ; Green Hill 
-		incbin 'data/sounds/ghz_82.sax'
+		incbin 'sound/ghz_82.sax'
 Music_85: ; Metropolis 
-		incbin 'data/sounds/mz_85.sax'
+		incbin 'sound/mz_85.sax'
 Music_89: ; Casino Night 
-		incbin 'data/sounds/cnz_89.sax'
+		incbin 'sound/cnz_89.sax'
 Music_8B: ; Dust Hill 
-		incbin 'data/sounds/dhz_8B.sax'
+		incbin 'sound/dhz_8B.sax'
 Music_83: ; Dust Hill Versus Mode 
-		incbin 'data/sounds/dhzvs_83.sax'
+		incbin 'sound/dhzvs_83.sax'
 Music_87: ; Neo Green Hill 
-		incbin 'data/sounds/nghz_87.sax'
+		incbin 'sound/nghz_87.sax'
 Music_8A: ; Deat Egg 
-		incbin 'data/sounds/dez_8A.sax'
+		incbin 'sound/dez_8A.sax'
 Music_92: ; Special Stage 
-		incbin 'data/sounds/ss_92.sax'
+		incbin 'sound/ss_92.sax'
 Music_91: ; Level Select Menu / Vs Mode Menu 
-		incbin 'data/sounds/menu_91.sax'
+		incbin 'sound/menu_91.sax'
 Music_95: ; Ending Sequence 
-		incbin 'data/sounds/endsq_95.sax'
+		incbin 'sound/endsq_95.sax'
 Music_94: ; Death Egg Final Boss 
-		incbin 'data/sounds/dezfb_94.sax'
+		incbin 'sound/dezfb_94.sax'
 Music_8E: ; Chemical Plant 
-		incbin 'data/sounds/cpz_8E.sax'
+		incbin 'sound/cpz_8E.sax'
 Music_93: ; Level Boss 
-		incbin 'data/sounds/boss_93.sax'
+		incbin 'sound/boss_93.sax'
 Music_8D: ; Sky Chase 
-		incbin 'data/sounds/scz_8D.sax'
+		incbin 'sound/scz_8D.sax'
 Music_84: ; Oil Ocean 
-		incbin 'data/sounds/ooz_84.sax'
+		incbin 'sound/ooz_84.sax'
 Music_8F: ; Sky Fortress 
-		incbin 'data/sounds/sfz_8F.sax'
+		incbin 'sound/sfz_8F.sax'
 Music_8C: ; Green Hill Versus Mode
-		incbin 'data/sounds/ghzvs_8C.sax'
+		incbin 'sound/ghzvs_8C.sax'
 Music_81: ; Versus Mode Results 
-		incbin 'data/sounds/vsres_81.sax'
+		incbin 'sound/vsres_81.sax'
 Music_96: ; Super Sonic 
-		incbin 'data/sounds/spsnc_96.sax'
+		incbin 'sound/spsnc_96.sax'
 Music_86: ; Hill Top 
-		incbin 'data/sounds/htz_86.sax'
+		incbin 'sound/htz_86.sax'
 Music_99: ; Title Screen 
-		incbin 'data/sounds/tscr_99.sax'
+		incbin 'sound/tscr_99.sax'
 Music_9A: ; Results Screen 
-		incbin 'data/sounds/rscr_9A.sax'
+		incbin 'sound/rscr_9A.sax'
 Music_98: ; +1 Up ( Uncompressed ) 
-		incbin 'data/sounds/1up_98.snd'
+		incbin 'sound/1up_98.snd'
 Music_9B: ; Time Over / Game Over ( Uncompressed ) 
-		incbin 'data/sounds/tgovr_9B.snd'
+		incbin 'sound/tgovr_9B.snd'
 Music_9D: ; Emerald ( Uncompressed ) 
-		incbin 'data/sounds/emrld_9D.snd'
+		incbin 'sound/emrld_9D.snd'
 Music_9E: ; Credits ( Uncompressed ) 
-		incbin 'data/sounds/credt_9E.snd'
+		incbin 'sound/credt_9E.snd'
 ;------------------------------------------------------------------------------- 
 Sfx_A0_Ptr equ (Sfx_A0&$FFFF)|$8000 
 Sfx_A1_Ptr equ (Sfx_A1&$FFFF)|$8000 
@@ -36918,167 +36918,167 @@ Sfx_A0_To_F9:
 		dc.w	(((Sfx_F0_Ptr>>$8)|(Sfx_F0_Ptr<<$8))&$FFFF) 
 ;-------------------------------------------------------------------------------
 Sfx_A0: 
-		incbin 'data/sounds/sfx_A0.snd'
+		incbin 'sound/sfx_A0.snd'
 Sfx_A1: 
-		incbin 'data/sounds/sfx_A1.snd'
+		incbin 'sound/sfx_A1.snd'
 Sfx_A2: 
-		incbin 'data/sounds/sfx_A2.snd'
+		incbin 'sound/sfx_A2.snd'
 Sfx_A3: 
-		incbin 'data/sounds/sfx_A3.snd'
+		incbin 'sound/sfx_A3.snd'
 Sfx_A4: 
-		incbin 'data/sounds/sfx_A4.snd'
+		incbin 'sound/sfx_A4.snd'
 Sfx_A5: 
-		incbin 'data/sounds/sfx_A5.snd'
+		incbin 'sound/sfx_A5.snd'
 Sfx_A6: 
-		incbin 'data/sounds/sfx_A6.snd'
+		incbin 'sound/sfx_A6.snd'
 Sfx_A7: 
-		incbin 'data/sounds/sfx_A7.snd'
+		incbin 'sound/sfx_A7.snd'
 Sfx_A8: 
-		incbin 'data/sounds/sfx_A8.snd'
+		incbin 'sound/sfx_A8.snd'
 Sfx_A9: 
-		incbin 'data/sounds/sfx_A9.snd'
+		incbin 'sound/sfx_A9.snd'
 Sfx_AA: 
-		incbin 'data/sounds/sfx_AA.snd'
+		incbin 'sound/sfx_AA.snd'
 Sfx_AB: 
-		incbin 'data/sounds/sfx_AB.snd'
+		incbin 'sound/sfx_AB.snd'
 Sfx_AC: 
-		incbin 'data/sounds/sfx_AC.snd'
+		incbin 'sound/sfx_AC.snd'
 Sfx_AD: 
-		incbin 'data/sounds/sfx_AD.snd'
+		incbin 'sound/sfx_AD.snd'
 Sfx_AE: 
-		incbin 'data/sounds/sfx_AE.snd'
+		incbin 'sound/sfx_AE.snd'
 Sfx_AF: 
-		incbin 'data/sounds/sfx_AF.snd'
+		incbin 'sound/sfx_AF.snd'
 Sfx_B0: 
-		incbin 'data/sounds/sfx_B0.snd'
+		incbin 'sound/sfx_B0.snd'
 Sfx_B1: 
-		incbin 'data/sounds/sfx_B1.snd'
+		incbin 'sound/sfx_B1.snd'
 Sfx_B2: 
-		incbin 'data/sounds/sfx_B2.snd'
+		incbin 'sound/sfx_B2.snd'
 Sfx_B3: 
-		incbin 'data/sounds/sfx_B3.snd'
+		incbin 'sound/sfx_B3.snd'
 Sfx_B4: 
-		incbin 'data/sounds/sfx_B4.snd'
+		incbin 'sound/sfx_B4.snd'
 Sfx_B5: 
-		incbin 'data/sounds/sfx_B5.snd'
+		incbin 'sound/sfx_B5.snd'
 Sfx_B6: 
-		incbin 'data/sounds/sfx_B6.snd'
+		incbin 'sound/sfx_B6.snd'
 Sfx_B7: 
-		incbin 'data/sounds/sfx_B7.snd'
+		incbin 'sound/sfx_B7.snd'
 Sfx_B8: 
-		incbin 'data/sounds/sfx_B8.snd'
+		incbin 'sound/sfx_B8.snd'
 Sfx_B9: 
-		incbin 'data/sounds/sfx_B9.snd'
+		incbin 'sound/sfx_B9.snd'
 Sfx_BA: 
-		incbin 'data/sounds/sfx_BA.snd'
+		incbin 'sound/sfx_BA.snd'
 Sfx_BB: 
-		incbin 'data/sounds/sfx_BB.snd'
+		incbin 'sound/sfx_BB.snd'
 Sfx_BC: 
-		incbin 'data/sounds/sfx_BC.snd'
+		incbin 'sound/sfx_BC.snd'
 Sfx_BD: 
-		incbin 'data/sounds/sfx_BD.snd'
+		incbin 'sound/sfx_BD.snd'
 Sfx_BE: 
-		incbin 'data/sounds/sfx_BE.snd' 
+		incbin 'sound/sfx_BE.snd' 
 Sfx_BF: 
-		incbin 'data/sounds/sfx_BF.snd' 
+		incbin 'sound/sfx_BF.snd' 
 Sfx_C0: 
-		incbin 'data/sounds/sfx_C0.snd' 
+		incbin 'sound/sfx_C0.snd' 
 Sfx_C1: 
-		incbin 'data/sounds/sfx_C1.snd' 
+		incbin 'sound/sfx_C1.snd' 
 Sfx_C2: 
-		incbin 'data/sounds/sfx_C2.snd' 
+		incbin 'sound/sfx_C2.snd' 
 Sfx_C3: 
-		incbin 'data/sounds/sfx_C3.snd' 
+		incbin 'sound/sfx_C3.snd' 
 Sfx_C4: 
-		incbin 'data/sounds/sfx_C4.snd' 
+		incbin 'sound/sfx_C4.snd' 
 Sfx_C5: 
-		incbin 'data/sounds/sfx_C5.snd' 
+		incbin 'sound/sfx_C5.snd' 
 Sfx_C6: 
-		incbin 'data/sounds/sfx_C6.snd'
+		incbin 'sound/sfx_C6.snd'
 Sfx_C7: 
-		incbin 'data/sounds/sfx_C7.snd' 
+		incbin 'sound/sfx_C7.snd' 
 Sfx_C8: 
-		incbin 'data/sounds/sfx_C8.snd'
+		incbin 'sound/sfx_C8.snd'
 Sfx_C9: 
-		incbin 'data/sounds/sfx_C9.snd' 
+		incbin 'sound/sfx_C9.snd' 
 Sfx_CA: 
-		incbin 'data/sounds/sfx_CA.snd' 
+		incbin 'sound/sfx_CA.snd' 
 Sfx_CB: 
-		incbin 'data/sounds/sfx_CB.snd' 
+		incbin 'sound/sfx_CB.snd' 
 Sfx_CC: 
-		incbin 'data/sounds/sfx_CC.snd' 
+		incbin 'sound/sfx_CC.snd' 
 Sfx_CD: 
-		incbin 'data/sounds/sfx_CD.snd' 
+		incbin 'sound/sfx_CD.snd' 
 Sfx_CE: 
-		incbin 'data/sounds/sfx_CE.snd' 
+		incbin 'sound/sfx_CE.snd' 
 Sfx_CF: 
-		incbin 'data/sounds/sfx_CF.snd' 
+		incbin 'sound/sfx_CF.snd' 
 Sfx_D0: 
-		incbin 'data/sounds/sfx_D0.snd' 
+		incbin 'sound/sfx_D0.snd' 
 Sfx_D1: 
-		incbin 'data/sounds/sfx_D1.snd'
+		incbin 'sound/sfx_D1.snd'
 Sfx_D2: 
-		incbin 'data/sounds/sfx_D2.snd'
+		incbin 'sound/sfx_D2.snd'
 Sfx_D3: 
-		incbin 'data/sounds/sfx_D3.snd'
+		incbin 'sound/sfx_D3.snd'
 Sfx_D4: 
-		incbin 'data/sounds/sfx_D4.snd'
+		incbin 'sound/sfx_D4.snd'
 Sfx_D5: 
-		incbin 'data/sounds/sfx_D5.snd'
+		incbin 'sound/sfx_D5.snd'
 Sfx_D6: 
-		incbin 'data/sounds/sfx_D6.snd'
+		incbin 'sound/sfx_D6.snd'
 Sfx_D7: 
-		incbin 'data/sounds/sfx_D7.snd'
+		incbin 'sound/sfx_D7.snd'
 Sfx_D8: 
-		incbin 'data/sounds/sfx_D8.snd'
+		incbin 'sound/sfx_D8.snd'
 Sfx_D9: 
-		incbin 'data/sounds/sfx_D9.snd'
+		incbin 'sound/sfx_D9.snd'
 Sfx_DA: 
-		incbin 'data/sounds/sfx_DA.snd'
+		incbin 'sound/sfx_DA.snd'
 Sfx_DB: 
-		incbin 'data/sounds/sfx_DB.snd'
+		incbin 'sound/sfx_DB.snd'
 Sfx_DC: 
-		incbin 'data/sounds/sfx_DC.snd'
+		incbin 'sound/sfx_DC.snd'
 Sfx_DD: 
-		incbin 'data/sounds/sfx_DD.snd'
+		incbin 'sound/sfx_DD.snd'
 Sfx_DE: 
-		incbin 'data/sounds/sfx_DE.snd'
+		incbin 'sound/sfx_DE.snd'
 Sfx_DF: 
-		incbin 'data/sounds/sfx_DF.snd'
+		incbin 'sound/sfx_DF.snd'
 Sfx_E0: 
-		incbin 'data/sounds/sfx_E0.snd'
+		incbin 'sound/sfx_E0.snd'
 Sfx_E1: 
-		incbin 'data/sounds/sfx_E1.snd'
+		incbin 'sound/sfx_E1.snd'
 Sfx_E2: 
-		incbin 'data/sounds/sfx_E2.snd'
+		incbin 'sound/sfx_E2.snd'
 Sfx_E3: 
-		incbin 'data/sounds/sfx_E3.snd'
+		incbin 'sound/sfx_E3.snd'
 Sfx_E4: 
-		incbin 'data/sounds/sfx_E4.snd'
+		incbin 'sound/sfx_E4.snd'
 Sfx_E5: 
-		incbin 'data/sounds/sfx_E5.snd'
+		incbin 'sound/sfx_E5.snd'
 Sfx_E6: 
-		incbin 'data/sounds/sfx_E6.snd'
+		incbin 'sound/sfx_E6.snd'
 Sfx_E7: 
-		incbin 'data/sounds/sfx_E7.snd'
+		incbin 'sound/sfx_E7.snd'
 Sfx_E8: 
-		incbin 'data/sounds/sfx_E8.snd'
+		incbin 'sound/sfx_E8.snd'
 Sfx_E9: 
-		incbin 'data/sounds/sfx_E9.snd' 
+		incbin 'sound/sfx_E9.snd' 
 Sfx_EA: 
-		incbin 'data/sounds/sfx_EA.snd'
+		incbin 'sound/sfx_EA.snd'
 Sfx_EB: 
-		incbin 'data/sounds/sfx_EB.snd'
+		incbin 'sound/sfx_EB.snd'
 Sfx_EC: 
-		incbin 'data/sounds/sfx_EC.snd'
+		incbin 'sound/sfx_EC.snd'
 Sfx_ED: 
-		incbin 'data/sounds/sfx_ED.snd'
+		incbin 'sound/sfx_ED.snd'
 Sfx_EE: 
-		incbin 'data/sounds/sfx_EE.snd'
+		incbin 'sound/sfx_EE.snd'
 Sfx_EF: 
-		incbin 'data/sounds/sfx_EF.snd'
+		incbin 'sound/sfx_EF.snd'
 Sfx_F0: 
-		incbin 'data/sounds/sfx_F0.snd' 
+		incbin 'sound/sfx_F0.snd'
 ;===============================================================================
 ; Sound Driver
 ; [ End ]
