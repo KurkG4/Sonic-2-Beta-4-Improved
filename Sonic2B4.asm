@@ -3880,7 +3880,7 @@ PlayLevel:
 loc_42A2:
 		rts
 ;--------------------------------------------------------------------------------
-Level_Select_Code_US: 
+Level_Select_Code_US:
 		dc.b	$1,$2,$2,$2,$2,$1,$0,$FF
 Level_Select_Code_J: 
 		dc.b	$1,$2,$2,$2,$2,$1,$0,$FF
@@ -3943,7 +3943,7 @@ loc_434A:
 Demo_Mode_Level_Array:
 		dc.w	$D00,$0,$C00,$700,$500,$500,$500,$500
 		dc.w	$400,$400,$400,$400
-LevelSelect_Controls: 
+LevelSelect_Controls:
 		move.b	($FFFFF605).w,d1
 		and.b	#3,d1
 		bne.s	loc_43AA
@@ -4098,28 +4098,28 @@ _Y = $F
 _Z = $10
 __ = $FF 
 Level_Select_Text: 
-		dc.b	_G,_R,_E,_E,_N,__,_H,_I,_L,_L,__,_Z,_O,_N,_E,__,__,__,__,__,_S,_T,_A,_G,_E,__,_0 
-		dc.b	__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,_S,_T,_A,_G,_E,__,_1 
-		dc.b	_M,_E,_T,_R,_O,_P,_O,_L,_I,_S,__,_Z,_O,_N,_E,__,__,__,__,__,_S,_T,_A,_G,_E,__,_0 
-		dc.b	__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,_S,_T,_A,_G,_E,__,_1 
-		dc.b	__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,_S,_T,_A,_G,_E,__,_2 
-		dc.b	_H,_I,_L,_L,__,_T,_O,_P,__,_Z,_O,_N,_E,__,__,__,__,__,__,__,_S,_T,_A,_G,_E,__,_0 
-		dc.b	__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,_S,_T,_A,_G,_E,__,_1
-		dc.b	_H,_I,_D,_D,_E,_N,__,_P,_A,_L,_A,_C,_E,__,_Z,_O,_N,_E,__,__,_S,_T,_A,_G,_E,__,_0 
-		dc.b	__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,_S,_T,_A,_G,_E,__,_1
-		dc.b	_O,_I,_L,__,_O,_C,_E,_A,_N,__,_Z,_O,_N,_E,__,__,__,__,__,__,_S,_T,_A,_G,_E,__,_0 
-		dc.b	__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,_S,_T,_A,_G,_E,__,_1 
-		dc.b	_D,_U,_S,_T,__,_H,_I,_L,_L,__,_Z,_O,_N,_E,__,__,__,__,__,__,_S,_T,_A,_G,_E,__,_0 
-		dc.b	__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,_S,_T,_A,_G,_E,__,_1 
-		dc.b	_C,_A,_S,_I,_N,_O,__,_N,_I,_G,_H,_T,__,_Z,_O,_N,_E,__,__,__,_S,_T,_A,_G,_E,__,_0 
-		dc.b	__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,_S,_T,_A,_G,_E,__,_1 
-		dc.b	_C,_H,_E,_M,_I,_C,_A,_L,__,_P,_L,_A,_N,_T,__,_Z,_O,_N,_E,__,_S,_T,_A,_G,_E,__,_0 
-		dc.b	__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,_S,_T,_A,_G,_E,__,_1 
-		dc.b	_N,_E,_O,__,_G,_R,_E,_E,_N,__,_H,_I,_L,_L,__,_Z,_O,_N,_E,__,_S,_T,_A,_G,_E,__,_0 
-		dc.b	__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,_S,_T,_A,_G,_E,__,_1
-		dc.b	_S,_K,_Y,__,_C,_H,_A,_S,_E,__,_Z,_O,_N,_E,__,__,__,__,__,__,_S,_T,_A,_G,_E,__,_0 
-		dc.b	_S,_K,_Y,__,_F,_O,_R,_T,_R,_E,_S,_S,__,_Z,_O,_N,_E,__,__,__,_S,_T,_A,_G,_E,__,_0 
-		dc.b	_D,_E,_A,_T,_H,__,_E,_G,_G,__,_Z,_O,_N,_E,__,__,__,__,__,__,_S,_T,_A,_G,_E,__,_0 
+		dc.b	_G,_R,_E,_E,_N,__,_H,_I,_L,_L,__,_Z,_O,_N,_E,__,__,__,__,__,_S,_T,_A,_G,_E,__,_1
+		dc.b	__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,_S,_T,_A,_G,_E,__,_2
+		dc.b	_M,_E,_T,_R,_O,_P,_O,_L,_I,_S,__,_Z,_O,_N,_E,__,__,__,__,__,_S,_T,_A,_G,_E,__,_1
+		dc.b	__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,_S,_T,_A,_G,_E,__,_2
+		dc.b	__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,_S,_T,_A,_G,_E,__,_3
+		dc.b	_H,_I,_L,_L,__,_T,_O,_P,__,_Z,_O,_N,_E,__,__,__,__,__,__,__,_S,_T,_A,_G,_E,__,_1
+		dc.b	__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,_S,_T,_A,_G,_E,__,_2
+		dc.b	_H,_I,_D,_D,_E,_N,__,_P,_A,_L,_A,_C,_E,__,_Z,_O,_N,_E,__,__,_S,_T,_A,_G,_E,__,_1
+		dc.b	__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,_S,_T,_A,_G,_E,__,_2
+		dc.b	_O,_I,_L,__,_O,_C,_E,_A,_N,__,_Z,_O,_N,_E,__,__,__,__,__,__,_S,_T,_A,_G,_E,__,_1
+		dc.b	__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,_S,_T,_A,_G,_E,__,_2
+		dc.b	_D,_U,_S,_T,__,_H,_I,_L,_L,__,_Z,_O,_N,_E,__,__,__,__,__,__,_S,_T,_A,_G,_E,__,_1
+		dc.b	__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,_S,_T,_A,_G,_E,__,_2
+		dc.b	_C,_A,_S,_I,_N,_O,__,_N,_I,_G,_H,_T,__,_Z,_O,_N,_E,__,__,__,_S,_T,_A,_G,_E,__,_1
+		dc.b	__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,_S,_T,_A,_G,_E,__,_2
+		dc.b	_C,_H,_E,_M,_I,_C,_A,_L,__,_P,_L,_A,_N,_T,__,_Z,_O,_N,_E,__,_S,_T,_A,_G,_E,__,_1
+		dc.b	__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,_S,_T,_A,_G,_E,__,_2
+		dc.b	_N,_E,_O,__,_G,_R,_E,_E,_N,__,_H,_I,_L,_L,__,_Z,_O,_N,_E,__,_S,_T,_A,_G,_E,__,_1
+		dc.b	__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__,_S,_T,_A,_G,_E,__,_2
+		dc.b	_S,_K,_Y,__,_C,_H,_A,_S,_E,__,_Z,_O,_N,_E,__,__,__,__,__,__,_S,_T,_A,_G,_E,__,__
+		dc.b	_S,_K,_Y,__,_F,_O,_R,_T,_R,_E,_S,_S,__,_Z,_O,_N,_E,__,__,__,_S,_T,_A,_G,_E,__,__
+		dc.b	_D,_E,_A,_T,_H,__,_E,_G,_G,__,_Z,_O,_N,_E,__,__,__,__,__,__,_S,_T,_A,_G,_E,__,__
 		dc.b	_S,_P,_E,_C,_I,_A,_L,__,_S,_T,_A,_G,_E,__,__,__,__,__,__,__,__,__,__,__,__,__,__
 		dc.b	_S,_O,_U,_N,_D,__,_S,_E,_L,_E,_C,_T,__,__,__,__,__,__,__,__,__,__,__,__,__,__,__
 ;===============================================================================
@@ -4390,7 +4390,7 @@ loc_4AEA:
 		move.w	d0,($FFFFFF90).w
 		bsr	Play_Music 
 		move.b	#$34,($FFFFB080).w
-LevelInit_TitleCard: 
+LevelInit_TitleCard:
 		move.b	#$C,($FFFFF62A).w
 		bsr	DelayProgram 
 		jsr	Load_Objects 
@@ -9402,7 +9402,7 @@ Level_Size_Load:
 		move.w	#$60,($FFFFEED8).w
 		move.w	#$60,($FFFFEEDA).w
 		bra	Level_Size_Check_Lamp_Post 
-Level_Size_Array: 
+Level_Size_Array:
 		dc.l	$29A0,$320,$2940,$420 ; GHz
 		dc.l	$3FFF,$720,$3FFF,$720 ;
 		dc.l	$3FFF,$720,$3FFF,$720 ; Wz
@@ -32370,17 +32370,17 @@ Ghz_Flower_3:
 Ghz_Flower_4: 
 		incbin 'data/ghz/flower_4.dat' 
 Ghz_Dyn_Wall: 
-		incbin 'data/ghz/dyn_wall.dat' 
+		incbin 'data/ghz/dyn_wall.dat'
 Hill_Top_Background: 
 		incbin 'data/htz/backgnd.nem'
 Hill_Top_Background_Unc: 
-		incbin 'data/htz/backgnd.dat' 
+		incbin 'data/htz/backgnd.dat'
 Mz_Spinnig_Cylinder: 
 		incbin 'data/mz/spin_cyl.dat'
 Mz_Lava: 
 		incbin 'data/mz/lava.dat'
 Mz_Pistons: 
-		incbin 'data/mz/pistons.dat' 
+		incbin 'data/mz/pistons.dat'
 HPz_Dyn_Background: ; Unused - Left over from previous build 
 		incbin 'data/hpz/backgnd.dat' 
 HPz_Orbs: 
@@ -32388,7 +32388,7 @@ HPz_Orbs:
 OOz_Red_Balls: 
 		incbin 'data/ooz/red_ball.dat' 
 OOz_Rotating_Square_1: 
-		incbin 'data/ooz/r_squar1.dat' 
+		incbin 'data/ooz/r_squar1.dat'
 OOz_Rotating_Square_2: 
 		incbin 'data/ooz/r_squar2.dat' 
 OOz_Oil_1: 
@@ -32404,7 +32404,7 @@ CPz_Dyn_Background:
 NGHz_Water_Falls_1: 
 		incbin 'data/nghz/water_f1.dat'
 NGHz_Water_Falls_2: 
-		incbin 'data/nghz/water_f2.dat' 
+		incbin 'data/nghz/water_f2.dat'
 NGHz_Water_Falls_3: 
 		incbin 'data/nghz/water_f3.dat' 
 ;=============================================================================== 
