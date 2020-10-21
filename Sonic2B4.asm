@@ -3187,47 +3187,47 @@ PalPointers:
 		dc.l	Pal_Versus_Mode_Menu,$FB00001F ; $26 Versus Mode Menu -> loc_3566
 		dc.l	Pal_SS_Results,$FB00001F ; $27 Special Stage Results -> loc_3786
 Pal_Sega_Bg: 
-		incbin 'data/all/sega_bg.pal' 
-Pal_Title_Screen: 
-		incbin 'data/all/titscreen.pal'
+		incbin 'palettes/sega_bg.pal' 
+Pal_Title_Screen:
+		incbin 'palettes/titscreen.pal'
 Pal_Level_Select_Menu: 
-		incbin 'data/all/lvslmenu.pal' 
+		incbin 'palettes/lvslmenu.pal'
 Pal_Sonic_And_Miles 
-		incbin 'data/all/sonic.pal' 
+		incbin 'palettes/sonic.pal'
 Pal_GHz: 
-		incbin 'data/ghz/ghz.pal' 
+		incbin 'palettes/ghz.pal'
 Pal_Wz: 
-		incbin 'data/wz/wz.pal' 
+		incbin 'palettes/wz.pal'
 Pal_Mz: 
-		incbin 'data/mz/mz.pal' 
+		incbin 'palettes/mz.pal'
 Pal_SFz: 
-		incbin 'data/sfz/sfz.pal'
+		incbin 'palettes/sfz.pal'
 Pal_HTz: 
-		incbin 'data/htz/htz.pal'
+		incbin 'palettes/htz.pal'
 Pal_HPz: 
-		incbin 'data/hpz/hpz.pal' 
+		incbin 'palettes/hpz.pal'
 Pal_HPz_Water: 
-		incbin 'data/hpz/hpz_uw.pal' 
+		incbin 'palettes/hpz_uw.pal'
 Pal_OOz: 
-		incbin 'data/ooz/ooz.pal' 
+		incbin 'palettes/ooz.pal'
 Pal_DHz: 
-		incbin 'data/dhz/dhz.pal' 
+		incbin 'palettes/dhz.pal'
 Pal_CNz: 
-		incbin 'data/cnz/cnz.pal' 
+		incbin 'palettes/cnz.pal'
 Pal_CPz: 
-		incbin 'data/cpz/cpz.pal' 
+		incbin 'palettes/cpz.pal'
 Pal_CPz_Water: 
-		incbin 'data/cpz/cpz_uw.pal' 
+		incbin 'palettes/cpz_uw.pal'
 Pal_DEz: 
-		incbin 'data/dez/dez.pal' 
+		incbin 'palettes/dez.pal'
 Pal_NGHz: 
-		incbin 'data/nghz/nghz.pal' 
+		incbin 'palettes/nghz.pal'
 Pal_NGHz_Water: 
-		incbin 'data/nghz/nghz_uw.pal' 
+		incbin 'palettes/nghz_uw.pal'
 Pal_SCz: 
-		incbin 'data/scz/scz.pal' 
+		incbin 'palettes/scz.pal'
 Pal_DHz_Boss: 
-		incbin 'data/dhz/dhz_boss.pal' 
+		incbin 'palettes/dhz_boss.pal'
 loc_3526: 
 		dc.w	$0,$0,$6E,$AE,$EE,$44,$EEE,$AAA
 		dc.w	$888,$444,$666,$EC0,$EE,$88,$A0E,$E0
@@ -3235,32 +3235,32 @@ loc_3546:
 		dc.w	$6E,$0,$E80,$EC0,$EEA,$44,$EEE,$AAA
 		dc.w	$888,$444,$666,$48E,$EE,$88,$6AE,$8CE 
 Pal_Versus_Mode_Menu: 
-		incbin 'data/all/vs_menu.pal' 
+		incbin 'palettes/vs_menu.pal'
 Pal_Special_Stage_Main: 
-		incbin 'palette/ss_main.pal' 
+		incbin 'palettes/ss_main.pal' 
 Pal_Continue: ; Continue Load This Palette in Last Row
 Pal_Special_Stage_1: 
-		incbin 'palette/ss_1.pal'
+		incbin 'palettes/ss_1.pal'
 Pal_Special_Stage_2: 
-		incbin 'palette/ss_2.pal'
-Pal_Special_Stage_3: 
-		incbin 'palette/ss_3.pal'
+		incbin 'palettes/ss_2.pal'
+Pal_Special_Stage_3:
+		incbin 'palettes/ss_3.pal'
 Pal_Special_Stage_4: 
-		incbin 'palette/ss_4.pal'
+		incbin 'palettes/ss_4.pal'
 Pal_Special_Stage_5: 
-		incbin 'palette/ss_5.pal'
+		incbin 'palettes/ss_5.pal'
 Pal_Special_Stage_6: 
-		incbin 'palette/ss_6.pal'
+		incbin 'palettes/ss_6.pal'
 Pal_Special_Stage_7: 
-		incbin 'palette/ss_7.pal'
+		incbin 'palettes/ss_7.pal'
 Pal_SS_Vs_Mode_1: 
-		incbin 'palette/ss_vs_1.pal'
+		incbin 'palettes/ss_vs_1.pal'
 Pal_SS_Vs_Mode_2: 
-		incbin 'palette/ss_vs_2.pal'
+		incbin 'palettes/ss_vs_2.pal'
 Pal_SS_Vs_Mode_3: 
-		incbin 'palette/ss_vs_3.pal'
+		incbin 'palettes/ss_vs_3.pal'
 Pal_SS_Results: 
-		incbin 'palette/ssresult.pal'
+		incbin 'palettes/ssresult.pal'
 		nop 
 ;===============================================================================
 ; Sub Routine DelayProgram
