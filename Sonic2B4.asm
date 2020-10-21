@@ -9347,7 +9347,7 @@ loc_9A0E:
 ;--------------------------------------------------------------------------------
 ;-------------------------------------------------------------------------------
 Pal_Levels_Icons: 
-		incbin 'data/all/lvsicons.pal' 
+		incbin 'palettes/lvsicons.pal'
 ;===============================================================================
 ; Sub Routine Versus Mode Results
 ; [ Begin ]
@@ -17897,7 +17897,7 @@ loc_13D1A:
 		dc.w	loc_13D72-loc_13D1A
 loc_13D1E:
 		addq.b	#2,($FFFFF71A).w
-		lea	(CNz_Triangles_Act_1),a1 
+		lea	(CNz_Triangles_Act_1),a1
 		tst.b	($FFFFFE11).w
 		beq.s	loc_13D34
 		lea	(CNz_Triangles_Act_2),a1 
@@ -18308,10 +18308,10 @@ loc_1414A:
 		move.w	#$D9,d0
 		jmp	Play_Sfx
 ;------------------------------------------------------------------------------- 
-CNz_Triangles_Act_1: 
-		incbin 'data/cnz/tri_act1.dat' 
+CNz_Triangles_Act_1:
+		incbin 'objpos/tri_act1.dat'
 CNz_Triangles_Act_2:
-		incbin 'data/cnz/tri_act2.dat'
+		incbin 'objpos/tri_act2.dat'
 ;===============================================================================
 ; Sub Routine Touch Response Triangles
 ; [ End ]
@@ -26467,7 +26467,7 @@ loc_3BDC6:
 ;=============================================================================== 
 GHz_Animate: 
 		dc.w	$4 ; Total of Animations
-		dc.l	($FF<<$18)|Ghz_Flower_1 
+		dc.l	($FF<<$18)|Ghz_Flower_1
 		dc.w	$7280 ; VRam 
 		dc.w	$602 ; Frames/Tiles
 		dc.w	$7F,$213,$7,$207,$7,$207 ; Frame Load/Frame Time
@@ -26526,7 +26526,7 @@ Mz_Animate:
 HTz_Animate: 
 		; Hill Top Dynamic Reload Sprites 
 		dc.w	$4 ; Total of Animations
-		dc.l	($FF<<$18)|Ghz_Flower_1 
+		dc.l	($FF<<$18)|Ghz_Flower_1
 		dc.w	$7280 ; VRam 
 		dc.w	$602 ; Frames/Tiles
 		dc.w	$7F,$213,$7,$207,$7,$207 ; Frame Load/Frame Time
@@ -32384,7 +32384,7 @@ Mz_Pistons:
 HPz_Dyn_Background: ; Unused - Left over from previous build 
 		incbin 'data/hpz/backgnd.dat' 
 HPz_Orbs: 
-		incbin 'data/hpz/orbs.dat' 
+		incbin 'data/hpz/orbs.dat'
 OOz_Red_Balls: 
 		incbin 'data/ooz/red_ball.dat' 
 OOz_Rotating_Square_1: 
@@ -32392,15 +32392,15 @@ OOz_Rotating_Square_1:
 OOz_Rotating_Square_2: 
 		incbin 'data/ooz/r_squar2.dat' 
 OOz_Oil_1: 
-		incbin 'data/ooz/oil_1.dat' 
+		incbin 'data/ooz/oil_1.dat'
 OOz_Oil_2: 
 		incbin 'data/ooz/oil_2.dat' 
 CNz_Symbols_Spr: 
-		incbin 'data/cnz/symbols.dat' 
+		incbin 'data/cnz/symbols.dat'
 CNz_Slot_Machine_Checks: 
 		incbin 'data/cnz/sm_check.dat' 
 CPz_Dyn_Background: 
-		incbin 'data/cpz/backgnd.dat' 
+		incbin 'data/cpz/backgnd.dat'
 NGHz_Water_Falls_1: 
 		incbin 'data/nghz/water_f1.dat'
 NGHz_Water_Falls_2: 
@@ -32412,11 +32412,11 @@ NGHz_Water_Falls_3:
 ; [ Begin ]
 ;=============================================================================== 
 AngleMap: 
-		incbin 'data/all/anglemap.dat' 
+		incbin 'misc/anglemap.dat'
 Colision_Array_1: 
-		incbin 'data/all/c_array1.dat'
+		incbin 'misc/c_array1.dat'
 Colision_Array_2: 
-		incbin 'data/all/c_array2.dat' 
+		incbin 'misc/c_array2.dat' 
 ;=============================================================================== 
 ; Colision Array
 ; [ End ]
@@ -36501,7 +36501,7 @@ SCz_2_PB_Rings_Layout:
 ; [ End ]
 ;===============================================================================
 Unk_loc_EB400:
-		incbin 'data/all/0x0EB400.dat' 
+		incbin 'misc/0x0EB400.dat'
 ;===============================================================================
 ; Sound Driver
 ; [ Begin ]
