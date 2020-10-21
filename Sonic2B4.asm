@@ -3237,30 +3237,30 @@ loc_3546:
 Pal_Versus_Mode_Menu: 
 		incbin 'data/all/vs_menu.pal' 
 Pal_Special_Stage_Main: 
-		incbin 'data/ss/ss_main.pal' 
+		incbin 'palette/ss_main.pal' 
 Pal_Continue: ; Continue Load This Palette in Last Row
 Pal_Special_Stage_1: 
-		incbin 'data/ss/ss_1.pal' 
+		incbin 'palette/ss_1.pal'
 Pal_Special_Stage_2: 
-		incbin 'data/ss/ss_2.pal' 
+		incbin 'palette/ss_2.pal'
 Pal_Special_Stage_3: 
-		incbin 'data/ss/ss_3.pal' 
+		incbin 'palette/ss_3.pal'
 Pal_Special_Stage_4: 
-		incbin 'data/ss/ss_4.pal' 
+		incbin 'palette/ss_4.pal'
 Pal_Special_Stage_5: 
-		incbin 'data/ss/ss_5.pal' 
+		incbin 'palette/ss_5.pal'
 Pal_Special_Stage_6: 
-		incbin 'data/ss/ss_6.pal'
+		incbin 'palette/ss_6.pal'
 Pal_Special_Stage_7: 
-		incbin 'data/ss/ss_7.pal' 
+		incbin 'palette/ss_7.pal'
 Pal_SS_Vs_Mode_1: 
-		incbin 'data/ss/ss_vs_1.pal' 
+		incbin 'palette/ss_vs_1.pal'
 Pal_SS_Vs_Mode_2: 
-		incbin 'data/ss/ss_vs_2.pal' 
+		incbin 'palette/ss_vs_2.pal'
 Pal_SS_Vs_Mode_3: 
-		incbin 'data/ss/ss_vs_3.pal' 
+		incbin 'palette/ss_vs_3.pal'
 Pal_SS_Results: 
-		incbin 'data/ss/ssresult.pal' 
+		incbin 'palette/ssresult.pal'
 		nop 
 ;===============================================================================
 ; Sub Routine DelayProgram
@@ -35806,7 +35806,7 @@ Oxygen_Bubbles:
 Bubbles: 
 		incbin 'artnem/bubbles.nem' 
 Oxygen_Numbers_Spr: 
-		incbin 'artunc/oxygnumb.dat' 
+		incbin 'artunc/oxygnumb.dat'
 Game_Time_Over: 
 		incbin 'artnem/gt_over.nem' 
 Explosion: 
@@ -35838,9 +35838,9 @@ Level_Icons:
 Title_Card_Results: 
 		incbin 'artnem/tc_res.nem'
 SS_Title_Card_Results: 
-		incbin 'data/ss/tc_res.nem' 
+		incbin 'specialstage/tc_res.nem' 
 SS_Emeralds_Results: 
-		incbin 'data/ss/emeralds.nem' 
+		incbin 'specialstage/emeralds.nem'
 Blue_Bird: 
 		incbin 'artnem/bluebird.nem' 
 Squirrel: 
@@ -36081,162 +36081,162 @@ Sky_Fortress_128x128_Map:
 		dc.w	$0,$0,$0,$0 ; Filler 
 ;-------------------------------------------------------------------------------
 loc_C8310:
-		incbin 'data/ss/0x0C8310.dat' 
+		incbin 'specialstage/0x0C8310.dat'
 loc_C87B4:
-		incbin 'data/ss/0x0C87B4.dat' 
+		incbin 'specialstage/0x0C87B4.dat' 
 loc_C8D82:
-		incbin 'data/ss/0x0C8D82.dat' 
+		incbin 'specialstage/0x0C8D82.dat' 
 loc_C933A:
-		incbin 'data/ss/0x0C933A.dat' 
+		incbin 'specialstage/0x0C933A.dat' 
 loc_C999E:
-		incbin 'data/ss/0x0C999E.dat' 
+		incbin 'specialstage/0x0C999E.dat' 
 loc_C9FCA:
-		incbin 'data/ss/0x0C9FCA.dat' 
+		incbin 'specialstage/0x0C9FCA.dat' 
 loc_CA686:
-		incbin 'data/ss/0x0CA686.dat' 
+		incbin 'specialstage/0x0CA686.dat' 
 loc_CAC8E:
-		incbin 'data/ss/0x0CAC8E.dat' 
+		incbin 'specialstage/0x0CAC8E.dat' 
 loc_CB1CC:
-		incbin 'data/ss/0x0CB1CC.dat'
+		incbin 'specialstage/0x0CB1CC.dat'
 loc_CB750:
-		incbin 'data/ss/0x0CB750.dat'
+		incbin 'specialstage/0x0CB750.dat'
 loc_CBCCA:
-		incbin 'data/ss/0x0CBCCA.dat'
+		incbin 'specialstage/0x0CBCCA.dat'
 loc_CC1EA:
-		incbin 'data/ss/0x0CC1EA.dat'
+		incbin 'specialstage/0x0CC1EA.dat'
 loc_CC65E:
-		incbin 'data/ss/0x0CC65E.dat'
+		incbin 'specialstage/0x0CC65E.dat'
 loc_CCAC8:
-		incbin 'data/ss/0x0CCAC8.dat'
+		incbin 'specialstage/0x0CCAC8.dat'
 loc_CCF8C:
-		incbin 'data/ss/0x0CCF8C.dat'
+		incbin 'specialstage/0x0CCF8C.dat'
 loc_CD40C:
-		incbin 'data/ss/0x0CD40C.dat'
+		incbin 'specialstage/0x0CD40C.dat'
 loc_CD856:
-		incbin 'data/ss/0x0CD856.dat'
+		incbin 'specialstage/0x0CD856.dat'
 loc_CDC98:
-		incbin 'data/ss/0x0CDC98.dat'
+		incbin 'specialstage/0x0CDC98.dat'
 loc_CE316:
-		incbin 'data/ss/0x0CE316.dat'
+		incbin 'specialstage/0x0CE316.dat'
 loc_CE8B2:
-		incbin 'data/ss/0x0CE8B2.dat'
+		incbin 'specialstage/0x0CE8B2.dat'
 loc_CEE0C:
-		incbin 'data/ss/0x0CEE0C.dat'
+		incbin 'specialstage/0x0CEE0C.dat'
 loc_CF408:
-		incbin 'data/ss/0x0CF408.dat'
+		incbin 'specialstage/0x0CF408.dat'
 loc_CF8B8:
-		incbin 'data/ss/0x0CF8B8.dat'
+		incbin 'specialstage/0x0CF8B8.dat'
 loc_CFDBA:
-		incbin 'data/ss/0x0CFDBA.dat'
+		incbin 'specialstage/0x0CFDBA.dat'
 loc_D01D2:
-		incbin 'data/ss/0x0D01D2.dat'
+		incbin 'specialstage/0x0D01D2.dat'
 loc_D0620:
-		incbin 'data/ss/0x0D0620.dat'
+		incbin 'specialstage/0x0D0620.dat'
 loc_D0A9E:
-		incbin 'data/ss/0x0D0A9E.dat'
+		incbin 'specialstage/0x0D0A9E.dat'
 loc_D0F2E:
-		incbin 'data/ss/0x0D0F2E.dat'
+		incbin 'specialstage/0x0D0F2E.dat'
 loc_D13F8:
-		incbin 'data/ss/0x0D13F8.dat'
+		incbin 'specialstage/0x0D13F8.dat'
 loc_D1984:
-		incbin 'data/ss/0x0D1984.dat'
+		incbin 'specialstage/0x0D1984.dat'
 loc_D206C:
-		incbin 'data/ss/0x0D206C.dat'
+		incbin 'specialstage/0x0D206C.dat'
 loc_D27B2:
-		incbin 'data/ss/0x0D27B2.dat'
+		incbin 'specialstage/0x0D27B2.dat'
 loc_D2E08:
-		incbin 'data/ss/0x0D2E08.dat'
+		incbin 'specialstage/0x0D2E08.dat'
 loc_D3364:
-		incbin 'data/ss/0x0D3364.dat'
+		incbin 'specialstage/0x0D3364.dat'
 loc_D390E:
-		incbin 'data/ss/0x0D390E.dat'
+		incbin 'specialstage/0x0D390E.dat'
 loc_D3FA2:
-		incbin 'data/ss/0x0D3FA2.dat'
+		incbin 'specialstage/0x0D3FA2.dat'
 loc_D45B6:
-		incbin 'data/ss/0x0D45B6.dat'
+		incbin 'specialstage/0x0D45B6.dat'
 loc_D4A3A:
-		incbin 'data/ss/0x0D4A3A.dat'
+		incbin 'specialstage/0x0D4A3A.dat'
 loc_D4EA8:
-		incbin 'data/ss/0x0D4EA8.dat'
+		incbin 'specialstage/0x0D4EA8.dat'
 loc_D531E:
-		incbin 'data/ss/0x0D531E.dat'
+		incbin 'specialstage/0x0D531E.dat'
 loc_D57B6:
-		incbin 'data/ss/0x0D57B6.dat'
+		incbin 'specialstage/0x0D57B6.dat'
 loc_D5C5C:
-		incbin 'data/ss/0x0D5C5C.dat'
+		incbin 'specialstage/0x0D5C5C.dat'
 loc_D6004:
-		incbin 'data/ss/0x0D6004.dat'
+		incbin 'specialstage/0x0D6004.dat'
 loc_D63F8:
-		incbin 'data/ss/0x0D63F8.dat'
+		incbin 'specialstage/0x0D63F8.dat'
 loc_D6830:
-		incbin 'data/ss/0x0D6830.dat'
+		incbin 'specialstage/0x0D6830.dat'
 loc_D6CC2:
-		incbin 'data/ss/0x0D6CC2.dat'
+		incbin 'specialstage/0x0D6CC2.dat'
 loc_D7184:
-		incbin 'data/ss/0x0D7184.dat'
+		incbin 'specialstage/0x0D7184.dat'
 loc_D758C:
-		incbin 'data/ss/0x0D758C.dat'
+		incbin 'specialstage/0x0D758C.dat'
 loc_D7A22:
-		incbin 'data/ss/0x0D7A22.dat'
+		incbin 'specialstage/0x0D7A22.dat'
 loc_D7EDA:
-		incbin 'data/ss/0x0D7EDA.dat'
+		incbin 'specialstage/0x0D7EDA.dat'
 loc_D852C:
-		incbin 'data/ss/0x0D852C.dat'
+		incbin 'specialstage/0x0D852C.dat'
 loc_D8A92:
-		incbin 'data/ss/0x0D8A92.dat'
+		incbin 'specialstage/0x0D8A92.dat'
 loc_D8FBA:
-		incbin 'data/ss/0x0D8FBA.dat'
+		incbin 'specialstage/0x0D8FBA.dat'
 loc_D956E:
-		incbin 'data/ss/0x0D956E.dat'
+		incbin 'specialstage/0x0D956E.dat'
 loc_D9B60:
-		incbin 'data/ss/0x0D9B60.dat'
+		incbin 'specialstage/0x0D9B60.dat'
 loc_D9FF4: 
-		incbin 'data/ss/0x0D9FF4.dat' 
+		incbin 'specialstage/0x0D9FF4.dat' 
 SS_Tiles_8x8_Tiles: 
-		incbin 'data/ss/ss_8.kos' 
+		incbin 'specialstage/ss_8.kos' 
 		dc.w	$0,$0 ; Filler 
 SS_Background_8x8_Tiles: 
-		incbin 'data/ss/backgnd8.nem'
+		incbin 'specialstage/backgnd8.nem'
 SS_Mappings_01: 
 		incbin 'mapeni/ss_map_1.eni'
 SS_Mappings_00: 
 		incbin 'mapeni/ss_map_0.eni'
 SS_HUD_Font: 
-		incbin 'data/ss/hud_font.nem' 
+		incbin 'specialstage/hud_font.nem' 
 SS_START: 
-		incbin 'data/ss/start.nem' 
+		incbin 'specialstage/start.nem' 
 SS_Background_Stars: 
-		incbin 'data/ss/bg_stars.nem' 
+		incbin 'specialstage/bg_stars.nem' 
 SS_PAYMW_vs: 
-		incbin 'data/ss/paymw_vs.nem' 
+		incbin 'specialstage/paymw_vs.nem' 
 SS_Rings: 
-		incbin 'data/ss/rings.nem' 
+		incbin 'specialstage/rings.nem' 
 SS_Player_Shadow: 
-		incbin 'data/ss/p_shadow.nem' 
+		incbin 'specialstage/p_shadow.nem' 
 SS_Player_Diagonal_Shadow: 
-		incbin 'data/ss/d_shadow.nem' 
+		incbin 'specialstage/d_shadow.nem' 
 SS_Player_Vertical_Shadow: 
-		incbin 'data/ss/v_shadow.nem' 
+		incbin 'specialstage/v_shadow.nem' 
 SS_Bomb_Explosion: 
-		incbin 'data/ss/bomb_exp.nem' 
+		incbin 'specialstage/bomb_exp.nem' 
 SS_Bombs: 
-		incbin 'data/ss/bombs.nem' 
+		incbin 'specialstage/bombs.nem' 
 SS_Emerald: 
-		incbin 'data/ss/emerald.nem'
+		incbin 'specialstage/emerald.nem'
 SS_Wings_Hand: 
-		incbin 'data/ss/winghand.nem' 
+		incbin 'specialstage/winghand.nem' 
 SS_Sonic_Miles: 
-		incbin 'data/ss/soncmils.nem' 
+		incbin 'specialstage/soncmils.nem'
 SS_Mapings_00: 
-		incbin 'data/ss/ss_map_0.kos' 
+		incbin 'specialstage/ss_map_0.kos'
 		dc.w	$0,$0,$0,$0,$0,$0 ; Filler 
 SS_Mapings_01: 
-		incbin 'data/ss/ss_map_1.kos' 
+		incbin 'specialstage/ss_map_1.kos' 
 		dc.w	$0 ; Filler
 SS_Mapings_02: 
-		incbin 'data/ss/ss_map_2.kos' 
+		incbin 'specialstage/ss_map_2.kos'
 Unk_loc_E16AA:
-		incbin 'data/ss/0x0E16AA.dat' 
+		incbin 'specialstage/0x0E16AA.dat'
 ;===============================================================================
 ; Objects_Layout
 ; [ Begin ]
