@@ -32372,7 +32372,7 @@ Ghz_Flower_4:
 Ghz_Dyn_Wall: 
 		incbin 'data/ghz/dyn_wall.dat'
 Hill_Top_Background: 
-		incbin 'data/htz/backgnd.nem'
+		incbin 'artnem/backgnd.nem'
 Hill_Top_Background_Unc: 
 		incbin 'data/htz/backgnd.dat'
 Mz_Spinnig_Cylinder: 
@@ -32382,7 +32382,7 @@ Mz_Lava:
 Mz_Pistons: 
 		incbin 'data/mz/pistons.dat'
 HPz_Dyn_Background: ; Unused - Left over from previous build 
-		incbin 'data/hpz/backgnd.dat' 
+		incbin 'data/hpz/backgnd.dat'
 HPz_Orbs: 
 		incbin 'data/hpz/orbs.dat'
 OOz_Red_Balls: 
@@ -35628,152 +35628,152 @@ Title_Screen_Sonic_Miles:
 FireBall: 
 		incbin 'artnem/fireball.nem'
 GHz_Waterfall: 
-		incbin 'data/ghz/watrfall.nem' 
-Htz_Lava_Bubble: 
-		incbin 'data/htz/lvbubble.nem' 
+		incbin 'artnem/ghzwatrfall.nem'
+Htz_Lava_Bubble:
+		incbin 'artnem/htzlvbubble.nem'
 GHz_Bridge: 
-		incbin 'data/ghz/bridge.nem' 
+		incbin 'artnem/ghzbridge.nem'
 Htz_Teleferic: 
-		incbin 'data/htz/telefrcs.nem' 
+		incbin 'artnem/telefrcs.nem'
 Htz_Automatic_Door: 
-		incbin 'data/htz/autodoor.nem'
+		incbin 'artnem/htzautodoor.nem'
 Htz_See_saw: 
-		incbin 'data/htz/see-saw.nem'
+		incbin 'artnem/see-saw.nem'
 Unk_Fireball: 
 		incbin 'artnem/unk_fball.nem'
 Htz_Rock: 
-		incbin 'data/htz/rock.nem' 
+		incbin 'artnem/rock.nem'
 Htz_See_saw_badnick: 
-		incbin 'data/htz/see-sawb.nem' 
+		incbin 'artnem/see-sawb.nem'
 Mz_Rotating_Gear: 
-		incbin 'data/mz/gear.nem' 
+		incbin 'artnem/gear.nem'
 Mz_Gear_Holes: 
-		incbin 'data/mz/gearhole.nem' 
+		incbin 'artnem/gearhole.nem'
 Mz_Harpon_Platform: 
-		incbin 'data/mz/harp_ptf.nem' 
+		incbin 'artnem/harp_ptf.nem'
 Mz_Steam: 
-		incbin 'data/mz/steam.nem' 
+		incbin 'artnem/steam.nem'
 Mz_Harpon: 
-		incbin 'data/mz/harpoon.nem' 
+		incbin 'artnem/harpoon.nem'
 Mz_Screw_Nut: 
-		incbin 'data/mz/screwnut.nem'
+		incbin 'artnem/screwnut.nem'
 Mz_Lava_Bubble: 
-		incbin 'data/mz/lvbubble.nem' 
+		incbin 'artnem/mzlvbubble.nem'
 Mz_Elevator: 
-		incbin 'data/mz/elevator.nem' 
-Mz_Miscellaneous: 
-		incbin 'data/mz/miscelns.nem' 
+		incbin 'artnem/mzelevator.nem'
+Mz_Miscellaneous:
+		incbin 'artnem/miscelns.nem'
 Mz_Mini_Gear: 
-		incbin 'data/mz/minigear.nem' 
+		incbin 'artnem/minigear.nem'
 Mz_Teleport_Flash: 
-		incbin 'data/mz/tlpflash.nem'
+		incbin 'artnem/tlpflash.nem'
 Boss_Switch_Spr: 
-		incbin 'data/sfz/b_switch.nem' 
+		incbin 'artnem/b_switch.nem'
 Breakable_Wall: 
-		incbin 'data/sfz/brk_wall.nem' 
+		incbin 'artnem/brk_wall.nem'
 Hpz_Bridge: 
-		incbin 'data/hpz/bridge.nem'
+		incbin 'artnem/hpzbridge.nem'
 Hpz_Waterfall: 
-		incbin 'data/hpz/watrfall.nem' 
+		incbin 'artnem/hpzwatrfall.nem'
 Hpz_Emerald: 
-		incbin 'data/hpz/emerald.nem' 
+		incbin 'artnem/hpzemerald.nem'
 Hpz_Platform: 
-		incbin 'data/hpz/platform.nem'
-Hpz_Orbs_Comp: 
-		incbin 'data/hpz/orbs.nem' 
+		incbin 'artnem/hpzplatform.nem'
+Hpz_Orbs_Comp:
+		incbin 'artnem/orbs.nem'
 Hpz_Unknow_Platform: 
-		incbin 'data/hpz/unkptfm.nem' 
+		incbin 'artnem/unkptfm.nem'
 OOz_Giant_Spikeball: 
-		incbin 'data/ooz/gspkball.nem'
+		incbin 'artnem/gspkball.nem'
 OOz_Touch_Boost_Up: 
-		incbin 'data/ooz/boost_up.nem' 
+		incbin 'artnem/boost_up.nem'
 OOz_Break_To_Boost_Horizontal: 
-		incbin 'data/ooz/brkbst_h.nem' 
+		incbin 'artnem/brkbst_h.nem'
 OOz_Oil: 
-		incbin 'data/ooz/oil.nem'
+		incbin 'artnem/oil.nem'
 OOz_Oil_01: 
-		incbin 'data/ooz/oil_01.nem'
+		incbin 'artnem/oil_01.nem'
 OOz_Ball: 
-		incbin 'data/ooz/ball.nem'
+		incbin 'artnem/ball.nem'
 OOz_Cannon: 
-		incbin 'data/ooz/cannon.nem' 
+		incbin 'artnem/oozcannon.nem'
 OOz_Collapsing_Platform: 
-		incbin 'data/ooz/platform.nem'
+		incbin 'artnem/oozplatform.nem'
 OOz_Spring_Push_Boost: 
-		incbin 'data/ooz/spngpush.nem' 
+		incbin 'artnem/spngpush.nem'
 OOz_Swing_Platform: 
-		incbin 'data/ooz/swngptfm.nem'
+		incbin 'artnem/swngptfm.nem'
 OOz_Break_To_Boost_Vertical: 
-		incbin 'data/ooz/brkbst_v.nem'
+		incbin 'artnem/brkbst_v.nem'
 OOz_Elevator: 
-		incbin 'data/ooz/elevator.nem' 
+		incbin 'artnem/oozelevator.nem'
 OOz_Fans: 
-		incbin 'data/ooz/fans.nem'
+		incbin 'artnem/fans.nem'
 OOz_Fire_Booster: 
-		incbin 'data/ooz/fire_bst.nem'
+		incbin 'artnem/fire_bst.nem'
 Dhz_Box: 
-		incbin 'data/dhz/box.nem' 
+		incbin 'artnem/dhzbox.nem'
 Dhz_Collapsing_Platform: 
-		incbin 'data/dhz/clp_ptfm.nem'
+		incbin 'artnem/clp_ptfm.nem'
 Dhz_Vines: 
-		incbin 'data/dhz/vines.nem' 
+		incbin 'artnem/vines.nem'
 Dhz_Vines_1: 
-		incbin 'data/dhz/vines_1.nem' 
+		incbin 'artnem/vines_1.nem'
 Dhz_Bridge: 
-		incbin 'data/dhz/bridge.nem' 
+		incbin 'artnem/dhzbridge.nem'
 CNz_Green_Platforms: 
-		incbin 'data/cnz/greenptf.nem' 
+		incbin 'artnem/greenptf.nem'
 CNz_Spikeball_Slot_Machine: 
-		incbin 'data/cnz/spikball.nem' 
+		incbin 'artnem/spikball.nem'
 CNz_Box: 
-		incbin 'data/cnz/box.nem' 
+		incbin 'artnem/cnzbox.nem'
 CNz_Elevator: 
-		incbin 'data/cnz/elevator.nem' 
-CNz_Slot_Machine_Starter: 
-		incbin 'data/cnz/slotmach.nem'
+		incbin 'artnem/cnzelevator.nem'
+CNz_Slot_Machine_Starter:
+		incbin 'artnem/slotmach.nem'
 CNz_Blue_Bumper: 
-		incbin 'data/cnz/bbumpers.nem' 
-CNz_Bumpers: 
-		incbin 'data/cnz/bumpers.nem' 
+		incbin 'artnem/bbumpers.nem'
+CNz_Bumpers:
+		incbin 'artnem/bumpers.nem'
 CNz_Diagonal_Launcher: 
-		incbin 'data/cnz/d_launch.nem' 
+		incbin 'artnem/d_launch.nem'
 CNz_Vertical_Launcher: 
-		incbin 'data/cnz/v_launch.nem' 
+		incbin 'artnem/v_launch.nem'
 CNz_Green_Bumpers: 
-		incbin 'data/cnz/gbumpers.nem' 
+		incbin 'artnem/gbumpers.nem'
 CNz_Flippers: 
-		incbin 'data/cnz/flippers.nem' 
+		incbin 'artnem/flippers.nem'
 CPz_Triangle_Platform: 
-		incbin 'data/cpz/tri_ptfm.nem' 
+		incbin 'artnem/tri_ptfm.nem'
 Water_Surface: 
-		incbin 'artnem/watrsurf.nem' 
+		incbin 'artnem/watrsurf.nem'
 CPz_Speed_Booster: 
-		incbin 'data/cpz/speedbst.nem' 
+		incbin 'artnem/speedbst.nem'
 CPz_Worms: 
-		incbin 'data/cpz/worms.nem' 
+		incbin 'artnem/worms.nem'
 CPz_Metal_Structure: 
-		incbin 'data/cpz/metal_st.nem' 
+		incbin 'artnem/metal_st.nem'
 CPz_Breakable_Block: 
-		incbin 'data/cpz/brkblock.nem' 
+		incbin 'artnem/brkblock.nem'
 CPz_Automatic_Door: 
-		incbin 'data/cpz/autodoor.nem'
+		incbin 'artnem/cpzautodoor.nem'
 CPz_Open_Close_Platform: 
-		incbin 'data/cpz/oc_ptfrm.nem' 
+		incbin 'artnem/oc_ptfrm.nem'
 CPz_Platforms: 
-		incbin 'data/cpz/platform.nem' 
+		incbin 'artnem/cpzplatform.nem'
 CPz_Spring_Tubes: 
-		incbin 'data/cpz/spgtubes.nem' 
+		incbin 'artnem/spgtubes.nem'
 NGHz_Water_Surface: 
-		incbin 'data/nghz/watrsurf.nem'
+		incbin 'artnem/nghzwatrsurf.nem'
 NGHz_Leaves: 
-		incbin 'data/nghz/leaves.nem' 
-NGHz_Arrow_Shooter: 
-		incbin 'data/nghz/arrow_s.nem' 
+		incbin 'artnem/leaves.nem'
+NGHz_Arrow_Shooter:
+		incbin 'artnem/arrow_s.nem'
 NGHz_Automatic_Door: 
-		incbin 'data/nghz/autodoor.nem'
+		incbin 'artnem/nghzautodoor.nem'
 Switch: 
 		incbin 'artnem/switch.nem' 
-Vertical_Spring: 
+Vertical_Spring:
 		incbin 'artnem/v_spring.nem' 
 Horizontal_Spring: 
 		incbin 'artnem/h_spring.nem' 
@@ -35784,7 +35784,7 @@ Head_up_display_Sprites:
 Head_up_display_Sonic: 
 		incbin 'artnem/hudsonic.nem' 
 Rings_Sprites: 
-		incbin 'artnem/rings.nem' 
+		incbin 'artnem/rings.nem'
 Monitors: 
 		incbin 'artnem/monitors.nem'
 Spikes: 
@@ -35838,7 +35838,7 @@ Level_Icons:
 Title_Card_Results: 
 		incbin 'artnem/tc_res.nem'
 SS_Title_Card_Results: 
-		incbin 'specialstage/tc_res.nem' 
+		incbin 'specialstage/tc_res.nem'
 SS_Emeralds_Results: 
 		incbin 'specialstage/emeralds.nem'
 Blue_Bird: 
@@ -35866,23 +35866,23 @@ Bear:
 Rabbit: 
 		incbin 'artnem/rabbit.nem' 
 GHz_Buzzer: 
-		incbin 'data/ghz/buzzer.nem' 
+		incbin 'artnem/buzzer.nem'
 Hpz_Batbot: 
-		incbin 'data/hpz/batbot.nem' 
+		incbin 'artnem/batbot.nem'
 OOz_Octus: 
-		incbin 'data/ooz/octus.nem' 
+		incbin 'artnem/octus.nem'
 Hpz_Rhinobot: 
-		incbin 'data/hpz/rhinobot.nem' 
+		incbin 'artnem/rhinobot.nem'
 Hpz_Dinobot: 
-		incbin 'data/hpz/dinobot.nem' 
+		incbin 'artnem/dinobot.nem'
 OOz_Aquis: 
-		incbin 'data/ooz/aquis.nem' 
+		incbin 'artnem/aquis.nem'
 GHz_Masher: 
-		incbin 'data/ghz/masher.nem' 
+		incbin 'artnem/masher.nem'
 Robotnik_Ship: 
-		incbin 'artnem/robotnik.nem' 
+		incbin 'artnem/robotnik.nem'
 CPz_Boss: 
-		incbin 'data/cpz/boss.nem' 
+		incbin 'artnem/cpzboss.nem'
 Boss_Explosions: 
 		incbin 'artnem/explosns.nem' 
 Ship_Boost 
@@ -35890,107 +35890,107 @@ Ship_Boost
 Boss_Smokes: 
 		incbin 'artnem/boss_smk.nem'
 GHz_Boss_Car: 
-		incbin 'data/ghz/boss_car.nem' 
+		incbin 'artnem/boss_car.nem'
 Ghz_Boss_Blades: 
-		incbin 'data/ghz/b_blades.nem' 
+		incbin 'artnem/b_blades.nem'
 HTz_Boss_Fire_Cannon: 
-		incbin 'data/htz/bossfire.nem' 
+		incbin 'artnem/bossfire.nem'
 NGHz_Boss: 
-		incbin 'data/nghz/boss.nem' 
+		incbin 'artnem/nghzboss.nem'
 DHz_Boss: 
-		incbin 'data/dhz/boss.nem' 
+		incbin 'artnem/dhzboss.nem'
 CNz_Boss: 
-		incbin 'data/cnz/boss.nem' 
+		incbin 'artnem/cnzboss.nem'
 OOz_Boss: 
-		incbin 'data/ooz/boss.nem' 
-Mz_Boss_Balls_And_Robotniks_Spr: 
-		incbin 'data/mz/bossballs.nem' 
+		incbin 'artnem/oozboss.nem'
+Mz_Boss_Balls_And_Robotniks_Spr:
+		incbin 'artnem/bossballs.nem'
 DHz_Boss_Rocks: 
-		incbin 'data/dhz/bossrock.dat' 
+		incbin 'artunc/bossrock.dat'
 Whisp: 
-		incbin 'data/nghz/whisp.nem'
+		incbin 'artnem/whisp.nem'
 Grounder: 
-		incbin 'data/nghz/grounder.nem' 
+		incbin 'artnem/grounder.nem'
 Chop_Chop: 
-		incbin 'data/nghz/chopchop.nem' 
+		incbin 'artnem/chopchop.nem'
 Rexon: 
-		incbin 'data/htz/rexon.nem' 
+		incbin 'artnem/rexon.nem'
 Spiker: 
-		incbin 'data/htz/spiker.nem'
+		incbin 'artnem/spiker.nem'
 Nebula: 
-		incbin 'data/scz/nebula.nem'
+		incbin 'artnem/nebula.nem'
 Turtloid: 
-		incbin 'data/scz/turtloid.nem'
+		incbin 'artnem/turtloid.nem'
 GHz_Coconuts: 
-		incbin 'data/ghz/coconuts.nem' 
+		incbin 'artnem/coconuts.nem'
 Crawlton: 
-		incbin 'data/dhz/crawlton.nem' 
+		incbin 'artnem/crawlton.nem'
 Flasher: 
-		incbin 'data/dhz/flasher.nem' 
+		incbin 'artnem/flasher.nem'
 Slicer: 
-		incbin 'data/mz/slicer.nem' 
+		incbin 'artnem/slicer.nem'
 Shellcracker: 
-		incbin 'data/mz/shellcrac.nem' 
+		incbin 'artnem/shellcrac.nem'
 Asteron: 
-		incbin 'data/mz/asteron.nem' 
+		incbin 'artnem/asteron.nem'
 Lander: 
-		incbin 'data/cpz/lander.nem' 
+		incbin 'artnem/lander.nem'
 Grabber: 
-		incbin 'data/cpz/grabber.nem' 
+		incbin 'artnem/grabber.nem'
 Clucker: 
-		incbin 'data/sfz/clucker.nem' 
+		incbin 'artnem/clucker.nem'
 Balkiry: 
-		incbin 'data/sfz/balkiry.nem' 
-Metal_Sonic: 
-		incbin 'data/dez/metal_snc.nem' 
+		incbin 'artnem/balkiry.nem'
+Metal_Sonic:
+		incbin 'artnem/metal_snc.nem'
 Tornado: 
-		incbin 'data/sfz/tornado.nem'
+		incbin 'artnem/tornado.nem'
 SFz_Cannon: 
-		incbin 'data/sfz/cannon.nem'
+		incbin 'artnem/sfzcannon.nem'
 Chain_Hook: 
-		incbin 'data/sfz/chainhook.nem' 
+		incbin 'artnem/chainhook.nem'
 Hatchways: 
-		incbin 'data/sfz/hatchways.nem' 
+		incbin 'artnem/hatchways.nem'
 Conveyor_Belts_Wheels: 
-		incbin 'data/sfz/cb_wheels.nem'
+		incbin 'artnem/cb_wheels.nem'
 SFz_Platform: 
-		incbin 'data/sfz/platform.nem'
+		incbin 'artnem/sfzplatform.nem'
 Vertical_Laser: 
-		incbin 'data/sfz/verlaser.nem'
+		incbin 'artnem/verlaser.nem'
 Clouds: 
-		incbin 'data/sfz/clouds.nem'
+		incbin 'artnem/clouds.nem'
 Horizontal_Laser: 
-		incbin 'data/sfz/horlaser.nem'
+		incbin 'artnem/horlaser.nem'
 Speed_Boost: 
-		incbin 'data/sfz/spdboost.nem'
+		incbin 'artnem/spdboost.nem'
 SFz_Elevators: 
-		incbin 'data/sfz/elevator.nem'
+		incbin 'artnem/sfzelevator.nem'
 Engine_Part: 
-		incbin 'data/sfz/engnpart.nem'
+		incbin 'artnem/engnpart.nem'
 Vertical_Helix_Spr: 
-		incbin 'data/sfz/verhelix.nem'
+		incbin 'artnem/verhelix.nem'
 Horizontal_Helix_Spr: 
-		incbin 'data/sfz/horhelix.nem'
+		incbin 'artnem/horhelix.nem'
 Rotating_Helix: 
-		incbin 'data/sfz/rtthelix.nem' 
+		incbin 'artnem/rtthelix.nem'
 Rocket_Flame_Spr: 
-		incbin 'data/sfz/rktflame.nem'
+		incbin 'artnem/rktflame.nem'
 Spikeball_Laser: 
-		incbin 'data/sfz/spkblasr.nem'
+		incbin 'artnem/spkblasr.nem'
 Robotnik_Faces: 
-		incbin 'data/sfz/rbtkface.nem'
+		incbin 'artnem/rbtkface.nem'
 Robotnik: 
-		incbin 'data/sfz/robotnik.nem'
+		incbin 'artnem/sfzrobotnik.nem'
 Robotnik_Body: 
-		incbin 'data/sfz/rbtkbody.nem'
+		incbin 'artnem/rbtkbody.nem'
 Robotnik_Window: 
-		incbin 'data/dez/robotnkw.nem' 
+		incbin 'artnem/robotnkw.nem'
 Robotnik_Final: 
-		incbin 'data/dez/rbtnkfnl.nem' 
+		incbin 'artnem/rbtnkfnl.nem'
 Crawl: 
-		incbin 'data/cnz/crawl.nem'
+		incbin 'artnem/crawl.nem'
 Tornado_Rocket 
-		incbin 'data/sfz/t_rocket.nem'
+		incbin 'artnem/t_rocket.nem'
 ;------------------------------------------------------------------------------- 
 Green_Hill_16x16_Map: 
 		incbin 'map16/ghz_16.kos' 
@@ -36210,7 +36210,7 @@ SS_Background_Stars:
 SS_PAYMW_vs: 
 		incbin 'specialstage/paymw_vs.nem' 
 SS_Rings: 
-		incbin 'specialstage/rings.nem' 
+		incbin 'specialstage/rings.nem'
 SS_Player_Shadow: 
 		incbin 'specialstage/p_shadow.nem' 
 SS_Player_Diagonal_Shadow: 
