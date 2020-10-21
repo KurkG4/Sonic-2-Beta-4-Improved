@@ -1292,7 +1292,7 @@ Play_Music:
 		move.b	d0,($FFFFFFE0).w
 		rts
 ;--------------------------------------------------------------------------------
-Play_Sfx: 
+PlaySound_Special: 
 		move.b	d0,($FFFFFFE1).w
 		rts
 ;--------------------------------------------------------------------------------
@@ -1300,7 +1300,7 @@ Play_Unknow:
 		move.b	d0,($FFFFFFE2).w
 		rts
 ;--------------------------------------------------------------------------------
-Play_Sfx_Ex: 
+PlaySound_Special_Ex: 
 		tst.b	1(a0)
 		bpl.s	loc_188E
 		move.b	d0,($FFFFFFE1).w
@@ -3534,7 +3534,7 @@ loc_3D92:
 		tst.b	($FFFFF660).w
 		beq.s	loc_3D92
 		move.b	#$FA,d0
-		bsr	Play_Sfx 
+		bsr	PlaySound_Special 
 		move.b	#2,($FFFFF62A).w
 		bsr	DelayProgram 
 		move.w	#$B4,($FFFFF614).w
@@ -3750,7 +3750,7 @@ Level_Select_Cheat_Test:
 Title_Cheat_PlayRing: 
 		move.b	#1,0(a0,d1)
 		move.b	#$B5,d0
-		bsr	Play_Sfx 
+		bsr	PlaySound_Special 
 		bra.s	Title_Cheat_CountC 
 Title_Cheat_NoMatch: 
 		tst.b	d0
@@ -3772,7 +3772,7 @@ loc_410A:
 		moveq	#0,d0
 		move.b	($FFFFB0DA).w,d0
 		move.w	d0,($FFFFFFD8).w
-		bne	PlayLevel 
+		bne	PlayLevel
 		tst.b	($FFFFFFD0).w
 		beq	PlayLevel 
 		cmp.b	#$C0,($FFFFF604).w
@@ -3812,7 +3812,7 @@ LevelSelect_Loop:
 		bne.s	LevelSelect_Loop 
 		move.w	($FFFFFF84).w,d0
 		add.w	#$80,d0
-		bsr	Play_Sfx 
+		bsr	PlaySound_Special 
 		bra.s	LevelSelect_Loop 
 loc_41AE:
 		add.w	d0,d0
@@ -3872,7 +3872,7 @@ PlayLevel:
 		move.l	#$1388,($FFFFFFC0).w
 		move.l	#$1388,($FFFFFFC4).w
 		move.b	#$F9,d0
-		bsr	Play_Sfx 
+		bsr	PlaySound_Special
 		tst.w	($FFFFFF8A).w
 		beq.s	loc_42A2
 		move.b	#$1C,($FFFFF600).w
@@ -3904,7 +3904,7 @@ loc_42E0:
 		tst.w	($FFFFF614).w
 		bne	loc_42BA
 		move.b	#$F9,d0
-		bsr	Play_Sfx 
+		bsr	PlaySound_Special 
 		move.w	($FFFFFFF2).w,d0
 		and.w	#7,d0
 		add.w	d0,d0
@@ -4240,7 +4240,7 @@ Level:
 		tst.w	($FFFFFFF0).w
 		bmi.s	Level_Init 
 		move.b	#$F9,d0
-		bsr	Play_Sfx 
+		bsr	PlaySound_Special 
 Level_Init: 
 		bsr	ClearPLC 
 		bsr	Pal_FadeFrom 
@@ -4853,7 +4853,7 @@ loc_5108:
 		and.b	#$1F,d0
 		bne.s	loc_5128
 		move.w	#$F0,d0
-		jsr	Play_Sfx 
+		jsr	PlaySound_Special 
 loc_5128:
 		rts
 ;--------------------------------------------------------------------------------
@@ -5441,7 +5441,7 @@ J_Dynamic_Art_Cues:
 ;=============================================================================== 
 SpecialStage: 
 		move.w	#$CA,d0
-		bsr	Play_Sfx 
+		bsr	PlaySound_Special 
 		bsr	Pal_MakeFlash 
 		tst.w	($FFFFFFD8).w
 		beq.s	loc_5C52
@@ -5679,7 +5679,7 @@ loc_5FC0:
 		move.b	#1,($FFFFFE1F).w
 		move.b	#1,($FFFFF7D6).w
 		move.w	#$9A,d0
-		jsr	Play_Sfx 
+		jsr	PlaySound_Special 
 		lea	($FFFFAC00).w,a1
 		moveq	#0,d0
 		move.w	#$FF,d1
@@ -5704,7 +5704,7 @@ loc_5FFC:
 		tst.l	($FFFFF680).w
 		bne.s	loc_5FFC
 		move.w	#$CA,d0
-		bsr	Play_Sfx 
+		bsr	PlaySound_Special 
 		bsr	Pal_MakeFlash 
 		tst.w	($FFFFFF8A).w
 		bne.s	loc_6048
@@ -7790,9 +7790,9 @@ loc_7BBA:
 		rts
 ;--------------------------------------------------------------------------------
 Obj_0x5E_SS_Head_Up_Display: 
-		include 'data/objects/obj_0x5E.asm'
+		include 'objects/obj_0x5E.asm'
 Obj_0x5F_SS_Start_Flag: 
-		include 'data/objects/obj_0x5F.asm'
+		include 'objects/obj_0x5F.asm'
 ;-------------------------------------------------------------------------------
 loc_7E76:
 		dc.w	loc_7E8C-loc_7E76
@@ -7841,7 +7841,7 @@ loc_7EF0:
 		dc.l	$FC04803A,$801DFFF8
 ;------------------------------------------------------------------------------- 
 Obj_0x87: 
-		include 'data/objects/obj_0x87.asm' 
+		include 'objects/obj_0x87.asm' 
 ;===============================================================================
 ; Sub Routine loc_819E
 ; [ Begin ]
@@ -8163,7 +8163,7 @@ Load_Continue_Font:
 		dc.w	TC_C,TC_T,TC_I,TC_U,TC_Break 
 ;------------------------------------------------------------------------------- 
 Obj_0xDA_Continue_Counter: 
-		include 'data/objects/obj_0xDA.asm'
+		include 'objects/obj_0xDA.asm'
 ;------------------------------------------------------------------------------- 
 J_DisplaySprite_01: 
 		jmp	DisplaySprite 
@@ -8171,7 +8171,7 @@ J_DeleteObject_01:
 		jmp	DeleteObject 
 ;------------------------------------------------------------------------------- 
 Obj_0xDB_Sonic_Miles_Continue: 
-		include 'data/objects/obj_0xDB.asm'
+		include 'objects/obj_0xDB.asm'
 ;------------------------------------------------------------------------------- 
 		nop ; Filler
 loc_8878:
@@ -8409,7 +8409,7 @@ loc_8B48:
 ; [ End ]
 ;=============================================================================== 
 Obj_0x21_2P_Versus_Results: 
-		include 'data/objects/obj_0x21.asm' 
+		include 'objects/obj_0x21.asm' 
 ;===============================================================================
 ; Sub Routine Vs_Mode_Current_Act_Results
 ; [ Begin ]
@@ -9198,7 +9198,7 @@ loc_984C:
 		bsr	loc_994A
 		bmi.s	loc_985E
 		move.w	#$ED,d0
-		bsr	Play_Sfx 
+		bsr	PlaySound_Special 
 		bra	loc_9812
 loc_985E:
 		moveq	#0,d0
@@ -13507,7 +13507,7 @@ loc_C796:
 		and.w	#$3F,d1
 		bne.s	loc_C80E
 		move.w	#$E1,d0
-		jsr	Play_Sfx 
+		jsr	PlaySound_Special 
 		bra.s	loc_C80E
 loc_C7C6:
 		cmp.w	#$E0,($FFFFEEE4).w
@@ -13520,7 +13520,7 @@ loc_C7C6:
 		and.w	#$3F,d1
 		bne.s	loc_C80E
 		move.w	#$E1,d0
-		jsr	Play_Sfx 
+		jsr	PlaySound_Special 
 		bra.s	loc_C80E
 loc_C7F0:
 		move.b	#0,($FFFFEEBD).w
@@ -13547,7 +13547,7 @@ loc_C836:
 		move.b	d0,($FFFFEEE8).w
 		subq.b	#2,($FFFFEEDF).w
 		move.w	#$F8,d0
-		jsr	Play_Sfx 
+		jsr	PlaySound_Special 
 		rts
 ;--------------------------------------------------------------------------------
 loc_C85C:
@@ -13558,7 +13558,7 @@ loc_C85C:
 		move.b	d0,($FFFFEEE8).w
 		addq.b	#2,($FFFFEEDF).w
 		move.w	#$F8,d0
-		jsr	Play_Sfx 
+		jsr	PlaySound_Special 
 		rts
 ;--------------------------------------------------------------------------------
 loc_C882:
@@ -13712,7 +13712,7 @@ loc_CA18:
 		and.w	#$3F,d1
 		bne.s	loc_CA90
 		move.w	#$E1,d0
-		jsr	Play_Sfx 
+		jsr	PlaySound_Special 
 		bra.s	loc_CA90
 loc_CA48:
 		cmp.w	#0,($FFFFEEE4).w
@@ -13725,7 +13725,7 @@ loc_CA48:
 		and.w	#$3F,d1
 		bne.s	loc_CA90
 		move.w	#$E1,d0
-		jsr	Play_Sfx 
+		jsr	PlaySound_Special 
 		bra.s	loc_CA90
 loc_CA72:
 		move.b	#0,($FFFFEEBD).w
@@ -13752,7 +13752,7 @@ loc_CAB8:
 		move.b	d0,($FFFFEEE8).w
 		subq.b	#2,($FFFFEEDF).w
 		move.w	#$F8,d0
-		jsr	Play_Sfx 
+		jsr	PlaySound_Special 
 		rts
 ;--------------------------------------------------------------------------------
 loc_CADE:
@@ -13763,7 +13763,7 @@ loc_CADE:
 		move.b	d0,($FFFFEEE8).w
 		addq.b	#2,($FFFFEEDF).w
 		move.w	#$F8,d0
-		jsr	Play_Sfx 
+		jsr	PlaySound_Special 
 		rts
 ;--------------------------------------------------------------------------------
 loc_CB04:
@@ -13813,7 +13813,7 @@ loc_CB68:
 		and.w	#$3F,d1
 		bne.s	loc_CBF2
 		move.w	#$E1,d0
-		jsr	Play_Sfx 
+		jsr	PlaySound_Special 
 		bra.s	loc_CBF2
 loc_CBAA:
 		cmp.w	#0,($FFFFEEE4).w
@@ -13826,7 +13826,7 @@ loc_CBAA:
 		and.w	#$3F,d1
 		bne.s	loc_CBF2
 		move.w	#$E1,d0
-		jsr	Play_Sfx 
+		jsr	PlaySound_Special 
 		bra.s	loc_CBF2
 loc_CBD4:
 		move.b	#0,($FFFFEEBD).w
@@ -13853,7 +13853,7 @@ loc_CC1A:
 		move.b	d0,($FFFFEEE8).w
 		subq.b	#6,($FFFFEEDF).w
 		move.w	#$F8,d0
-		jsr	Play_Sfx 
+		jsr	PlaySound_Special 
 		rts
 ;--------------------------------------------------------------------------------
 loc_CC40:
@@ -13864,7 +13864,7 @@ loc_CC40:
 		move.b	d0,($FFFFEEE8).w
 		addq.b	#2,($FFFFEEDF).w
 		move.w	#$F8,d0
-		jsr	Play_Sfx 
+		jsr	PlaySound_Special 
 		rts
 ;--------------------------------------------------------------------------------
 loc_CC66:
@@ -14141,7 +14141,7 @@ loc_CF86:
 		and.w	#$1F,d0
 		bne.s	loc_CF9E
 		move.w	#$E1,d0
-		bsr	J_Play_Sfx 
+		bsr	J_PlaySound_Special 
 loc_CF9E:
 		move.w	($FFFFEE00).w,($FFFFEEC8).w
 		move.w	($FFFFEECA).w,($FFFFEEFA).w
@@ -14514,8 +14514,8 @@ Boss_Defeated_Load_Flickies
 
 J_SingleObjectLoad: 
 		jmp	SingleObjectLoad 
-J_Play_Sfx: 
-		jmp	Play_Sfx 
+J_PlaySound_Special: 
+		jmp	PlaySound_Special 
 J_PalLoad2_01: 
 		jmp	PalLoad2 
 J_LoadPLC_01: 
@@ -14525,14 +14525,14 @@ J_Play_Music:
 		dc.w	$0 ; Filler
 ;------------------------------------------------------------------------------- 
 Obj_0x11_Bridge: 
-		include 'data/objects/obj_0x11.asm'
+		include 'objects/obj_0x11.asm'
 loc_D9C8:
 		jmp	(loc_15DD4)
 loc_D9CE:
 		jmp	CalcSine 
 ;------------------------------------------------------------------------------- 
 Obj_0x15_Swing_Platform: 
-		include 'data/objects/obj_0x15.asm' 
+		include 'objects/obj_0x15.asm' 
 		nop ; Filler
 loc_E030:
 		jmp	(loc_15D1A)
@@ -14543,28 +14543,28 @@ loc_E03C:
 		dc.w	$0 ; Filler
 ;------------------------------------------------------------------------------- 
 Obj_0x17: 
-		include 'data/objects/obj_0x17.asm'
+		include 'objects/obj_0x17.asm'
 		nop ; Filler
 ;------------------------------------------------------------------------------- 
 Obj_0x18_Platforms 
-		include 'data/objects/obj_0x18.asm'
+		include 'objects/obj_0x18.asm'
 		nop ; Filler
 loc_E5DC:
 		jmp	CalcSine 
 		dc.w	$0 ; Filler
 ;------------------------------------------------------------------------------- 
 Obj_0x1A_Collapsing_Platforms:
-		include 'data/objects/obj_0x1A.asm'
+		include 'objects/obj_0x1A.asm'
 ;------------------------------------------------------------------------------- 
 Obj_0x1F_Collapsing_Platforms:
-		include 'data/objects/obj_0x1F.asm' 
+		include 'objects/obj_0x1F.asm' 
 		nop ; Filler
 ;------------------------------------------------------------------------------- 
 Obj_0x1C_Misc: 
-		include 'data/objects/obj_0x1C.asm' 
+		include 'objects/obj_0x1C.asm' 
 ;------------------------------------------------------------------------------- 
 Obj_0x71_Mz_Hpz_Misc: 
-		include 'data/objects/obj_0x71.asm' 
+		include 'objects/obj_0x71.asm' 
 ;------------------------------------------------------------------------------- 
 HTz_Misc_Mappings: 
 		dc.w	loc_F0F6-HTz_Misc_Mappings
@@ -14690,17 +14690,17 @@ loc_F2DC:
 		nop ; Filler
 ;------------------------------------------------------------------------------- 
 Obj_0x2A_Up_Down_Pillar: 
-		include 'data/objects/obj_0x2A.asm' 
+		include 'objects/obj_0x2A.asm' 
 ;------------------------------------------------------------------------------- 
 Obj_0x2D_Automatic_Door: 
-		include 'data/objects/obj_0x2D.asm' 
+		include 'objects/obj_0x2D.asm' 
 		nop ; Filler 
 ;------------------------------------------------------------------------------- 
 Obj_0x28_Flickies: 
-		include 'data/objects/obj_0x28.asm' 
+		include 'objects/obj_0x28.asm' 
 ;------------------------------------------------------------------------------- 
 Obj_0x29_Enemy_Points: 
-		include 'data/objects/obj_0x29.asm' 
+		include 'objects/obj_0x29.asm' 
 ;------------------------------------------------------------------------------- 
 loc_FB30:
 		dc.w	loc_FB40-loc_FB30
@@ -14807,7 +14807,7 @@ loc_FC50:
 		dc.w	$0 ; Filler
 ;-------------------------------------------------------------------------------
 Obj_0x25_Rings: 
-		include 'data/objects/obj_0x25.asm' 
+		include 'objects/obj_0x25.asm' 
 ;===============================================================================
 ; Sub Routine loc_FCD6
 ; [ Begin ]
@@ -14870,13 +14870,13 @@ loc_FD64:
 ; [ End ]
 ;===============================================================================
 Obj_0x37_Rings_Out: 
-		include 'data/objects/obj_0x37.asm'
+		include 'objects/obj_0x37.asm'
 ;------------------------------------------------------------------------------- 
 Obj_S1_0x4B_Big_Ring: 
-		include 'data/objects/objs1_4B.asm'
+		include 'objects/objs1_4B.asm'
 ;-------------------------------------------------------------------------------
 Obj_S1_0x7C_Big_Ring_Flash: 
-		include 'data/objects/objs1_7C.asm'
+		include 'objects/objs1_7C.asm'
 ;-------------------------------------------------------------------------------
 Rings_Animate_Data: 
 		dc.w	loc_1006E-Rings_Animate_Data
@@ -14993,9 +14993,9 @@ loc_102D8:
 		jmp	CalcSine 
 		dc.w	$0 ; Filler
 Obj_0x26_Monitors: 
-		include 'data/objects/obj_0x26.asm' 
+		include 'objects/obj_0x26.asm' 
 Obj_0x2E_Monitors_Contents: 
-		include 'data/objects/obj_0x2E.asm'
+		include 'objects/obj_0x2E.asm'
 Monitors_AnimateData: 
 		dc.w	loc_108A2-Monitors_AnimateData
 		dc.w	loc_108A6-Monitors_AnimateData
@@ -15084,10 +15084,10 @@ loc_109CA:
 ; [ End ]
 ;=============================================================================== 
 
-Obj_0x0E_Sonic_Miles 
-		include 'data/objects/obj_0x0E.asm' 
+Obj_0x0E_Sonic_Miles
+		include 'objects/obj_0x0E.asm' 
 Obj_0x0F_1Player2Vs: 
-		include 'data/objects/obj_0x0F.asm'
+		include 'objects/obj_0x0F.asm'
 ;------------------------------------------------------------------------------- 
 Unk_Sub_loc_10AC0:
 		lea	(Unk_Animate_Data_loc_10AD8),a1
@@ -15130,7 +15130,7 @@ Sonic_In_Title_Screen_Map:
 		dc.l	$40F0040,$20FFD8,$40F0050,$28FFF8
 		dc.l	$C060060,$300018,$24040066,$33FFE8
 		dc.l	$240D0068,$34FFF8
-Miles_In_Title_Screen_Map: 
+Miles_In_Title_Screen_Map:
 		dc.w	$A
 		dc.l	$DC060070,$38FFEC,$F40F0076,$3BFFD4
 		dc.l	$F40F0086,$43FFF4,$E4090096,$4BFFFC
@@ -15140,16 +15140,16 @@ Miles_In_Title_Screen_Map:
 		nop ; Filler
 ;------------------------------------------------------------------------------- 
 Obj_0x34_Title_Cards 
-		include 'data/objects/obj_0x34.asm' 
+		include 'objects/obj_0x34.asm' 
 ;------------------------------------------------------------------------------- 
 Obj_0x39_Time_Over_Game_Over: 
-		include 'data/objects/obj_0x39.asm' 
+		include 'objects/obj_0x39.asm' 
 ;------------------------------------------------------------------------------- 
 Obj_0x3A_Level_Results 
-		include 'data/objects/obj_0x3A.asm' 
+		include 'objects/obj_0x3A.asm' 
 ;------------------------------------------------------------------------------- 
 Obj_0x6F_Special_Stage_Results: 
-		include 'data/objects/obj_0x6F.asm' 
+		include 'objects/obj_0x6F.asm' 
 ;------------------------------------------------------------------------------- 
 Title_Cards_Mappings: 
 		dc.w	loc_11600-Title_Cards_Mappings
@@ -15787,15 +15787,15 @@ loc_12256:
 		jmp	(loc_8F04) 
 ;------------------------------------------------------------------------------- 
 Obj_0x36_Spikes: 
-		include 'data/objects/obj_0x36.asm' 
+		include 'objects/obj_0x36.asm' 
 		nop ; Filler
 ;------------------------------------------------------------------------------- 
 Obj_0x3B: 
-		include 'data/objects/obj_0x3B.asm' 
+		include 'objects/obj_0x3B.asm' 
 		dc.w	$0 ; Filler
 ;------------------------------------------------------------------------------- 
 Obj_0x3C: 
-		include 'data/objects/obj_0x3C.asm' 
+		include 'objects/obj_0x3C.asm' 
 ;===============================================================================
 ; Sub Routine loc_12770
 ; [ Begin ]
@@ -15832,7 +15832,7 @@ loc_1279E:
 		dbra	d1,loc_12796
 loc_127DA:
 		move.w	#$CB,d0
-		jmp	Play_Sfx 
+		jmp	PlaySound_Special 
 ;-------------------------------------------------------------------------------
 loc_127E4:
 		dc.w	$400,$FB00,$600,$FF00,$600,$100,$400,$500
@@ -18306,7 +18306,7 @@ loc_1414A:
 		bclr	#5,$22(a0)
 		clr.b	$3C(a0)
 		move.w	#$D9,d0
-		jmp	Play_Sfx 
+		jmp	PlaySound_Special 
 ;------------------------------------------------------------------------------- 
 CNz_Triangles_Act_1: 
 		incbin 'data/cnz/tri_act1.dat' 
@@ -18913,11 +18913,11 @@ loc_1494E:
 ; [ End ]
 ;=============================================================================== 
 Obj_0x41_Springs 
-		include 'data/objects/obj_0x41.asm'
+		include 'objects/obj_0x41.asm'
 		nop ; Filler
 ;------------------------------------------------------------------------------- 
 Obj_0x0D_End_Panel: 
-		include 'data/objects/obj_0x0D.asm' 
+		include 'objects/obj_0x0D.asm' 
 		nop ; Filler 
 ;=============================================================================== 
 ; Sub Routine SolidObject
@@ -19757,13 +19757,13 @@ loc_15F7C:
 ; [ End ] 
 ;===============================================================================
 Obj_0x01_Sonic: 
-		include 'data/objects/obj_0x01.asm'
+		include 'objects/obj_0x01.asm'
 ;------------------------------------------------------------------------------- 
 Obj_0x02_Miles: 
-		include 'data/objects/obj_0x02.asm' 
+		include 'objects/obj_0x02.asm' 
 ;------------------------------------------------------------------------------- 
 Obj_0x05_Miles_Tail: 
-		include 'data/objects/obj_0x05.asm' 
+		include 'objects/obj_0x05.asm' 
 		nop 
 ;------------------------------------------------------------------------------- ; Filler
 Kill_Miles: 
@@ -19771,13 +19771,13 @@ Kill_Miles:
 		dc.w	$0 ; Filler
 ;------------------------------------------------------------------------------- 
 Obj_0x0A_Sonic_Miles_Underwater: 
-		include 'data/objects/obj_0x0A.asm' 
+		include 'objects/obj_0x0A.asm' 
 ;------------------------------------------------------------------------------- 
 Obj_0x38_Shield: 
-		include 'data/objects/obj_0x38.asm' 
+		include 'objects/obj_0x38.asm' 
 ;------------------------------------------------------------------------------- 
 Obj_0x35_Invincibility: 
-		include 'data/objects/obj_0x35.asm' 
+		include 'objects/obj_0x35.asm' 
 ;------------------------------------------------------------------------------- 
 Shield_AnimateData: 
 		dc.w	loc_19A92-Shield_AnimateData
@@ -19854,10 +19854,10 @@ loc_19BD0:
 		dc.l	$F00F0012,$9FFF0 
 ;------------------------------------------------------------------------------- 
 Obj_0x08_Dust_Water_Splash: 
-		include 'data/objects/obj_0x08.asm' 
+		include 'objects/obj_0x08.asm' 
 ;------------------------------------------------------------------------------- 
 Obj_0x7E 
-		include 'data/objects/obj_0x7E.asm' 
+		include 'objects/obj_0x7E.asm' 
 ;===============================================================================
 ; Sub Routine Sonic_Miles_AnglePos
 ; [ Begin ]
@@ -21184,7 +21184,7 @@ loc_1AF4A:
 ;--------------------------------------------------------------------------------
 ;------------------------------------------------------------------------------- 
 Obj_0x79_Star_Post: 
-		include 'data/objects/obj_0x79.asm'
+		include 'objects/obj_0x79.asm'
 loc_1B496:
 		jmp	DeleteObject 
 loc_1B49C:
@@ -21193,11 +21193,11 @@ loc_1B4A2:
 		jmp	AnimateSprite 
 ;------------------------------------------------------------------------------- 
 Obj_0x7D_Hidden_Bonus: 
-		include 'data/objects/obj_0x7D.asm' 
+		include 'objects/obj_0x7D.asm' 
 		nop ; Filler
 ;------------------------------------------------------------------------------- 
 Obj_0x44_Red_Ball_Bumper: 
-		include 'data/objects/obj_0x44.asm'
+		include 'objects/obj_0x44.asm'
 		nop ; Filler
 loc_1B710:
 		jmp	MarkObjGone 
@@ -21205,7 +21205,7 @@ loc_1B716:
 		jmp	AnimateSprite 
 ;------------------------------------------------------------------------------- 
 Obj_0x24_Oxygen_Bubbles: 
-		include 'data/objects/obj_0x24.asm' 
+		include 'objects/obj_0x24.asm' 
 ;-------------------------------------------------------------------------------
 Sonic_Underwater_Mappings: 
 		dc.w	loc_1BA90-Sonic_Underwater_Mappings
@@ -21290,13 +21290,13 @@ loc_1BB2A:
 		jmp	SpeedToPos 
 ;------------------------------------------------------------------------------- 
 Obj_0x03_Layer_Switch: 
-		include 'data/objects/obj_0x03.asm'
+		include 'objects/obj_0x03.asm'
 J_ModifySpriteAttr_2P: 
 		jmp	ModifySpriteAttr_2P 
 		dc.w	$0 ; Filler
 ;------------------------------------------------------------------------------- 
 Obj_0x0B_Open_Close_Platform: 
-		include 'data/objects/obj_0x0B.asm' 
+		include 'objects/obj_0x0B.asm' 
 		nop ; Filler
 loc_1C040:
 		jmp	MarkObjGone 
@@ -21304,7 +21304,7 @@ loc_1C046:
 		jmp	ModifySpriteAttr_2P 
 ;-------------------------------------------------------------------------------
 Obj_0x0C: 
-		include 'data/objects/obj_0x0C.asm' 
+		include 'objects/obj_0x0C.asm' 
 		nop ; Filler 
 loc_1C144:
 		jmp	MarkObjGone 
@@ -21315,7 +21315,7 @@ loc_1C150:
 		cnop	0,4 ; Filler 
 ;------------------------------------------------------------------------------- 
 Obj_0x12_HPz_Master_Emerald: 
-		include 'data/objects/obj_0x12.asm' 
+		include 'objects/obj_0x12.asm' 
 		nop
 J_DisplaySprite_03: 
 		jmp	DisplaySprite 
@@ -21326,7 +21326,7 @@ loc_1C1E0:
 		dc.w	$0 ; Filler
 ;------------------------------------------------------------------------------- 
 Obj_0x13_HPz_Waterfalls: 
-		include 'data/objects/obj_0x13.asm' 
+		include 'objects/obj_0x13.asm' 
 J_DisplaySprite_04: 
 		jmp	DisplaySprite 
 loc_1C706:
@@ -21337,28 +21337,28 @@ loc_1C712:
 		jmp	ModifySpriteAttr_2P 
 ;------------------------------------------------------------------------------- 
 Obj_0x04_Water_Surface: 
-		include 'data/objects/obj_0x04.asm' 
+		include 'objects/obj_0x04.asm' 
 ;------------------------------------------------------------------------------- 
 Obj_0x49_Waterfall: 
-		include 'data/objects/obj_0x49.asm' 
+		include 'objects/obj_0x49.asm' 
 ;------------------------------------------------------------------------------- 
 Obj_0x31_Lava_Attributes: 
-		include 'data/objects/obj_0x31.asm' 
+		include 'objects/obj_0x31.asm' 
 ;------------------------------------------------------------------------------- 
 Obj_0x74_Invisible_Block: 
-		include 'data/objects/obj_0x74.asm' 
+		include 'objects/obj_0x74.asm' 
 ;------------------------------------------------------------------------------- 
 Obj_0x7C_Metal_Structure: 
-		include 'data/objects/obj_0x7C.asm' 
+		include 'objects/obj_0x7C.asm' 
 ;------------------------------------------------------------------------------- 
 Obj_0x27_Object_Hit: 
-		include 'data/objects/obj_0x27.asm' 
+		include 'objects/obj_0x27.asm' 
 ;------------------------------------------------------------------------------- 
 Obj_0x84_Auto_Spin: 
-		include 'data/objects/obj_0x84.asm' 
+		include 'objects/obj_0x84.asm' 
 ;------------------------------------------------------------------------------- 
 Obj_0x8B_Palette_Cycling_Switch: 
-		include 'data/objects/obj_0x8B.asm' 
+		include 'objects/obj_0x8B.asm' 
 ;------------------------------------------------------------------------------- 
 loc_1D2F0:
 		jmp	DisplaySprite 
@@ -21373,13 +21373,13 @@ loc_1D308:
 		dc.w	$0 ; Filler
 ;------------------------------------------------------------------------------- 
 Obj_0x06_Spiral_Attributes: 
-		include 'data/objects/obj_0x06.asm' 
+		include 'objects/obj_0x06.asm' 
 J_CalcSine: 
 		jmp	CalcSine 
 		dc.w	$0 ; Filler
 ;------------------------------------------------------------------------------- 
 Obj_0x14_See_saw: 
-		include 'data/objects/obj_0x14.asm' 
+		include 'objects/obj_0x14.asm' 
 loc_1DBE0:
 		jmp	S1SingleObjectLoad 
 loc_1DBE6:
@@ -21390,7 +21390,7 @@ loc_1DBF2:
 		jmp	(loc_12D4C) 
 ;------------------------------------------------------------------------------- 
 Obj_0x16_Teleferics: 
-		include 'data/objects/obj_0x16.asm' 
+		include 'objects/obj_0x16.asm' 
 		nop ; Filler
 loc_1DE10:
 		jmp	DeleteObject 
@@ -21406,7 +21406,7 @@ loc_1DE2E:
 		jmp	(loc_15C6A) 
 ;------------------------------------------------------------------------------- 
 Obj_0x19_Rotating_Platforms 
-		include 'data/objects/obj_0x19.asm' 
+		include 'objects/obj_0x19.asm' 
 		nop ; Filler
 loc_1E0A8: 
 		jmp	DisplaySprite 
@@ -21421,14 +21421,14 @@ loc_1E0C0:
 		dc.w	$0 ; Filler
 ;------------------------------------------------------------------------------- 
 Obj_0x1B_Speed_Booster: 
-		include 'data/objects/obj_0x1B.asm' 
+		include 'objects/obj_0x1B.asm' 
 loc_1E218:
 		jmp	MarkObjGone 
 loc_1E21E:
 		jmp	ModifySpriteAttr_2P 
 ;------------------------------------------------------------------------------- 
 Obj_0x1D_Worms: 
-		include 'data/objects/obj_0x1D.asm'
+		include 'objects/obj_0x1D.asm'
 ;------------------------------------------------------------------------------- 
 		nop ; Filler 
 loc_1E3A0: 
@@ -21441,14 +21441,14 @@ loc_1E3B2:
 		jmp	SpeedToPos 
 ;------------------------------------------------------------------------------- 
 Obj_0x1E_Tube_Attributes: 
-		include 'data/objects/obj_0x1E.asm'
+		include 'objects/obj_0x1E.asm'
 		nop ; Filler
 loc_1EE0C:
 		jmp	(loc_12D80) 
 		dc.w	$0 ; Filler
 ;------------------------------------------------------------------------------- 
 Obj_0x20_HTz_Boss_FireBall: 
-		include 'data/objects/obj_0x20.asm'
+		include 'objects/obj_0x20.asm'
 loc_1F0F8:
 		jmp	DeleteObject 
 loc_1F0FE:
@@ -21463,10 +21463,10 @@ loc_1F116:
 		jmp	SpeedToPos 
 ;------------------------------------------------------------------------------- 
 Obj_0x2F_Breakable_Floor: 
-		include 'data/objects/obj_0x2F.asm' 
+		include 'objects/obj_0x2F.asm' 
 ;------------------------------------------------------------------------------- 
 Obj_0x32_Breakable_Obstacle: 
-		include 'data/objects/obj_0x32.asm'
+		include 'objects/obj_0x32.asm'
 		nop ; Filler
 loc_1F6C8:
 		jmp	DisplaySprite 
@@ -21486,7 +21486,7 @@ loc_1F6F2:
 		jmp	SpeedToPos 
 ;------------------------------------------------------------------------------- 
 Obj_0x30 
-		include 'data/objects/obj_0x30.asm' 
+		include 'objects/obj_0x30.asm' 
 loc_1F8EC:
 		jmp	DeleteObject 
 loc_1F8F2:
@@ -21501,7 +21501,7 @@ loc_1F90A:
 		jmp	(loc_15814)
 ;------------------------------------------------------------------------------- 
 Obj_0x33_Touch_Booster: 
-		include 'data/objects/obj_0x33.asm' 
+		include 'objects/obj_0x33.asm' 
 loc_1FC48:
 		jmp	MarkObjGone 
 loc_1FC4E:
@@ -21511,14 +21511,14 @@ loc_1FC54:
 		dc.w	$0 ; Filler
 ;------------------------------------------------------------------------------- 
 Obj_0x43_Giant_Spikeball: 
-		include 'data/objects/obj_0x43.asm' 
+		include 'objects/obj_0x43.asm' 
 loc_1FE30:
 		jmp	S1SingleObjectLoad 
 loc_1FE36:
 		jmp	ModifySpriteAttr_2P 
 ;------------------------------------------------------------------------------- 
 Obj_0x07_0il_Attributes: 
-		include 'data/objects/obj_0x07.asm' 
+		include 'objects/obj_0x07.asm' 
 		nop ; Filler 
 loc_1FF08:
 		jmp	Kill_Player 
@@ -21526,10 +21526,10 @@ loc_1FF0E:
 		jmp	(loc_15C80) 
 ;------------------------------------------------------------------------------- 
 Obj_0x45_Spring_Push_Boost: 
-		include 'data/objects/obj_0x45.asm' 
+		include 'objects/obj_0x45.asm' 
 ;------------------------------------------------------------------------------- 
 Obj_0x46_Spring_Ball: 
-		include 'data/objects/obj_0x46.asm' 
+		include 'objects/obj_0x46.asm' 
 		nop ; Filler 
 loc_20AE0:
 		jmp	DeleteObject 
@@ -21549,7 +21549,7 @@ loc_20B0A:
 		jmp	SpeedToPos 
 ;------------------------------------------------------------------------------- 
 Obj_0x47_Switch 
-		include 'data/objects/obj_0x47.asm'
+		include 'objects/obj_0x47.asm'
 		nop ; Filler 
 loc_20BD8:
 		jmp	MarkObjGone 
@@ -21560,7 +21560,7 @@ loc_20BE4:
 		cnop	0,4 ; Filler 
 ;------------------------------------------------------------------------------- 
 Obj_0x3D_Break_Boost: 
-		include 'data/objects/obj_0x3D.asm' 
+		include 'objects/obj_0x3D.asm' 
 loc_20FF8:
 		jmp	DisplaySprite 
 loc_20FFE:
@@ -21582,7 +21582,7 @@ loc_21028:
 		dc.w	$0 ; Filler
 ;------------------------------------------------------------------------------- 
 Obj_0x48_Cannon: 
-		include 'data/objects/obj_0x48.asm' 
+		include 'objects/obj_0x48.asm' 
 loc_2143C:
 		jmp	DisplaySprite 
 loc_21442:
@@ -21592,7 +21592,7 @@ loc_21448:
 		dc.w	$0 ; Filler
 ;-------------------------------------------------------------------------------
 Obj_0x22_Arrow_Shooter: 
-		include 'data/objects/obj_0x22.asm' 
+		include 'objects/obj_0x22.asm' 
 loc_21624:
 		jmp	DeleteObject 
 loc_2162A:
@@ -21607,10 +21607,10 @@ loc_21642:
 		jmp	SpeedToPos 
 ;------------------------------------------------------------------------------- 
 Obj_0x23_Pillar: 
-		include 'data/objects/obj_0x23.asm' 
+		include 'objects/obj_0x23.asm' 
 ;------------------------------------------------------------------------------- 
 Obj_0x2B_Raising_Pillar 
-		include 'data/objects/obj_0x2B.asm' 
+		include 'objects/obj_0x2B.asm' 
 ;-------------------------------------------------------------------------------
 loc_21E90:
 		jmp	DisplaySprite 
@@ -21629,7 +21629,7 @@ loc_21EB4:
 		dc.w	$0 ; Filler
 ;------------------------------------------------------------------------------- 
 Obj_0x2C_Leaves: 
-		include 'data/objects/obj_0x2C.asm' 
+		include 'objects/obj_0x2C.asm' 
 loc_22110:
 		jmp	DisplaySprite 
 loc_22116:
@@ -21643,7 +21643,7 @@ loc_22128:
 		dc.w	$0 ; Filler
 ;------------------------------------------------------------------------------- 
 Obj_0x40_Diagonal_Springs: 
-		include 'data/objects/obj_0x40.asm'
+		include 'objects/obj_0x40.asm'
 loc_223DC:
 		jmp	MarkObjGone 
 loc_223E2:
@@ -21654,7 +21654,7 @@ loc_223EE:
 		jmp	(loc_1582A) 
 ;------------------------------------------------------------------------------- 
 Obj_0x42_Steam_Vent: 
-		include 'data/objects/obj_0x42.asm' 
+		include 'objects/obj_0x42.asm' 
 loc_226BC:
 		jmp	DisplaySprite 
 loc_226C2:
@@ -21669,14 +21669,14 @@ loc_226DA:
 		jmp	(loc_157D2) 
 ;------------------------------------------------------------------------------- 
 Obj_0x64_Pistons: 
-		include 'data/objects/obj_0x64.asm'
+		include 'objects/obj_0x64.asm'
 loc_22894:
 		jmp	ModifySpriteAttr_2P 
 loc_2289A:
 		jmp	SolidObject 
 Obj_0x65_Platform_Over_Gear: 
 ;------------------------------------------------------------------------------- 
-		include 'data/objects/obj_0x65.asm' 
+		include 'objects/obj_0x65.asm' 
 		nop ; Filler
 ;------------------------------------------------------------------------------- 
 loc_22CF0:
@@ -21689,7 +21689,7 @@ loc_22D02:
 		jmp	SolidObject 
 ;------------------------------------------------------------------------------- 
 Obj_0x66_Springs_Wall: 
-		include 'data/objects/obj_0x66.asm' 
+		include 'objects/obj_0x66.asm' 
 loc_22EF8:
 		jmp	DisplaySprite 
 loc_22EFE:
@@ -21700,7 +21700,7 @@ loc_22F0A:
 		jmp	(loc_157D2) 
 ;------------------------------------------------------------------------------- 
 Obj_0x67_Teleport_Attributes: 
-		include 'data/objects/obj_0x67.asm' 
+		include 'objects/obj_0x67.asm' 
 loc_23334:
 		jmp	DisplaySprite 
 loc_2333A:
@@ -21710,9 +21710,9 @@ loc_23340:
 		cnop	0,4 ; Filler 
 ;------------------------------------------------------------------------------- 
 Obj_0x68_Block_Harpon: 
-		include 'data/objects/obj_0x68.asm' 
+		include 'objects/obj_0x68.asm' 
 Obj_0x6D_Harpoon: 
-		include 'data/objects/obj_0x6D.asm' 
+		include 'objects/obj_0x6D.asm' 
 loc_23618:
 		jmp	MarkObjGone 
 loc_2361E:
@@ -21726,7 +21726,7 @@ loc_23630:
 		cnop	0,4 ; Filler 
 ;------------------------------------------------------------------------------- 
 Obj_0x69_Screw_Nut: 
-		include 'data/objects/obj_0x69.asm' 
+		include 'objects/obj_0x69.asm' 
 		nop ; Filler
 loc_23844:
 		jmp	MarkObjGone 
@@ -21741,7 +21741,7 @@ loc_2385C:
 		cnop	0,4 ; Filler 
 ;------------------------------------------------------------------------------- 
 Obj_0x6A_DHz_Three_Boxes_Mz_Ptfrm 
-		include 'data/objects/obj_0x6A.asm' 
+		include 'objects/obj_0x6A.asm' 
 loc_23B08:
 		jmp	S1SingleObjectLoad 
 loc_23B0E:
@@ -21752,7 +21752,7 @@ loc_23B1A:
 		jmp	(loc_12D4C) 
 ;------------------------------------------------------------------------------- 
 Obj_0x6B_Mz_Platform: 
-		include 'data/objects/obj_0x6B.asm' 
+		include 'objects/obj_0x6B.asm' 
 		nop ; Filler
 loc_23DC4:
 		jmp	ModifySpriteAttr_2P 
@@ -21764,7 +21764,7 @@ loc_23DD6:
 		jmp	SpeedToPos 
 ;------------------------------------------------------------------------------- 
 Obj_0x6C_Mz_Moving_Platforms: 
-		include 'data/objects/obj_0x6C.asm' 
+		include 'objects/obj_0x6C.asm' 
 		nop ; Filler
 loc_24130:
 		jmp	DisplaySprite 
@@ -21780,14 +21780,14 @@ loc_2414E:
 		jmp	SpeedToPos 
 ;------------------------------------------------------------------------------- 
 Obj_0x6E_Machine: 
-		include 'data/objects/obj_0x6E.asm' 
+		include 'objects/obj_0x6E.asm' 
 loc_2435C:
 		jmp	ModifySpriteAttr_2P 
 loc_24362:
 		jmp	SolidObject 
 ;------------------------------------------------------------------------------- 
 Obj_0x70_Rotating_Gears: 
-		include 'data/objects/obj_0x70.asm' 
+		include 'objects/obj_0x70.asm' 
 		nop ; Filler
 loc_246D0:
 		jmp	S1SingleObjectLoad 
@@ -21798,11 +21798,11 @@ loc_246DC:
 		dc.w	$0 ; Filler
 ;------------------------------------------------------------------------------- 
 Obj_0x72_Conveyor_Belt_Attributes: 
-		include 'data/objects/obj_0x72.asm' 
+		include 'objects/obj_0x72.asm' 
 		dc.w	$0 ; Filler
 ;------------------------------------------------------------------------------- 
 Obj_0x73_Rotating_Rings: 
-		include 'data/objects/obj_0x73.asm' 
+		include 'objects/obj_0x73.asm' 
 loc_24950:
 		jmp	DisplaySprite 
 loc_24956:
@@ -21816,7 +21816,7 @@ loc_24968:
 		dc.w	$0 ; Filler
 ;------------------------------------------------------------------------------- 
 Obj_0x75_Spikeball_Chain: 
-		include 'data/objects/obj_0x75.asm' 
+		include 'objects/obj_0x75.asm' 
 		nop
 loc_24B68:
 		jmp	DisplaySprite_Param 
@@ -21839,7 +21839,7 @@ loc_24B98:
 		dc.w	$0 ; Filler
 ;------------------------------------------------------------------------------- 
 Obj_0x76_Platform_Spikes: 
-		include 'data/objects/obj_0x76.asm' 
+		include 'objects/obj_0x76.asm' 
 		nop ; Filler
 loc_24D18:
 		jmp	(loc_123EC)
@@ -21851,7 +21851,7 @@ loc_24D2A:
 		jmp	(loc_12D4C)
 ;------------------------------------------------------------------------------- 
 Obj_0x77_Bridge: 
-		include 'data/objects/obj_0x77.asm' 
+		include 'objects/obj_0x77.asm' 
 loc_24F60:
 		jmp	MarkObjGone 
 loc_24F66:
@@ -21861,7 +21861,7 @@ loc_24F6C:
 		cnop	0,4 ; Filler 
 ;-------------------------------------------------------------------------------
 Obj_0x78_Rotating_Platforms: 
-		include 'data/objects/obj_0x78.asm' 
+		include 'objects/obj_0x78.asm' 
 loc_25130:
 		jmp	S1SingleObjectLoad 
 loc_25136:
@@ -21872,7 +21872,7 @@ loc_25142:
 		jmp	(loc_12D4C) 
 ;------------------------------------------------------------------------------- 
 Obj_0x7A_Platform_Horizontal: 
-		include 'data/objects/obj_0x7A.asm' 
+		include 'objects/obj_0x7A.asm' 
 loc_25320:
 		jmp	DisplaySprite 
 loc_25326:
@@ -21883,7 +21883,7 @@ loc_25332:
 		jmp	(loc_15C6A) 
 ;------------------------------------------------------------------------------- 
 Obj_0x7B_Spring_Tubes: 
-		include 'data/objects/obj_0x7B.asm' 
+		include 'objects/obj_0x7B.asm' 
 loc_25560:
 		jmp	DisplaySprite 
 loc_25566:
@@ -21897,14 +21897,14 @@ loc_25578:
 		cnop	0,4 ; Filler 
 ;------------------------------------------------------------------------------- 
 Obj_0x7F_Vines_Switch: 
-		include 'data/objects/obj_0x7F.asm' 
+		include 'objects/obj_0x7F.asm' 
 loc_2570C:
 		jmp	MarkObjGone 
 loc_25712:
 		jmp	ModifySpriteAttr_2P 
 ;------------------------------------------------------------------------------- 
 Obj_0x80_Vines_Chain_Hook: 
-		include 'data/objects/obj_0x80.asm' 
+		include 'objects/obj_0x80.asm' 
 		nop ; Filler 
 loc_25BFC:
 		jmp	MarkObjGone 
@@ -21912,7 +21912,7 @@ loc_25C02:
 		jmp	ModifySpriteAttr_2P 
 ;------------------------------------------------------------------------------- 
 Obj_0x81_Vertical_Bridge: 
-		include 'data/objects/obj_0x81.asm' 
+		include 'objects/obj_0x81.asm' 
 		nop ; Filler 
 loc_25E68:
 		jmp	DisplaySprite_Param 
@@ -21932,7 +21932,7 @@ loc_25E92:
 		jmp	SolidObject 
 ;------------------------------------------------------------------------------- 
 Obj_0x82_Falling_Pillar: 
-		include 'data/objects/obj_0x82.asm' 
+		include 'objects/obj_0x82.asm' 
 		nop ; Filler
 loc_260E0:
 		jmp	ObjHitFloor 
@@ -21948,7 +21948,7 @@ loc_260FE:
 		jmp	SpeedToPos 
 ;------------------------------------------------------------------------------- 
 Obj_0x83_Three_Rotating_Platforms: 
-		include 'data/objects/obj_0x83.asm' 
+		include 'objects/obj_0x83.asm' 
 		nop ; Filler
 loc_26380:
 		jmp	DisplaySprite_Param 
@@ -21971,7 +21971,7 @@ loc_263B0:
 		dc.w	$0 ; Filler
 ;------------------------------------------------------------------------------- 
 Obj_0x3F_Fans: 
-		include 'data/objects/obj_0x3F.asm'
+		include 'objects/obj_0x3F.asm'
 		nop ; Filler
 loc_26780:
 		jmp	MarkObjGone 
@@ -21979,7 +21979,7 @@ loc_26786:
 		jmp	ModifySpriteAttr_2P 
 ;------------------------------------------------------------------------------- 
 Obj_0x85_CNz_Pinball_Spring: 
-		include 'data/objects/obj_0x85.asm' 
+		include 'objects/obj_0x85.asm' 
 		nop
 loc_26CD8:
 		jmp	DisplaySprite_Param 
@@ -21991,7 +21991,7 @@ loc_26CEA:
 		jmp	(loc_157D2) 
 ;------------------------------------------------------------------------------- 
 Obj_0x86_CNz_Flippers: 
-		include 'data/objects/obj_0x86.asm' 
+		include 'objects/obj_0x86.asm' 
 		nop ; Filler
 loc_270B4:
 		jmp	MarkObjGone 
@@ -22007,7 +22007,7 @@ loc_270D2:
 		jmp	(loc_15814)
 ;------------------------------------------------------------------------------- 
 Obj_0xD2_Green_Platform: 
-		include 'data/objects/obj_0xD2.asm' 
+		include 'objects/obj_0xD2.asm' 
 		nop
 loc_273E4: ; Filler
 		jmp	(loc_12D80)
@@ -22019,7 +22019,7 @@ loc_273F6:
 		jmp	(loc_12D4C)
 ;------------------------------------------------------------------------------- 
 Obj_0xD3_CNz_Spikeball: 
-		include 'data/objects/obj_0xD3.asm' 
+		include 'objects/obj_0xD3.asm' 
 		nop
 loc_27470:
 		jmp	DisplaySprite 
@@ -22031,7 +22031,7 @@ loc_27482:
 		jmp	SolidObject 
 ;------------------------------------------------------------------------------- 
 Obj_0xD4_CNz_Box: 
-		include 'data/objects/obj_0xD4.asm' 
+		include 'objects/obj_0xD4.asm' 
 		nop
 loc_2758C:
 		jmp	ModifySpriteAttr_2P 
@@ -22043,7 +22043,7 @@ loc_2759E:
 		jmp	SpeedToPos 
 ;------------------------------------------------------------------------------- 
 Obj_0xD5_CNz_Elevator: 
-		include 'data/objects/obj_0xD5.asm' 
+		include 'objects/obj_0xD5.asm' 
 loc_276F0:
 		jmp	MarkObjGone 
 loc_276F6:
@@ -22054,7 +22054,7 @@ loc_27702:
 		jmp	SpeedToPos 
 ;------------------------------------------------------------------------------- 
 Obj_0xD6_CNz_Slot_Machine_Bonus: 
-		include 'data/objects/obj_0xD6.asm' 
+		include 'objects/obj_0xD6.asm' 
 ;===============================================================================
 ; Sub Routine Load_Slot_Machine_Sprites 
 ; [ Begin ] 
@@ -22587,7 +22587,7 @@ loc_27E60:
 		cnop	0,4 ; Filler 
 ;------------------------------------------------------------------------------- 
 Obj_0xD7_CNz_Blue_Bumper: 
-		include 'data/objects/obj_0xD7.asm' 
+		include 'objects/obj_0xD7.asm' 
 		nop ; Filler 
 loc_280B4:
 		jmp	DisplaySprite 
@@ -22599,7 +22599,7 @@ loc_280C6:
 		jmp	ModifySpriteAttr_2P 
 ;------------------------------------------------------------------------------- 
 Obj_0xD8_CNz_Green_Bumper: 
-		include 'data/objects/obj_0xD8.asm' 
+		include 'objects/obj_0xD8.asm' 
 loc_2832C:
 		jmp	DeleteObject 
 loc_28332:
@@ -22613,14 +22613,14 @@ loc_28344:
 		cnop	0,4 ; Filler 
 ;------------------------------------------------------------------------------- 
 Obj_0xD9_SFz_Hang_Attributes: 
-		include 'data/objects/obj_0xD9.asm' 
+		include 'objects/obj_0xD9.asm' 
 		nop ; Filler 
 loc_2842C:
 		jmp	(loc_12D80) 
 		dc.w	$0 ; Filler
 ;------------------------------------------------------------------------------- 
 Obj_0x4C_Batbot: 
-		include 'data/objects/obj_0x4C.asm' 
+		include 'objects/obj_0x4C.asm' 
 		cnop	0,4 ; Filler 
 loc_288A8:
 		jmp	MarkObjGone 
@@ -22631,7 +22631,7 @@ loc_288B4:
 		dc.w	$0 ; Filler
 ;------------------------------------------------------------------------------- 
 Obj_0x4E_Crocobot: 
-		include 'data/objects/obj_0x4E.asm' 
+		include 'objects/obj_0x4E.asm' 
 loc_28B9C:
 		jmp	MarkObjGone 
 loc_28BA2:
@@ -22642,7 +22642,7 @@ loc_28BAE:
 		jmp	SpeedToPos 
 ;------------------------------------------------------------------------------- 
 Obj_0x4A_Octus: 
-		include 'data/objects/obj_0x4A.asm' 
+		include 'objects/obj_0x4A.asm' 
 		dc.w	$0 ; Filler
 J_DisplaySprite: 
 		jmp	DisplaySprite 
@@ -22658,7 +22658,7 @@ loc_28E62:
 		jmp	SpeedToPos 
 ;------------------------------------------------------------------------------- 
 Obj_0x4F_Dinobot: 
-		include 'data/objects/obj_0x4F.asm' 
+		include 'objects/obj_0x4F.asm' 
 		cnop	0,4 ; Filler 
 loc_28FAC:
 		jmp	DisplaySprite 
@@ -22673,7 +22673,7 @@ loc_28FC4:
 		cnop	0,4 ; Filler 
 ;------------------------------------------------------------------------------- 
 Obj_0x50_Aquis: 
-		include 'data/objects/obj_0x50.asm' 
+		include 'objects/obj_0x50.asm' 
 loc_29310:
 		jmp	DisplaySprite 
 loc_29316:
@@ -22695,7 +22695,7 @@ loc_29340:
 		cnop	0,4 ; Filler 
 ;------------------------------------------------------------------------------- 
 Obj_0x4D_Rhinobot: 
-		include 'data/objects/obj_0x4D.asm' 
+		include 'objects/obj_0x4D.asm' 
 		cnop	0,4 ; Filler 
 loc_29604:
 		jmp	MarkObjGone 
@@ -22706,7 +22706,7 @@ loc_29610:
 		cnop	0,4 ; Filler 
 ;------------------------------------------------------------------------------- 
 Obj_0x4B_Buzzer 
-		include 'data/objects/obj_0x4B.asm' 
+		include 'objects/obj_0x4B.asm' 
 		cnop	0,4 ; Filler 
 loc_29908:
 		jmp	DeleteObject 
@@ -22725,7 +22725,7 @@ loc_2992C:
 		cnop	0,4 ; Filler 
 ;-------------------------------------------------------------------------------
 Obj_0x5C_Masher: 
-		include 'data/objects/obj_0x5C.asm' 
+		include 'objects/obj_0x5C.asm' 
 		dc.w	$0 ; Filler
 loc_29A1C:
 		jmp	MarkObjGone 
@@ -22737,7 +22737,7 @@ loc_29A2E:
 		jmp	SpeedToPos 
 ;-------------------------------------------------------------------------------
 Obj_0x58_Boss_Explosions: 
-		include 'data/objects/obj_0x58.asm'
+		include 'objects/obj_0x58.asm'
 ;-------------------------------------------------------------------------------
 Unk_loc_29AFE:
 		move.b	$1A(a0),d0
@@ -22759,7 +22759,7 @@ loc_29B1C: ; Called By HTz Boss
 		bne.s	loc_29B46
 		move.b	#$20,$14(a0)
 		move.w	#$AC,d0
-		jsr	Play_Sfx 
+		jsr	PlaySound_Special 
 loc_29B46:
 		lea	($FFFFFB22).w,a1
 		moveq	#0,d0
@@ -22937,7 +22937,7 @@ loc_29CCC:
 		dc.w	$0 ; Filler
 ;-------------------------------------------------------------------------------
 Obj_0x5D_CPz_Boss: 
-		include 'data/objects/obj_0x5D.asm' 
+		include 'objects/obj_0x5D.asm' 
 loc_2B470:
 		jmp	DisplaySprite 
 loc_2B476:
@@ -22945,7 +22945,7 @@ loc_2B476:
 loc_2B47C:
 		jmp	MarkObjGone 
 loc_2B482:
-		jmp	Play_Sfx 
+		jmp	PlaySound_Special 
 loc_2B488:
 		jmp	Modify_A1_SpriteAttr_2P 
 loc_2B48E:
@@ -22964,7 +22964,7 @@ loc_2B4B2:
 		jmp	SpeedToPos 
 ;-------------------------------------------------------------------------------
 Obj_0x56_GHz_Boss: 
-		include 'data/objects/obj_0x56.asm' 
+		include 'objects/obj_0x56.asm' 
 		dc.w	$0 ; Filler
 loc_2C198:
 		jmp	DisplaySprite 
@@ -22975,7 +22975,7 @@ loc_2C1A4:
 loc_2C1AA:
 		jmp	Delete_A1_Object 
 loc_2C1B0:
-		jmp	Play_Sfx 
+		jmp	PlaySound_Special 
 loc_2C1B6:
 		jmp	S1SingleObjectLoad 
 loc_2C1BC:
@@ -22999,7 +22999,7 @@ loc_2C1EC:
 		dc.w	$0 ; Filler
 ;------------------------------------------------------------------------------- 
 Obj_0x52_HTz_Boss: 
-		include 'data/objects/obj_0x52.asm'
+		include 'objects/obj_0x52.asm'
 		dc.w	$0 ; Filler
 loc_2C970:
 		jmp	DisplaySprite 
@@ -23010,7 +23010,7 @@ loc_2C97C:
 loc_2C982:
 		jmp	MarkObjGone 
 loc_2C988:
-		jmp	Play_Sfx 
+		jmp	PlaySound_Special 
 loc_2C98E:
 		jmp	AnimateSprite 
 loc_2C994:
@@ -23026,7 +23026,7 @@ loc_2C9AC:
 		cnop	0,4 ; Filler 
 ;-------------------------------------------------------------------------------
 Obj_0x89_NGHz_Boss: 
-		include 'data/objects/obj_0x89.asm' 
+		include 'objects/obj_0x89.asm' 
 loc_2D45C:
 		jmp	DisplaySprite 
 loc_2D462:
@@ -23034,7 +23034,7 @@ loc_2D462:
 loc_2D468:
 		jmp	SingleObjectLoad 
 loc_2D46E:
-		jmp	Play_Sfx 
+		jmp	PlaySound_Special 
 loc_2D474:
 		jmp	S1SingleObjectLoad 
 loc_2D47A:
@@ -23056,7 +23056,7 @@ loc_2D4A4:
 		dc.w	$0 ; Filler
 ;------------------------------------------------------------------------------- 
 Obj_0x57_DHz_Boss: 
-		include 'data/objects/obj_0x57.asm' 
+		include 'objects/obj_0x57.asm' 
 		cnop	0,4 ; Filler 
 loc_2DDC8:
 		jmp	DisplaySprite 
@@ -23079,7 +23079,7 @@ loc_2DDF8:
 		dc.w	$0 ; Filler
 ;------------------------------------------------------------------------------- 
 Obj_0x51_CNz_Boss: 
-		include 'data/objects/obj_0x51.asm' 
+		include 'objects/obj_0x51.asm' 
 		cnop	0,4 ; Filler 
 loc_2E764:
 		jmp	DisplaySprite 
@@ -23088,7 +23088,7 @@ loc_2E76A:
 loc_2E770:
 		jmp	SingleObjectLoad 
 loc_2E776:
-		jmp	Play_Sfx 
+		jmp	PlaySound_Special 
 loc_2E77C:
 		jmp	S1SingleObjectLoad 
 loc_2E782:
@@ -23103,10 +23103,10 @@ loc_2E79A:
 		jmp	Boss_Defeated_Load_Flickies 
 ;------------------------------------------------------------------------------- 
 Obj_0x54_Mz_Boss: 
-		include 'data/objects/obj_0x54.asm' 
+		include 'objects/obj_0x54.asm' 
 ;------------------------------------------------------------------------------- 
 Obj_0x53_Mz_Boss_Balls_Robotniks: 
-		include 'data/objects/obj_0x53.asm' 
+		include 'objects/obj_0x53.asm' 
 loc_2F468:
 		jmp	DisplaySprite 
 loc_2F46E:
@@ -23114,7 +23114,7 @@ loc_2F46E:
 loc_2F474:
 		jmp	SingleObjectLoad 
 loc_2F47A:
-		jmp	Play_Sfx 
+		jmp	PlaySound_Special 
 loc_2F480:
 		jmp	AnimateSprite 
 loc_2F486:
@@ -23132,7 +23132,7 @@ loc_2F4A4:
 		cnop	0,4 ; Filler 
 ;------------------------------------------------------------------------------- 
 Obj_0x55_OOz_Boss: 
-		include 'data/objects/obj_0x55.asm' 
+		include 'objects/obj_0x55.asm' 
 loc_2FDB4:
 		jmp	DisplaySprite 
 loc_2FDBA:
@@ -23142,7 +23142,7 @@ loc_2FDC0:
 loc_2FDC6:
 		jmp	MarkObjGone 
 loc_2FDCC:
-		jmp	Play_Sfx 
+		jmp	PlaySound_Special 
 loc_2FDD2:
 		jmp	S1SingleObjectLoad 
 loc_2FDD8:
@@ -23162,10 +23162,10 @@ loc_2FDFC:
 		cnop	0,4 ; Filler 
 ;-------------------------------------------------------------------------------
 Obj_0x09_Sonic_In_Special_Stage: 
-		include 'data/objects/obj_0x09.asm' 
+		include 'objects/obj_0x09.asm' 
 ;------------------------------------------------------------------------------- 
 Obj_0x63: 
-		include 'data/objects/obj_0x63.asm' 
+		include 'objects/obj_0x63.asm' 
 ;------------------------------------------------------------------------------- 
 loc_306FC:
 		dc.w	loc_30720-loc_306FC
@@ -23601,9 +23601,9 @@ loc_30CD2:
 		jmp	(loc_7B8A) 
 ;------------------------------------------------------------------------------- 
 Obj_0x10_Miles_In_Special_Stage: 
-		include 'data/objects/obj_0x10.asm' 
+		include 'objects/obj_0x10.asm' 
 Obj_0x88: 
-		include 'data/objects/obj_0x88.asm' 
+		include 'objects/obj_0x88.asm' 
 ;------------------------------------------------------------------------------- 
 loc_31318:
 		jmp	DisplaySprite 
@@ -23611,17 +23611,17 @@ loc_3131E:
 		jmp	AnimateSprite 
 ;------------------------------------------------------------------------------- 
 Obj_0x61_SS_Bomb: 
-		include 'data/objects/obj_0x61.asm' 
+		include 'objects/obj_0x61.asm' 
 ;------------------------------------------------------------------------------- 
 Obj_0x60_SS_Rings: 
-		include 'data/objects/obj_0x60.asm' 
+		include 'objects/obj_0x60.asm' 
 ;------------------------------------------------------------------------------- 
 loc_3185A:
 		dc.b	$38,$48,$2A,$56,$1C,$64,$E,$72,$0,$80 
 loc_31864:
 		dc.b	$40,$30,$50,$20,$60,$10,$70,$0,$80,$0 
 Obj_0x5B: 
-		include 'data/objects/obj_0x5B.asm' 
+		include 'objects/obj_0x5B.asm' 
 		rts
 ;--------------------------------------------------------------------------------
 ;-------------------------------------------------------------------------------
@@ -23639,7 +23639,7 @@ loc_319BC:
 		dc.w	$44,$EE,$CC,$88 
 ;------------------------------------------------------------------------------- 
 Obj_0x5A_SS_Rings_Check: 
-		include 'data/objects/obj_0x5A.asm' 
+		include 'objects/obj_0x5A.asm' 
 ;===============================================================================
 ; Sub Routine - loc_31DD6 - Special Stage
 ; [ Begin ]
@@ -24019,7 +24019,7 @@ Unk_loc_3216C:
 		dc.w	$AAA,$888
 ;------------------------------------------------------------------------------- 
 Obj_0x59_SS_Emerald_Rings_Check: 
- include 'data/objects/obj_0x59.asm' 
+ include 'objects/obj_0x59.asm' 
 ;------------------------------------------------------------------------------- 
 loc_3247A:
 		dc.w	loc_32490-loc_3247A
@@ -24720,7 +24720,7 @@ loc_32B22:
 		bra	loc_3A898 
 ;------------------------------------------------------------------------------- 
 Obj_0x8C_NGHz_Whisp: 
-		include 'data/objects/obj_0x8C.asm'
+		include 'objects/obj_0x8C.asm'
 ;===============================================================================
 ; Object 0x8D -> Hidden Grounder Neo Greo Green Hill
 ; [ Begin ]
@@ -24733,25 +24733,25 @@ Obj_0x8D_Hidden_Grounder:
 ; [ End ]
 ;=============================================================================== 
 Obj_0x8E_Grounder: 
-		include 'data/objects/obj_0x8E.asm'
+		include 'objects/obj_0x8E.asm'
 ;------------------------------------------------------------------------------- 
 Obj_0x8F_Wall_Hidden_Grounder: 
-		include 'data/objects/obj_0x8F.asm'
+		include 'objects/obj_0x8F.asm'
 ;------------------------------------------------------------------------------- 
 Obj_0x90_Rock_Hidden_Grounder: 
-		include 'data/objects/obj_0x90.asm' 
+		include 'objects/obj_0x90.asm' 
 ;------------------------------------------------------------------------------- 
 Obj_0x91_Chop_Chop 
-		include 'data/objects/obj_0x91.asm'
+		include 'objects/obj_0x91.asm'
 ;------------------------------------------------------------------------------- 
 Obj_0x92_Spiker: 
-		include 'data/objects/obj_0x92.asm'
+		include 'objects/obj_0x92.asm'
 ;------------------------------------------------------------------------------- 
 Obj_0x93_Spiker_Spike_Fired: 
-		include 'data/objects/obj_0x93.asm'
+		include 'objects/obj_0x93.asm'
 ;------------------------------------------------------------------------------- 
 Obj_0x95_Sol: 
-		include 'data/objects/obj_0x95.asm'
+		include 'objects/obj_0x95.asm'
 ;------------------------------------------------------------------------------- 
 
 ;===============================================================================
@@ -24766,13 +24766,13 @@ Obj_0x94_Rexon_Body:
 ; [ End ]
 ;=============================================================================== 
 Obj_0x96_Rexon_Body: 
-		include 'data/objects/obj_0x96.asm' 
+		include 'objects/obj_0x96.asm' 
 ;------------------------------------------------------------------------------- 
 Obj_0x97_Rexon_Head: 
-		include 'data/objects/obj_0x97.asm' 
+		include 'objects/obj_0x97.asm' 
 ;-------------------------------------------------------------------------------
 Obj_0x98_Enemies_Weapons: 
-		include 'data/objects/obj_0x98.asm' 
+		include 'objects/obj_0x98.asm' 
 ;------------------------------------------------------------------------------- 
 loc_338FA: ; Called by Nebula
 		bchg	#5,2(a0)
@@ -24847,57 +24847,57 @@ Obj_0x98_Canon_Fireball_Ptr:
 		dc.b	$84,$3,$4,$98
 ;------------------------------------------------------------------------------- 
 Obj_0x99_Nebula: 
-		include 'data/objects/obj_0x99.asm'
+		include 'objects/obj_0x99.asm'
 ;------------------------------------------------------------------------------- 
 Obj_0x9A_Turtloid: 
-		include 'data/objects/obj_0x9A.asm'
+		include 'objects/obj_0x9A.asm'
 ;------------------------------------------------------------------------------- 
 Obj_0x9B_Turtloid_Rider: 
-		include 'data/objects/obj_0x9B.asm'
+		include 'objects/obj_0x9B.asm'
 ;------------------------------------------------------------------------------- 
 Obj_0x9C_Turtloid_Sub: 
-		include 'data/objects/obj_0x9C.asm' 
+		include 'objects/obj_0x9C.asm' 
 ;------------------------------------------------------------------------------- 
 Obj_0x9D_Coconuts: 
-		include 'data/objects/obj_0x9D.asm' 
+		include 'objects/obj_0x9D.asm' 
 ;------------------------------------------------------------------------------- 
 Obj_0x9E_Crawlton: 
-		include 'data/objects/obj_0x9E.asm' 
+		include 'objects/obj_0x9E.asm' 
 ;------------------------------------------------------------------------------- 
 Obj_0x9F_Shellcracker: 
-		include 'data/objects/obj_0x9F.asm'
+		include 'objects/obj_0x9F.asm'
 ;------------------------------------------------------------------------------- 
 Obj_0xA0_Shellcracker_Sub: 
-		include 'data/objects/obj_0xA0.asm'
+		include 'objects/obj_0xA0.asm'
 ;------------------------------------------------------------------------------- 
 Obj_0xA1_Slicer 
-		include 'data/objects/obj_0xA1.asm'
+		include 'objects/obj_0xA1.asm'
 ;------------------------------------------------------------------------------- 
 Obj_0xA2_Slicer_Sub: 
-		include 'data/objects/obj_0xA2.asm'
+		include 'objects/obj_0xA2.asm'
 ;------------------------------------------------------------------------------- 
 Obj_0xA3_Flasher: 
-		include 'data/objects/obj_0xA3.asm'
+		include 'objects/obj_0xA3.asm'
 ;------------------------------------------------------------------------------- 
 Obj_0xA4_Asteron: 
-		include 'data/objects/obj_0xA4.asm' 
+		include 'objects/obj_0xA4.asm' 
 ;------------------------------------------------------------------------------- 
 Obj_0xA5_Horizontal_Lander: 
-		include 'data/objects/obj_0xA5.asm'
+		include 'objects/obj_0xA5.asm'
 ;------------------------------------------------------------------------------- 
 Obj_0xA6_Vertical_Lander: 
-		include 'data/objects/obj_0xA6.asm' 
+		include 'objects/obj_0xA6.asm' 
 ;-------------------------------------------------------------------------------
 Obj_0xA7_Grabber: 
-		include 'data/objects/obj_0xA7.asm'
+		include 'objects/obj_0xA7.asm'
 Obj_0xA8_Grabber_Sub: 
-		include 'data/objects/obj_0xA8.asm'
+		include 'objects/obj_0xA8.asm'
 Obj_0xA9_Grabber_Sub: 
-		include 'data/objects/obj_0xA9.asm'
+		include 'objects/obj_0xA9.asm'
 Obj_0xAA_Grabber_Sub: 
-		include 'data/objects/obj_0xAA.asm'
+		include 'objects/obj_0xAA.asm'
 Obj_0xAB: 
-		include 'data/objects/obj_0xAB.asm' 
+		include 'objects/obj_0xAB.asm' 
 ;-------------------------------------------------------------------------------
 loc_3522E: 
 		move.w	$34(a0),a1
@@ -25108,21 +25108,21 @@ Unk_Mapping_loc_354C2:
 		dc.l	$7003000B,$5FFFC
 ;-------------------------------------------------------------------------------
 Obj_0xAC_Balkiry: 
-		include 'data/objects/obj_0xAC.asm'
+		include 'objects/obj_0xAC.asm'
 ;-------------------------------------------------------------------------------
 Obj_0xAD_Clucker_Platform: 
-		include 'data/objects/obj_0xAD.asm'
+		include 'objects/obj_0xAD.asm'
 ;------------------------------------------------------------------------------- 
 Obj_0xAE_Clucker: 
-		include 'data/objects/obj_0xAE.asm'
+		include 'objects/obj_0xAE.asm'
 ;-------------------------------------------------------------------------------
 Obj_0xAF_Metal_Sonic: 
-		include 'data/objects/obj_0xAF.asm'
+		include 'objects/obj_0xAF.asm'
 ;------------------------------------------------------------------------------- 
 Obj_0xB0_Sonic_Sega_Logo: 
-		include 'data/objects/obj_0xB0.asm'
+		include 'objects/obj_0xB0.asm'
 Obj_0xB1_Sonic_Sega_Logo: 
-		include 'data/objects/obj_0xB1.asm' 
+		include 'objects/obj_0xB1.asm' 
 
 ;===============================================================================
 ; Sub Routine loc_36798
@@ -25207,71 +25207,71 @@ loc_3687A:
 ; [ End ]
 ;=============================================================================== 
 Obj_0xB2_Tornado: 
-		include 'data/objects/obj_0xB2.asm' 
+		include 'objects/obj_0xB2.asm' 
 ;------------------------------------------------------------------------------- 
 Obj_0xB3_Clouds: 
-		include 'data/objects/obj_0xB3.asm'
+		include 'objects/obj_0xB3.asm'
 ;------------------------------------------------------------------------------- 
 Obj_0xB4_Vertical_Helix: 
-		include 'data/objects/obj_0xB4.asm'
+		include 'objects/obj_0xB4.asm'
 ;------------------------------------------------------------------------------- 
 Obj_0xB5_Horizontal_Helix: 
-		include 'data/objects/obj_0xB5.asm' 
+		include 'objects/obj_0xB5.asm' 
 ;------------------------------------------------------------------------------- 
 Obj_0xB6_Platform_Helix: 
-		include 'data/objects/obj_0xB6.asm' 
+		include 'objects/obj_0xB6.asm' 
 ;------------------------------------------------------------------------------- 
 Obj_0xB7_SFz_Vertical_Large_Laser: 
-		include 'data/objects/obj_0xB7.asm' 
+		include 'objects/obj_0xB7.asm' 
 ;------------------------------------------------------------------------------- 
 Obj_0xB8_Cannon: 
-		include 'data/objects/obj_0xB8.asm' 
+		include 'objects/obj_0xB8.asm' 
 ;------------------------------------------------------------------------------- 
 Obj_0xB9_Laser: 
-		include 'data/objects/obj_0xB9.asm' 
+		include 'objects/obj_0xB9.asm' 
 ;------------------------------------------------------------------------------- 
 Obj_0xBA_Conveyor_Belt_Wheels: 
-		include 'data/objects/obj_0xBA.asm' 
+		include 'objects/obj_0xBA.asm' 
 ;------------------------------------------------------------------------------- 
 Obj_0xBB: 
-		include 'data/objects/obj_0xBB.asm' 
+		include 'objects/obj_0xBB.asm' 
 ;------------------------------------------------------------------------------- 
 Obj_0xBC_SFz_Rocket_Boost: 
-		include 'data/objects/obj_0xBC.asm' 
+		include 'objects/obj_0xBC.asm' 
 ;------------------------------------------------------------------------------- 
 Obj_0xBD_SFz_Elevators: 
-		include 'data/objects/obj_0xBD.asm'
+		include 'objects/obj_0xBD.asm'
 ;------------------------------------------------------------------------------- 
 Obj_0xBE_Hatchways: 
-		include 'data/objects/obj_0xBE.asm'
+		include 'objects/obj_0xBE.asm'
 ;------------------------------------------------------------------------------- 
 Obj_0xBF_Engine_Part: 
-		include 'data/objects/obj_0xBF.asm'
+		include 'objects/obj_0xBF.asm'
 ;------------------------------------------------------------------------------- 
 Obj_0xC0_Speed_Booster: 
-		include 'data/objects/obj_0xC0.asm'
+		include 'objects/obj_0xC0.asm'
 ;------------------------------------------------------------------------------- 
 Obj_0xC1_SFz_Breakable_Wall: 
-		include 'data/objects/obj_0xC1.asm'
+		include 'objects/obj_0xC1.asm'
 ;------------------------------------------------------------------------------- 
 Obj_0xC2_SFz_Boss_Access_Switch: 
-		include 'data/objects/obj_0xC2.asm'
+		include 'objects/obj_0xC2.asm'
 ;------------------------------------------------------------------------------- 
 Obj_0xC3: 
 Obj_0xC4: 
-		include 'data/objects/obj_0xC3.asm'
+		include 'objects/obj_0xC3.asm'
 ;------------------------------------------------------------------------------- 
 Obj_0xC5_SFz_Boss: 
-		include 'data/objects/obj_0xC5.asm'
+		include 'objects/obj_0xC5.asm'
 ;------------------------------------------------------------------------------- 
 Obj_0xC6_Robotnik_Running: 
-		include 'data/objects/obj_0xC6.asm'
+		include 'objects/obj_0xC6.asm'
 ;------------------------------------------------------------------------------- 
 Obj_0xC8_Crawl: 
-		include 'data/objects/obj_0xC8.asm'
+		include 'objects/obj_0xC8.asm'
 ;------------------------------------------------------------------------------- 
 Obj_0xC7_DEz_Final_Boss: 
-		include 'data/objects/obj_0xC7.asm'
+		include 'objects/obj_0xC7.asm'
 ;===============================================================================
 ; Sub Routine - Enemy Settings
 ; [ End ]
@@ -25468,16 +25468,16 @@ loc_3A8A4:
 		jmp	MarkObjGone 
 loc_3A8AA:
 		jmp	Delete_A1_Object 
-J_Play_Sfx_1: ; 
+J_PlaySound_Special_1: ; 
 loc_3A8B0:
-		jmp	Play_Sfx 
+		jmp	PlaySound_Special 
 loc_3A8B6:
 		jmp	S1SingleObjectLoad 
 loc_3A8BC:
 		jmp	AnimateSprite 
-J_Play_Sfx_Ex: ;
+J_PlaySound_Special_Ex: ;
 loc_3A8C2:
-		jmp	Play_Sfx_Ex 
+		jmp	PlaySound_Special_Ex 
 J_PseudoRandomNumber: ;
 loc_3A8C8:
 		jmp	PseudoRandomNumber 
@@ -25508,14 +25508,14 @@ loc_3A904:
 		cnop	0,4 ; Filler 
 ;------------------------------------------------------------------------------- 
 Obj_0x8A: 
-		include 'data/objects/obj_0x8A.asm' 
+		include 'objects/obj_0x8A.asm' 
 		nop ; Filler 
 loc_3B020:
 		jmp	ModifySpriteAttr_2P 
 		cnop	0,4 ; Filler 
 ;------------------------------------------------------------------------------- 
 Obj_0x3E_Egg_Prison: 
-		include 'data/objects/obj_0x3E.asm'
+		include 'objects/obj_0x3E.asm'
 		nop ; Filler
 loc_3B38C:
 		jmp	DeleteObject 
@@ -25845,7 +25845,7 @@ loc_3B73E:
 		bne.s	loc_3B75E
 		move.w	#$A6,d0
 loc_3B75E:
-		jsr	Play_Sfx 
+		jsr	PlaySound_Special 
 		moveq	#$FFFFFFFF,d0
 		rts
 ;--------------------------------------------------------------------------------
@@ -25875,7 +25875,7 @@ Kill_Player:
 		bne.s	loc_3B7B0
 		move.w	#$A6,d0
 loc_3B7B0:
-		jsr	Play_Sfx 
+		jsr	PlaySound_Special
 Kill_NoDeath: 
 		moveq	#$FFFFFFFF,d0
 		rts
