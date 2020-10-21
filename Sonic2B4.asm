@@ -337,7 +337,7 @@ Error_WaitForC:
 		rts
 ;--------------------------------------------------------------------------------
 Art_Menu_Text: 
-		incbin 'data/sprites/art_menu.dat' 
+		incbin 'artunc/art_menu.dat'
 Go_Versus_Mode_Menu: 
 		jmp	Versus_Mode_Menu 
 Go_Versus_Mode_Results: 
@@ -4217,7 +4217,7 @@ Unused_Code_4_Loop:
 		rts
 ;--------------------------------------------------------------------------------
 _1p2pVs_Spr: 
-		incbin 'data/sprites/1p2pVs.nem' 
+		incbin 'artnem/1p2pVs.nem'
 ;===============================================================================
 ; Title Screen
 ; [ End ]
@@ -28002,11 +28002,11 @@ loc_3D0E4:
 		dbra	d5,loc_3D0E4
 		bra.s	loc_3D0D2 
 HUD_Art_Numbers: 
-		incbin 'data/sprites/hud_numb.dat' 
+		incbin 'artunc/hud_numb.dat'
 HUD_Art_Life_Numbers: 
-		incbin 'data/sprites/hud_num2.dat' 
+		incbin 'artunc/hud_num2.dat'
 HUD_Art_Debug_Numbers: 
-		incbin 'data/sprites/hud_debg.dat' 
+		incbin 'artunc/hud_debg.dat'
 loc_3D810:
 		jmp	(loc_13716)
 loc_3D816:
@@ -34484,13 +34484,13 @@ loc_71D88:
 		dc.w	$5A06,$BA0C
 ;-------------------------------------------------------------------------------
 Shield: 
-		incbin 'data/sprites/shield.nem'
+		incbin 'artnem/shield.nem'
 Invencibility_Stars: 
-		incbin 'data/sprites/invstars.nem' 
+		incbin 'artnem/invstars.nem' 
 Water_Splash_Dust_Spr: 
-		IncBin 'data/sprites/spshdust.dat' 
+		IncBin 'artunc/spshdust.dat'
 Water_Splash: 
-		incbin 'data/sprites/w_splash.nem' 
+		incbin 'artnem/w_splash.nem' 
 ;-------------------------------------------------------------------------------
 Miles_Mappings: 
 		dc.w	loc_73AF8-Miles_Mappings
@@ -35610,9 +35610,9 @@ loc_74870:
 		dc.w	$55A8,$75B6
 ;------------------------------------------------------------------------------- 
 Sega_Spr: 
-		incbin 'data/sprites/sega.nem'
+		incbin 'artnem/sega.nem'
 Sega_Blocks_Spr: 
-		incbin 'data/sprites/sega_blk.nem'
+		incbin 'artnem/sega_blk.nem'
 Sega_Mappings: 
 		incbin 'mapeni/sega.eni'
 TS_Wings_Sonic_Mappings: 
@@ -35622,11 +35622,11 @@ Title_Screen_Bg_Mappings:
 Title_Screen_R_Bg_Mappings: 
 		incbin 'mapeni/titscrb2.eni'
 Title_Screen_Bg_Wings: 
-		incbin 'data/sprites/titlescr.nem' ; Title Screen Wings and background 
+		incbin 'artnem/titlescr.nem' ; Title Screen Wings and background
 Title_Screen_Sonic_Miles: 
-		incbin 'data/sprites/sncmlscr.nem' ; Sonic And Miles in Title Screen
+		incbin 'artnem/sncmlscr.nem' ; Sonic And Miles in Title Screen
 FireBall: 
-		incbin 'data/sprites/fireball.nem'
+		incbin 'artnem/fireball.nem'
 GHz_Waterfall: 
 		incbin 'data/ghz/watrfall.nem' 
 Htz_Lava_Bubble: 
@@ -35640,7 +35640,7 @@ Htz_Automatic_Door:
 Htz_See_saw: 
 		incbin 'data/htz/see-saw.nem'
 Unk_Fireball: 
-		incbin 'data/sprites/unk_fball.nem'
+		incbin 'artnem/unk_fball.nem'
 Htz_Rock: 
 		incbin 'data/htz/rock.nem' 
 Htz_See_saw_badnick: 
@@ -35746,7 +35746,7 @@ CNz_Flippers:
 CPz_Triangle_Platform: 
 		incbin 'data/cpz/tri_ptfm.nem' 
 Water_Surface: 
-		incbin 'data/sprites/watrsurf.nem' 
+		incbin 'artnem/watrsurf.nem' 
 CPz_Speed_Booster: 
 		incbin 'data/cpz/speedbst.nem' 
 CPz_Worms: 
@@ -35772,99 +35772,99 @@ NGHz_Arrow_Shooter:
 NGHz_Automatic_Door: 
 		incbin 'data/nghz/autodoor.nem'
 Switch: 
-		incbin 'data/sprites/switch.nem' 
+		incbin 'artnem/switch.nem' 
 Vertical_Spring: 
-		incbin 'data/sprites/v_spring.nem' 
+		incbin 'artnem/v_spring.nem' 
 Horizontal_Spring: 
-		incbin 'data/sprites/h_spring.nem' 
+		incbin 'artnem/h_spring.nem' 
 Diagonal_Spring: 
-		incbin 'data/sprites/d_spring.nem' 
+		incbin 'artnem/d_spring.nem' 
 Head_up_display_Sprites: 
-		incbin 'data/sprites/hud.nem'
+		incbin 'artnem/hud.nem'
 Head_up_display_Sonic: 
-		incbin 'data/sprites/hudsonic.nem' 
+		incbin 'artnem/hudsonic.nem' 
 Rings_Sprites: 
-		incbin 'data/sprites/rings.nem' 
+		incbin 'artnem/rings.nem' 
 Monitors: 
-		incbin 'data/sprites/monitors.nem'
+		incbin 'artnem/monitors.nem'
 Spikes: 
-		incbin 'data/sprites/spikes.nem' 
+		incbin 'artnem/spikes.nem' 
 Enemy_Points_Spr: 
-		incbin 'data/sprites/points.nem' 
+		incbin 'artnem/points.nem' 
 Star_Post: 
-		incbin 'data/sprites/starpost.nem'
+		incbin 'artnem/starpost.nem'
 End_Panel: 
-		incbin 'data/sprites/endpanel.nem' 
+		incbin 'artnem/endpanel.nem' 
 End_Panel_Spr: 
-		incbin 'data/sprites/endpanel.dat'
+		incbin 'artunc/endpanel.dat'
 Diagonal_Spring_1: 
-		incbin 'data/sprites/dspring1.nem' 
+		incbin 'artnem/dspring1.nem' 
 Dhz_Horizontal_Spikes: 
 		incbin 'data/dhz/h_spikes.nem' 
 Oxygen_Bubbles: 
-		incbin 'data/sprites/oxygen.nem' 
+		incbin 'artnem/oxygen.nem' 
 Bubbles: 
-		incbin 'data/sprites/bubbles.nem' 
+		incbin 'artnem/bubbles.nem' 
 Oxygen_Numbers_Spr: 
-		incbin 'data/sprites/oxygnumb.dat' 
+		incbin 'artunc/oxygnumb.dat' 
 Game_Time_Over: 
-		incbin 'data/sprites/gt_over.nem' 
+		incbin 'artnem/gt_over.nem' 
 Explosion: 
-		incbin 'data/sprites/explosn.nem'
+		incbin 'artnem/explosn.nem'
 Head_up_display_Miles: 
-		incbin 'data/sprites/hudmiles.nem' 
+		incbin 'artnem/hudmiles.nem' 
 Egg_Prison: 
-		incbin 'data/sprites/eggprisn.nem'
+		incbin 'artnem/eggprisn.nem'
 Miles_In_Continue: 
-		incbin 'data/sprites/milescnt.nem'
+		incbin 'artnem/milescnt.nem'
 Mini_Sonic: 
-		incbin 'data/sprites/m_sonic.nem' 
+		incbin 'artnem/m_sonic.nem' 
 Menu_Font: 
-		incbin 'data/sprites/menufont.nem' 
+		incbin 'artnem/menufont.nem' 
 Versus_Result_Font: 
-		incbin 'data/sprites/vsresfnt.nem' 
+		incbin 'artnem/vsresfnt.nem' 
 Versus_Menu_Bg_Mappings: 
 		incbin 'mapeni/vsmenubg.eni'
 Sonic_Miles: 
-		incbin 'data/sprites/soncmils.dat' 
+		incbin 'artunc/soncmils.dat'
 Title_Card_ZONE_123: 
-		incbin 'data/sprites/tc_zone.nem' 
+		incbin 'artnem/tc_zone.nem' 
 Title_Card_AY: 
-		incbin 'data/sprites/tc_ay.nem' 
+		incbin 'artnem/tc_ay.nem' 
 Menu_Frame: 
-		incbin 'data/sprites/menu_frm.nem' 
+		incbin 'artnem/menu_frm.nem' 
 Level_Icons: 
-		incbin 'data/sprites/levelico.nem' 
+		incbin 'artnem/levelico.nem' 
 Title_Card_Results: 
-		incbin 'data/sprites/tc_res.nem'
+		incbin 'artnem/tc_res.nem'
 SS_Title_Card_Results: 
 		incbin 'data/ss/tc_res.nem' 
 SS_Emeralds_Results: 
 		incbin 'data/ss/emeralds.nem' 
 Blue_Bird: 
-		incbin 'data/sprites/bluebird.nem' 
+		incbin 'artnem/bluebird.nem' 
 Squirrel: 
-		incbin 'data/sprites/squirrel.nem'
+		incbin 'artnem/squirrel.nem'
 Mouse: 
-		incbin 'data/sprites/mouse.nem'
+		incbin 'artnem/mouse.nem'
 White_Bird: 
-		incbin 'data/sprites/wthebird.nem'
+		incbin 'artnem/wthebird.nem'
 Monkey: 
-		incbin 'data/sprites/monkey.nem' 
+		incbin 'artnem/monkey.nem' 
 Black_Bird: 
-		incbin 'data/sprites/blckbird.nem' 
+		incbin 'artnem/blckbird.nem' 
 Pig: 
-		incbin 'data/sprites/pig.nem' 
+		incbin 'artnem/pig.nem' 
 Seal: 
-		incbin 'data/sprites/seal.nem' 
+		incbin 'artnem/seal.nem' 
 Penguin: 
-		incbin 'data/sprites/penguin.nem'
+		incbin 'artnem/penguin.nem'
 Turtle: 
-		incbin 'data/sprites/turtle.nem'
+		incbin 'artnem/turtle.nem'
 Bear: 
-		incbin 'data/sprites/bear.nem' 
+		incbin 'artnem/bear.nem' 
 Rabbit: 
-		incbin 'data/sprites/rabbit.nem' 
+		incbin 'artnem/rabbit.nem' 
 GHz_Buzzer: 
 		incbin 'data/ghz/buzzer.nem' 
 Hpz_Batbot: 
@@ -35880,15 +35880,15 @@ OOz_Aquis:
 GHz_Masher: 
 		incbin 'data/ghz/masher.nem' 
 Robotnik_Ship: 
-		incbin 'data/sprites/robotnik.nem' 
+		incbin 'artnem/robotnik.nem' 
 CPz_Boss: 
 		incbin 'data/cpz/boss.nem' 
 Boss_Explosions: 
-		incbin 'data/sprites/explosns.nem' 
+		incbin 'artnem/explosns.nem' 
 Ship_Boost 
-		incbin 'data/sprites/shpboost.nem' 
+		incbin 'artnem/shpboost.nem' 
 Boss_Smokes: 
-		incbin 'data/sprites/boss_smk.nem' 
+		incbin 'artnem/boss_smk.nem'
 GHz_Boss_Car: 
 		incbin 'data/ghz/boss_car.nem' 
 Ghz_Boss_Blades: 
