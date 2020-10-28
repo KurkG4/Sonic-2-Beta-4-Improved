@@ -18912,7 +18912,7 @@ loc_1494E:
 ; Sub Routine Load_Object_List
 ; [ End ]
 ;=============================================================================== 
-Obj_0x41_Springs 
+Obj_0x41_Springs
 		include 'objects/obj_0x41.asm'
 		nop ; Filler
 ;------------------------------------------------------------------------------- 
@@ -36342,7 +36342,7 @@ Null_Objects_Layout:
 ; [ Begin ]
 ;===============================================================================
 GHz_2_PB_Rings_Layout: 
-		incbin 'data/ghz/rng_pb_2.dat' 
+		incbin 'rings/previousbuild/ghzrng_pb_2.dat'
 Null_PB_Rings_Layout: 
 		dc.w	$FFFF
 Null_1_PB_Rings_Layout: 
@@ -36356,29 +36356,29 @@ Null_3_PB_Rings_Layout:
 Null_4_PB_Rings_Layout: 
 		dc.w	$FFFF
 Mz_1_PB_Rings_Layout: 
-		incbin 'data/mz/rng_pb_1.dat' 
-Mz_2_PB_Rings_Layout: 
-		incbin 'data/mz/rng_act2.dat' 
-Mz_3_PB_Rings_Layout: 
-		incbin 'data/mz/rng_pb_3.dat' 
-Mz_4_PB_Rings_Layout: 
+		incbin 'rings/previousbuild/mzrng_pb_1.dat'
+Mz_2_PB_Rings_Layout:
+		incbin 'rings/mzrng_act2.dat'
+Mz_3_PB_Rings_Layout:
+		incbin 'rings/previousbuild/mzrng_pb_3.dat'
+Mz_4_PB_Rings_Layout:
 		dc.w	$FFFF
-HTz_1_PB_Rings_Layout: 
-		incbin 'data/htz/rng_pb_1.dat' 
-HTz_2_PB_Rings_Layout: 
-		incbin 'data/htz/rng_pb_2.dat'
-HPz_1_PB_Rings_Layout: 
-		incbin 'data/hpz/rng_act.dat' 
-HPz_2_PB_Rings_Layout: 
+HTz_1_PB_Rings_Layout:
+		incbin 'rings/previousbuild/htzrng_pb_1.dat'
+HTz_2_PB_Rings_Layout:
+		incbin 'rings/previousbuild/htzrng_pb_2.dat'
+HPz_1_PB_Rings_Layout:
+		incbin 'rings/hpzrng_act.dat'
+HPz_2_PB_Rings_Layout:
 		dc.w	$FFFF
-Null_5_PB_Rings_Layout: 
+Null_5_PB_Rings_Layout:
 		dc.w	$FFFF
-Null_6_PB_Rings_Layout: 
+Null_6_PB_Rings_Layout:
 		dc.w	$FFFF
-OOz_1_PB_Rings_Layout: 
-		incbin 'data/ooz/rng_act1.dat' 
-OOz_2_PB_Rings_Layout: 
-		incbin 'data/ooz/rng_pb_2.dat' 
+OOz_1_PB_Rings_Layout:
+		incbin 'rings/oozrng_act1.dat'
+OOz_2_PB_Rings_Layout:
+		incbin 'rings/previousbuild/oozrng_pb_2.dat'
 ;===============================================================================
 ; Rings_Layout Previous Build
 ; [ End ]
@@ -36424,9 +36424,9 @@ Rings_Layout:
 		dc.w	SCz_1_Rings_Layout-Rings_Layout 
 		dc.w	SCz_2_Rings_Layout-Rings_Layout 
 GHz_1_Rings_Layout: 
-		incbin 'data/ghz/rng_act1.dat' 
-GHz_2_Rings_Layout: 
-		incbin 'data/ghz/rng_act2.dat' 
+		incbin 'rings/ghzrng_act1.dat'
+GHz_2_Rings_Layout:
+		incbin 'rings/ghzrng_act2.dat'
 Null_Rings_Layout: 
 		dc.w	$FFFF
 Null_1_Rings_Layout: 
@@ -36440,19 +36440,19 @@ Null_3_Rings_Layout:
 Null_4_Rings_Layout: 
 		dc.w	$FFFF
 Mz_1_Rings_Layout: 
-		incbin 'data/mz/rng_act1.dat' 
+		incbin 'rings/mzrng_act1.dat'
 Mz_2_Rings_Layout: 
-		incbin 'data/mz/rng_act2.dat' 
+		incbin 'rings/mzrng_act2.dat'
 Mz_3_Rings_Layout: 
-		incbin 'data/mz/rng_act3.dat' 
+		incbin 'rings/mzrng_act3.dat'
 Mz_4_Rings_Layout: 
 		dc.w	$FFFF
 HTz_1_Rings_Layout: 
-		incbin 'data/htz/rng_act1.dat' 
+		incbin 'rings/htzrng_act1.dat'
 HTz_2_Rings_Layout: 
-		incbin 'data/htz/rng_act2.dat'
+		incbin 'rings/htzrng_act2.dat'
 HPz_1_Rings_Layout: 
-		incbin 'data/hpz/rng_act.dat' 
+		incbin 'rings/hpzrng_act.dat'
 HPz_2_Rings_Layout: 
 		dc.w	$FFFF
 Null_5_Rings_Layout: 
@@ -36460,38 +36460,38 @@ Null_5_Rings_Layout:
 Null_6_Rings_Layout: 
 		dc.w	$FFFF
 OOz_1_Rings_Layout: 
-		incbin 'data/ooz/rng_act1.dat' 
+		incbin 'rings/oozrng_act1.dat'
 OOz_2_Rings_Layout: 
-		incbin 'data/ooz/rng_act2.dat' 
+		incbin 'rings/oozrng_act2.dat'
 DHz_1_Rings_Layout: 
-		incbin 'data/dhz/rng_act1.dat' 
-DHz_2_Rings_Layout: 
-		incbin 'data/dhz/rng_act2.dat' 
+		incbin 'rings/dhzrng_act1.dat'
+DHz_2_Rings_Layout:
+		incbin 'rings/dhzrng_act2.dat'
 CNz_1_Rings_Layout: 
-		incbin 'data/cnz/rng_act1.dat' 
+		incbin 'rings/cnzrng_act1.dat'
 CNz_2_Rings_Layout: 
-		incbin 'data/cnz/rng_act2.dat' 
+		incbin 'rings/cnzrng_act2.dat'
 CPz_1_Rings_Layout: 
-		incbin 'data/cpz/rng_act1.dat' 
+		incbin 'rings/cpzrng_act1.dat'
 CPz_2_Rings_Layout: 
-		incbin 'data/cpz/rng_act2.dat' 
+		incbin 'rings/cpzrng_act2.dat'
 DEz_1_Rings_Layout: 
-		incbin 'data/dez/rng_act.dat' 
+		incbin 'rings/dezrng_act.dat'
 DEz_2_Rings_Layout: 
 		dc.w	$FFFF
 SFz_1_Rings_Layout: 
-		incbin 'data/sfz/rng_act.dat' 
+		incbin 'rings/sfzrng_act.dat'
 SFz_2_Rings_Layout: 
 		dc.w	$FFFF
 NGHz_1_Rings_Layout: 
-		incbin 'data/nghz/rng_act1.dat' 
+		incbin 'rings/nghzrng_act1.dat'
 NGHz_2_Rings_Layout: 
-		incbin 'data/nghz/rng_act2.dat' 
+		incbin 'rings/nghzrng_act2.dat'
 SCz_1_Rings_Layout: 
-		incbin 'data/scz/rng_act.dat' 
+		incbin 'rings/sczrng_act.dat'
 SCz_2_Rings_Layout: 
 		dc.w	$FFFF
-;------------------------------------------------------------------------------- 
+;-------------------------------------------------------------------------------
 SCz_1_PB_Rings_Layout: 
 		dc.w	$12E0,$3530,$1400,$3580,$F60,$D510,$FFFF
 SCz_2_PB_Rings_Layout: 
