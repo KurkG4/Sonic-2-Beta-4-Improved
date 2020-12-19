@@ -36591,7 +36591,7 @@ Music_9C_Ptr equ (Music_9C&$FFFF)|$8000
 Music_9D_Ptr equ (Music_9D&$FFFF)|$8000 
 Music_9E_Ptr equ (Music_9E&$FFFF)|$8000 
 Music_9F_Ptr equ (Music_9F&$FFFF)|$8000 
- 
+
 ;------------------------------------------------------------------------------- 
 		cnop 0,$F0000
 Music_9C_Idx: 
@@ -36612,7 +36612,7 @@ Music_81_To_9F:
 		dc.w	(((Music_8B_Ptr>>$8)|(Music_8B_Ptr<<$8))&$FFFF)
 		dc.w	(((Music_83_Ptr>>$8)|(Music_83_Ptr<<$8))&$FFFF)
 		dc.w	(((Music_87_Ptr>>$8)|(Music_87_Ptr<<$8))&$FFFF) 
-		dc.w	(((Music_8A_Ptr>>$8)|(Music_8A_Ptr<<$8))&$FFFF) 
+		dc.w	(((Music_8A_Ptr>>$8)|(Music_8A_Ptr<<$8))&$FFFF)
 		dc.w	(((Music_92_Ptr>>$8)|(Music_92_Ptr<<$8))&$FFFF) 
 		dc.w	(((Music_91_Ptr>>$8)|(Music_91_Ptr<<$8))&$FFFF) 
 		dc.w	(((Music_95_Ptr>>$8)|(Music_95_Ptr<<$8))&$FFFF)
@@ -36697,7 +36697,7 @@ Music_9D: ; Emerald ( Uncompressed )
 Music_9E: ; Credits ( Uncompressed ) 
 		incbin 'sound/credt_9E.snd'
 ;-------------------------------------------------------------------------------
-Sfx_A0_Ptr equ (Sfx_A0&$FFFF)|$8000 
+Sfx_A0_Ptr equ (Sfx_A0&$FFFF)|$8000
 Sfx_A1_Ptr equ (Sfx_A1&$FFFF)|$8000 
 Sfx_A2_Ptr equ (Sfx_A2&$FFFF)|$8000 
 Sfx_A3_Ptr equ (Sfx_A3&$FFFF)|$8000 
