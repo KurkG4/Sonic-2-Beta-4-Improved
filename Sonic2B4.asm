@@ -1,7 +1,7 @@
 ; Sonic 2 Beta 4 Disassembly (Version 1.0) By Esrael L. G. Neto (www.sonichacking.com)
 ;
 ; "Sonic The Hedgehog 2 (Beta 4 - Sep 18,1992,16.26) (hidden-palace.org).bin" Rom by drx (http://www.hidden-palace.org/)
-;
+; 
 ;
 ; Hidden Palace uses a copy of Hill Top 2's level layout
 ; Rhinobot's tiles were edited to use another palette
@@ -15,15 +15,15 @@
 ; - PLC Pointers
 ; - Tiles Main Table
 
-    include "macros.asm"
-
+  include "macros.asm"
+  include "Constants.asm"
+  
 ; ASSEMBLY OPTIONS:
 skipChecksumCheck = 0
 ;	| If 1, disables the unnecessary (and slow) bootup checksum calculation
 ;
 
-
-; Rom Start/Vectors
+; Rom Start 	
 		dc.l	$FFFFFE00,EntryPoint,BusError,addressError
 		dc.l	IllegalInstr,ZeroDivide,ChkInstr,TrapvInstr
 		dc.l	PrivilegeViolation,Trace,Line1010Emu,Line1111Emu
@@ -40,63 +40,63 @@ skipChecksumCheck = 0
 		dc.l	ErrorTrap,ErrorTrap,ErrorTrap,ErrorTrap
 		dc.l	ErrorTrap,ErrorTrap,ErrorTrap,ErrorTrap
 		dc.l	ErrorTrap,ErrorTrap,ErrorTrap,ErrorTrap
-		dc.b    'SEGA MEGA DRIVE '	; Console
-		dc.b    '(C)SEGA 1991.APR'	; Date (same as Sonic 1)
-		dc.b    'SONIC THE             HEDGEHOG 2                '      ; Title - Overseas
-		dc.b    'SONIC THE             HEDGEHOG 2                '	; Title - International
-		dc.b    'GM 00001051-00'	; Serial code
+Console:	dc.b    'SEGA MEGA DRIVE '
+Date:		dc.b    '(C)SEGA 1991.APR'
+Title_Local:	dc.b    'SONIC THE             HEDGEHOG 2                '
+Title_Int:	dc.b    'SONIC THE             HEDGEHOG 2                '
+Serial:		dc.b    'GM 00001051-00'
 Checksum:	dc.w    $264A
-		dc.b    'J               '
-		dc.l    0	; ROM start
+IOSupport:	dc.b    'J               '
+ROMStart:	dc.l    0
 ROMEnd:		dc.l    $FFFFF
-		dc.l    $FF0000	; RAM start
-		dc.l    $FFFFFF	; RAM end
-		dc.b    '                '
-		dc.b    '                                                '
-		dc.b    'JUE             '
-ErrorTrap:
-		nop
-		nop
-		bra.s	ErrorTrap
-EntryPoint:
-		tst.l	$A10008
-		bne.s	PortA_OK
-		tst.w	$A1000C
-PortA_OK:
-		bne.s	PortC_OK
-		lea	InitValues(pc),a5
-		movem.w	(a5)+,d5-d7
-		movem.l	(a5)+,a0-a4
+RAMStart:	dc.l    $FF0000
+RAMEnd:		dc.l    $FFFFFF
+SRAMSupport:	dc.b    '                '
+Notes:		dc.b    '                                                '
+Region:		dc.b    'JUE             '    
+ErrorTrap: 
+		nop 
+		nop 
+		bra.s	ErrorTrap 
+EntryPoint: 
+		tst.l	Z80_Port_1_Control
+		bne.s	PortA_OK 
+		tst.w	Z80_Expansion_Control
+PortA_OK: 
+		bne.s	PortC_OK 
+		lea	InitValues(pc),a5 
+		movem.w	(a5)+,d5-d7 
+		movem.l	(a5)+,a0-a4 
 		move.b	$FFFFEF01(a1),d0
 		and.b	#$F,d0
-		beq.s	SkipSecurity
-		move.l	#'SEGA',$2F00(a1)
-SkipSecurity:
+		beq.s	SkipSecurity 
+		move.l	#'SEGA',$2F00(a1) 
+SkipSecurity: 
 		move.w	(a4),d0
 		moveq	#0,d0
 		move.l	d0,a6
 		move.l	a6,USP
 		moveq	#$17,d1
-VDPInitLoop:
+VDPInitLoop: 
 		move.b	(a5)+,d5
 		move.w	d5,(a4)
 		add.w	d7,d5
-		dbra	d1,VDPInitLoop
+		dbra	d1,VDPInitLoop 
 		move.l	(a5)+,(a4)
-		move.w	d0,(a3)
-		move.w	d7,(a1)
+		move.w	d0,(a3) 
+		move.w	d7,(a1) 
 		move.w	d7,(a2)
-WaitForZ80:
+WaitForZ80: 
 		btst D0,(a1)
-		bne.s	WaitForZ80
+		bne.s	WaitForZ80 
 		moveq	#$25,d2
-Z80InitLoop:
+Z80InitLoop: 
 		move.b	(a5)+,(a0)+
-		dbra	d2,Z80InitLoop
+		dbra	d2,Z80InitLoop 
 		move.w	d0,(a2)
 		move.w	d0,(a1)
 		move.w	d7,(a2)
-ClearRAMLoop:
+ClearRAMLoop: 
 		move.l	d0,-(a6)
 		dbra	d6,ClearRAMLoop 
 		move.l	(a5)+,(a4)
@@ -121,24 +121,25 @@ PortC_OK:
 		bra.s	GameProgram 
 InitValues: 
 		dc.w	$8000,$3FFF,$100 ; Z80 RAM start	location
-		dc.l	$A00000 ; Z80 bus request
-		dc.l	$A11100 ; Z80 reset
-		dc.l	$A11200 ; VDP data port
-		dc.l	$C00000 ; VDP control port
-		dc.l	$C00004
-		dc.w	$414,$303C,$76C,0,0,$FF00,$8137,$1
+		dc.l	Z80_RAM ; Z80 bus request
+		dc.l	Z80_Bus_Request ; Z80 reset
+		dc.l	Z80_Reset ; VDP data port
+		dc.l	VDP_data_port ; VDP control port
+		dc.l	VDP_control_port
+		dc.w	$414,$303C,$76C,$0,$0,$FF00,$8137,$1
 		dc.w	$100,$FF,$FF00,$80,$4000,$80,$AF01,$D91F
 		dc.w	$1127,$21,$2600,$F977,$EDB0,$DDE1,$FDE1,$ED47
 		dc.w	$ED4F,$D1E1,$F108,$D9C1,$D1E1,$F1F9,$F3ED,$5636
-		dc.w	$E9E9,$8104,$8F02,$C000,0,$4000,$10,$9FBF
+		dc.w	$E9E9,$8104,$8F02,$C000,$0,$4000,$10,$9FBF
 		dc.w	$DFFF 
 GameProgram: 
-		tst.w	($C00004) 
+		tst.w	(VDP_control_port)
 		btst	#6,($A1000D)
-		beq.s	ChecksumCheck 
-		cmp.l	#'init',($FFFFFFFC).w
-		beq.w	AlreadyInit
-ChecksumCheck: 
+		beq.s	ChecksumCheck
+		cmp.l	#'init',(Checksum_fourcc).w
+		beq	AlreadyInit 
+ChecksumCheck:
+
     if skipChecksumCheck=0	; checksum code
 		move.l	#ErrorTrap,a0 
 		move.l	#ROMEnd,a1 
@@ -164,7 +165,7 @@ ClearSomeRAMLoop:
 		move.b	($A10001),d0 
 		and.b	#$C0,d0
 		move.b	d0,($FFFFFFF8).w	
-		move.l	#'init',($FFFFFFFC).w
+		move.l	#'init',(Checksum_fourcc).w
 AlreadyInit: 
 		lea	($FF0000),a6 
 		moveq	#0,d7 
@@ -173,23 +174,23 @@ ClearRemainingRAMLoop:
 		move.l	d7,(a6)+ 
 		dbra	d6,ClearRemainingRAMLoop 
 		bsr.w	VDPRegSetup 
-		bsr.w	SoundDriverLoad
+		bsr.w	SoundDriverLoad 
 		bsr.w	JoypadInit 
 		move.b	#0,($FFFFF600).w
 MainGameLoop: 
 		move.b	($FFFFF600).w,d0
 		and.w	#$1C,d0
-		jsr	GameModeArray(pc,d0)
-		bra.s	MainGameLoop
+		jsr	GameModeArray(pc,d0) 
+		bra.s	MainGameLoop 
 GameModeArray: 
-		bra	SegaScreen 
-		bra	TitleScreen 
-		bra	Level 
-		bra	Level 
-		bra	SpecialStage 
-		bra	Continue 
-		bra	Go_Versus_Mode_Results 
-		bra	Go_Versus_Mode_Menu 
+		bra.w	SegaScreen
+		bra.w	TitleScreen 
+		bra.w	Level 
+		bra.w	Level 
+		bra.w	SpecialStage 
+		bra.w	Continue 
+		bra.w	Go_Versus_Mode_Results 
+		bra.w	Go_Versus_Mode_Menu 
     if skipChecksumCheck=0
 ;===============================================================================
 ; ChecksumError
@@ -200,10 +201,10 @@ GameModeArray:
 ;===============================================================================
 ChecksumError: 
 		bsr.w	VDPRegSetup 
-		move.l	#$C0000000,($C00004)
+		move.l	#$C00000,(VDP_control_port)
 		moveq	#$3F,d7
 ChksumErr_RedFill: 
-		move.w	#$E,($C00000)
+		move.w	#$E,(VDP_data_port)
 		dbra	d7,ChksumErr_RedFill 
 ChksumErr_InfLoop: 
 		bra.s	ChksumErr_InfLoop 
@@ -213,9 +214,9 @@ ChksumErr_InfLoop:
 ; Leftover subroutine from Sonic 1 showing a red
 ; screen when the checksum was	wrong
 ; [ End ]
-;=============================================================================== 
+;===============================================================================
     endif
-BusError:
+BusError: 
 		move.b	#2,($FFFFFC44).w
 		bra.s	ErrorMsg_TwoAddresses 
 AddressError: 
@@ -268,25 +269,25 @@ ErrorMessage:
 		movem.l	d0-d7/a0-a7,($FFFFFC00).w
 		bsr.w	ShowErrorMsg 
 		move.l	2(sp),d0
-		bsr.w	ShowErrAddress 
+		bsr.w	ShowErrAddress
 ErrorMsg_Wait: 
-		bsr.w	Error_WaitForC 
+		bsr.w	Error_WaitForC
 		movem.l	($FFFFFC00).w,d0-d7/a0-a7
 		move	#$2300,sr
 		rte
 ShowErrorMsg: 
-		lea	($C00000),a6
-		move.l	#$78000003,($C00004)
+		lea	(VDP_data_port),a6
+		move.l	#$78000003,(VDP_control_port)
 		lea	(art_Menu_Text),a0 
 		move.w	#$27F,d1
 Error_LoadGfx: 
 		move.w	(a0)+,(a6)
-		dbra	d1,Error_LoadGfx 
+		dbra	d1,Error_LoadGfx
 		moveq	#0,d0
 		move.b	($FFFFFC44).w,d0
 		move.w	Error_Text(pc,d0),d0 
 		lea	Error_Text(pc,d0),a0 
-		move.l	#$46040003,($C00004)
+		move.l	#$46040003,(VDP_control_port)
 		moveq	#$12,d1
 loc_4C6: 
 		moveq	#0,d0
@@ -340,7 +341,7 @@ ShowErrDigit_NoOverflow:
 		move.w	d1,(a6)
 		rts
 ;--------------------------------------------------------------------------------
-Error_WaitForC:
+Error_WaitForC: 
 		bsr.w	ReadJoypads 
 		cmp.b	#$20,($FFFFF605).w
 		bne.w	Error_WaitForC 
@@ -359,13 +360,13 @@ Go_Versus_Mode_Results:
 HBlank: 
 		movem.l	d0-d7/a0-a6,-(sp)
 		tst.b	($FFFFF62A).w
-		beq.w	loc_B9A
+		beq	loc_B9A
 loc_B2C: 
-		move.w	($C00004),d0
+		move.w	(VDP_control_port),d0
 		and.w	#8,d0
 		beq.s	loc_B2C
-		move.l	#$40000010,($C00004)
-		move.l	($FFFFF616).w,($C00000)
+		move.l	#$40000010,(VDP_control_port)
+		move.l	($FFFFF616).w,(VDP_data_port)
 		btst	#6,($FFFFFFF8).w
 		beq.s	loc_B5A
 		move.w	#$700,d0
@@ -403,14 +404,17 @@ loc_B9A:
 		beq.s	loc_BD2
 		cmp.b	#$C,($FFFFF600).w
 		beq.s	loc_BD2
-		stopZ80
+		move.w	#$100,(Z80_Bus_Request)
+loc_BBA: 
+		btst	#0,(Z80_Bus_Request)
+		bne.s	loc_BBA
 		bsr.w	loc_15A4
-		startZ80
+		move.w	#0,(Z80_Bus_Request)
 		bra.s	loc_B76
 loc_BD2:
 		tst.b	($FFFFF730).w
-		beq.w	loc_C74
-		move.w	($C00004),d0
+		beq	loc_C74
+		move.w	(VDP_control_port),d0
 		btst	#6,($FFFFFFF8).w
 		beq.s	loc_BF0
 		move.w	#$700,d0
@@ -418,35 +422,38 @@ loc_BEC:
 		dbra	d0,loc_BEC
 loc_BF0:
 		move.w	#1,($FFFFF644).w
-		stopZ80
+		move.w	#$100,(Z80_Bus_Request)
+loc_BFE: 
+		btst	#0,(Z80_Bus_Request)
+		bne.s	loc_BFE
 		tst.b	($FFFFF64E).w
 		bne.s	loc_C34
-		lea	($C00004),a5
+		lea	(VDP_control_port),a5
 		move.l	#$94009340,(a5)
 		move.l	#$96FD9580,(a5)
 		move.w	#$977F,(a5)
 		move.w	#$C000,(a5)
-		move.w	#$80,($FFFFF640).w
-		move.w	($FFFFF640).w,(a5)
+		move.w	#$80,(DMA_data_thunk).w
+		move.w	(DMA_data_thunk).w,(a5)
 		bra.s	loc_C58
 loc_C34:
-		lea	($C00004),a5
+		lea	(VDP_control_port),a5
 		move.l	#$94009340,(a5)
 		move.l	#$96FD9540,(a5)
 		move.w	#$977F,(a5)
 		move.w	#$C000,(a5)
-		move.w	#$80,($FFFFF640).w
-		move.w	($FFFFF640).w,(a5)
+		move.w	#$80,(DMA_data_thunk).w
+		move.w	(DMA_data_thunk).w,(a5)
 loc_C58:
 		move.w	($FFFFF624).w,(a5)
-		move.w	#$8230,($C00004)
+		move.w	#$8230,(VDP_control_port)
 		bsr.w	loc_15A4
-		startZ80
-		bra	loc_B76
+		move.w	#0,(Z80_Bus_Request)
+		bra.w	loc_B76
 loc_C74:
-		move.w	($C00004),d0
-		move.l	#$40000010,($C00004)
-		move.l	($FFFFF616).w,($C00000)
+		move.w	(VDP_control_port),d0
+		move.l	#$40000010,(VDP_control_port)
+		move.l	($FFFFF616).w,(VDP_data_port)
 		btst	#6,($FFFFFFF8).w
 		beq.s	loc_C9C
 		move.w	#$700,d0
@@ -454,32 +461,35 @@ loc_C98:
 		dbra	d0,loc_C98
 loc_C9C:
 		move.w	#1,($FFFFF644).w
-		move.w	($FFFFF624).w,($C00004)
-		move.w	#$8230,($C00004)
+		move.w	($FFFFF624).w,(VDP_control_port)
+		move.w	#$8230,(VDP_control_port)
 		move.l	($FFFFF61E).w,($FFFFEEEC).w
-		stopZ80
-		lea	($C00004),a5
+		move.w	#$100,(Z80_Bus_Request)
+loc_CC0: 
+		btst	#0,(Z80_Bus_Request)
+		bne.s	loc_CC0
+		lea	(VDP_control_port),a5
 		move.l	#$94019340,(a5)
 		move.l	#$96FC9500,(a5)
 		move.w	#$977F,(a5)
 		move.w	#$7800,(a5)
-		move.w	#$83,($FFFFF640).w
-		move.w	($FFFFF640).w,(a5)
+		move.w	#$83,(DMA_data_thunk).w
+		move.w	(DMA_data_thunk).w,(a5)
 		bsr.w	loc_15A4
-		startZ80
-		bra	loc_B76
+		move.w	#0,(Z80_Bus_Request)
+		bra.w	loc_B76
 loc_CFE:
 		bsr.w	loc_13B8
-		lea	($C00004),a5
+		lea	(VDP_control_port),a5
 		move.l	#$940193C0,(a5)
 		move.l	#$96F09500,(a5)
 		move.w	#$977F,(a5)
 		move.w	#$7C00,(a5)
-		move.w	#$83,($FFFFF640).w
-		move.w	($FFFFF640).w,(a5)
+		move.w	#$83,(DMA_data_thunk).w
+		move.w	(DMA_data_thunk).w,(a5)
 		bsr.w	loc_15FA
 		tst.w	($FFFFF614).w
-		beq.w	loc_D36
+		beq	loc_D36
 		subq.w	#1,($FFFFF614).w
 loc_D36:
 		rts
@@ -488,12 +498,15 @@ loc_D38:
 		move.b	($FFFFFE0F).w,d0
 		and.w	#$F,d0
 		bne.s	loc_D60
-		stopZ80
-		bsr.w	ReadJoypads
-		startZ80
+		move.w	#$100,(Z80_Bus_Request)
+loc_D4A: 
+		btst	#0,(Z80_Bus_Request)
+		bne.s	loc_D4A
+		bsr.w	ReadJoypads 
+		move.w	#0,(Z80_Bus_Request)
 loc_D60:
 		tst.w	($FFFFF614).w
-		beq.w	loc_D6C
+		beq	loc_D6C
 		subq.w	#1,($FFFFF614).w
 loc_D6C:
 		rts
@@ -502,7 +515,7 @@ loc_D6E:
 		bsr.w	loc_13B8
 		bsr.w	loc_1BDC
 		tst.w	($FFFFF614).w
-		beq.w	loc_D82
+		beq	loc_D82
 		subq.w	#1,($FFFFF614).w
 loc_D82:
 		rts
@@ -513,13 +526,16 @@ loc_D84:
 ;--------------------------------------------------------------------------------
 loc_D8A:
 		cmp.b	#$10,($FFFFF600).w
-		beq.w	loc_F10
+		beq	loc_F10
 loc_D94:
-		stopZ80
+		move.w	#$100,(Z80_Bus_Request)
+loc_D9C: 
+		btst	#0,(Z80_Bus_Request)
+		bne.s	loc_D9C
 		bsr.w	ReadJoypads 
 		tst.b	($FFFFF622).w
 		beq.s	loc_E06
-		lea	($C00004),a5
+		lea	(VDP_control_port),a5
 		tst.w	($FFFFF63A).w
 		bne.w	loc_E56
 		subq.b	#1,($FFFFF622).w
@@ -528,14 +544,14 @@ loc_D94:
 loc_DCA:
 		cmp.b	#$10,($FFFFF622).w
 		bcs.s	loc_E06
-		lea	($C00000),a6
-		move.l	#$C0000000,($C00004)
+		lea	(VDP_data_port),a6
+		move.l	#$C00000,(VDP_control_port)
 		move.w	#$EEE,d0
 		move.w	#$1F,d1
 loc_DEA: 
 		move.w	d0,(a6)
 		dbra	d1,loc_DEA
-		move.l	#$C0420000,($C00004)
+		move.l	#$C0420000,(VDP_control_port)
 		move.w	#$1F,d1
 loc_DFE: 
 		move.w	d0,(a6)
@@ -544,42 +560,42 @@ loc_DFE:
 loc_E06:
 		tst.b	($FFFFF64E).w
 		bne.s	loc_E32
-		lea	($C00004),a5
+		lea	(VDP_control_port),a5
 		move.l	#$94009340,(a5)
 		move.l	#$96FD9580,(a5)
 		move.w	#$977F,(a5)
 		move.w	#$C000,(a5)
-		move.w	#$80,($FFFFF640).w
-		move.w	($FFFFF640).w,(a5)
+		move.w	#$80,(DMA_data_thunk).w
+		move.w	(DMA_data_thunk).w,(a5)
 		bra.s	loc_E56
 loc_E32:
-		lea	($C00004),a5
+		lea	(VDP_control_port),a5
 		move.l	#$94009340,(a5)
 		move.l	#$96FD9540,(a5)
 		move.w	#$977F,(a5)
 		move.w	#$C000,(a5)
-		move.w	#$80,($FFFFF640).w
-		move.w	($FFFFF640).w,(a5)
+		move.w	#$80,(DMA_data_thunk).w
+		move.w	(DMA_data_thunk).w,(a5)
 loc_E56:
 		move.w	($FFFFF624).w,(a5)
-		move.w	#$8230,($C00004)
-		lea	($C00004),a5
+		move.w	#$8230,(VDP_control_port)
+		lea	(VDP_control_port),a5
 		move.l	#$940193C0,(a5)
 		move.l	#$96F09500,(a5)
 		move.w	#$977F,(a5)
 		move.w	#$7C00,(a5)
-		move.w	#$83,($FFFFF640).w
-		move.w	($FFFFF640).w,(a5)
-		lea	($C00004),a5
+		move.w	#$83,(DMA_data_thunk).w
+		move.w	(DMA_data_thunk).w,(a5)
+		lea	(VDP_control_port),a5
 		move.l	#$94019340,(a5)
 		move.l	#$96FC9500,(a5)
 		move.w	#$977F,(a5)
 		move.w	#$7800,(a5)
-		move.w	#$83,($FFFFF640).w
-		move.w	($FFFFF640).w,(a5)
+		move.w	#$83,(DMA_data_thunk).w
+		move.w	(DMA_data_thunk).w,(a5)
 		bsr.w	Process_DMA 
 		bsr.w	loc_15A4
-		startZ80
+		move.w	#0,(Z80_Bus_Request)
 		movem.l	($FFFFEE00).w,d0-d7
 		movem.l	d0-d7,($FFFFEE60).w
 		movem.l	($FFFFEE20).w,d0-d7
@@ -597,54 +613,60 @@ DemoTime:
 		jsr	HudUpdate 
 		bsr.w	loc_1BF8
 		tst.w	($FFFFF614).w
-		beq.w	DemoTime_End 
+		beq	DemoTime_End 
 		subq.w	#1,($FFFFF614).w
 DemoTime_End: 
 		rts
 ;--------------------------------------------------------------------------------
 loc_F10:
-		stopZ80
+		move.w	#$100,(Z80_Bus_Request)
+loc_F18: 
+		btst	#0,(Z80_Bus_Request)
+		bne.s	loc_F18
 		bsr.w	ReadJoypads 
 		jsr	(loc_15A4)
-		startZ80
+		move.w	#0,(Z80_Bus_Request)
 		rts
 ;--------------------------------------------------------------------------------
 loc_F36:
-		stopZ80
+		move.w	#$100,(Z80_Bus_Request)
+loc_F3E: 
+		btst	#0,(Z80_Bus_Request)
+		bne.s	loc_F3E
 		bsr.w	ReadJoypads 
 		bsr.w	loc_11A6
-		lea	($C00004),a5
+		lea	(VDP_control_port),a5
 		move.l	#$94009340,(a5)
 		move.l	#$96FD9580,(a5)
 		move.w	#$977F,(a5)
 		move.w	#$C000,(a5)
-		move.w	#$80,($FFFFF640).w
-		move.w	($FFFFF640).w,(a5)
-		lea	($C00004),a5
+		move.w	#$80,(DMA_data_thunk).w
+		move.w	(DMA_data_thunk).w,(a5)
+		lea	(VDP_control_port),a5
 		move.l	#$94019340,(a5)
 		move.l	#$96FC9500,(a5)
 		move.w	#$977F,(a5)
 		move.w	#$7800,(a5)
-		move.w	#$83,($FFFFF640).w
-		move.w	($FFFFF640).w,(a5)
+		move.w	#$83,(DMA_data_thunk).w
+		move.w	(DMA_data_thunk).w,(a5)
 		tst.b	($FFFFDB0F).w
 		beq.s	loc_FC4
-		lea	($C00004),a5
+		lea	(VDP_control_port),a5
 		move.l	#$940193C0,(a5)
 		move.l	#$96EB9580,(a5)
 		move.w	#$977F,(a5)
 		move.w	#$7C00,(a5)
-		move.w	#$83,($FFFFF640).w
-		move.w	($FFFFF640).w,(a5)
+		move.w	#$83,(DMA_data_thunk).w
+		move.w	(DMA_data_thunk).w,(a5)
 		bra.s	loc_FE8
 loc_FC4:
-		lea	($C00004),a5
+		lea	(VDP_control_port),a5
 		move.l	#$940193C0,(a5)
 		move.l	#$96F09500,(a5)
 		move.w	#$977F,(a5)
 		move.w	#$7C00,(a5)
-		move.w	#$83,($FFFFF640).w
-		move.w	($FFFFF640).w,(a5)
+		move.w	#$83,(DMA_data_thunk).w
+		move.w	(DMA_data_thunk).w,(a5)
 loc_FE8:
 		tst.b	($FFFFDB0E).w
 		beq.s	loc_100E
@@ -666,7 +688,7 @@ loc_100E:
 		cmp.b	d1,d0
 		blt.s	loc_1052
 		move.b	#0,($FFFFDB0D).w
-		lea	($C00004),a6
+		lea	(VDP_control_port),a6
 		tst.b	($FFFFDB0C).w
 		beq.s	loc_1048
 		move.w	#$8230,(a6)
@@ -687,99 +709,99 @@ loc_104C:
 loc_1052:
 		bsr.w	Process_DMA 
 		jsr	(loc_15A4)
-		startZ80
+		move.w	#0,(Z80_Bus_Request)
 		bsr.w	loc_1BF8
 		tst.w	($FFFFF614).w
-		beq.w	loc_1074
+		beq	loc_1074
 		subq.w	#1,($FFFFF614).w
 loc_1074:
 		rts
 ;--------------------------------------------------------------------------------
 loc_1076:
-		lea	($C00004),a5
+		lea	(VDP_control_port),a5
 		move.l	#$94039380,(a5)
 		move.l	#$96E89500,(a5)
 		move.w	#$977F,(a5)
 		move.w	#$4000,(a5)
-		move.w	#$83,($FFFFF640).w
-		move.w	($FFFFF640).w,(a5)
+		move.w	#$83,(DMA_data_thunk).w
+		move.w	(DMA_data_thunk).w,(a5)
 		rts
 ;--------------------------------------------------------------------------------
 loc_109C:
-		lea	($C00004),a5
+		lea	(VDP_control_port),a5
 		move.l	#$94039380,(a5)
 		move.l	#$96E89500,(a5)
 		move.w	#$977F,(a5)
 		move.w	#$4700,(a5)
-		move.w	#$83,($FFFFF640).w
-		move.w	($FFFFF640).w,(a5)
+		move.w	#$83,(DMA_data_thunk).w
+		move.w	(DMA_data_thunk).w,(a5)
 		rts
 ;--------------------------------------------------------------------------------
 loc_10C2:
-		lea	($C00004),a5
+		lea	(VDP_control_port),a5
 		move.l	#$94039380,(a5)
 		move.l	#$96E89500,(a5)
 		move.w	#$977F,(a5)
 		move.w	#$4E00,(a5)
-		move.w	#$83,($FFFFF640).w
-		move.w	($FFFFF640).w,(a5)
+		move.w	#$83,(DMA_data_thunk).w
+		move.w	(DMA_data_thunk).w,(a5)
 		rts
 ;--------------------------------------------------------------------------------
 loc_10E8:
-		lea	($C00004),a5
+		lea	(VDP_control_port),a5
 		move.l	#$94039380,(a5)
 		move.l	#$96E89500,(a5)
 		move.w	#$977F,(a5)
 		move.w	#$5500,(a5)
-		move.w	#$83,($FFFFF640).w
-		move.w	($FFFFF640).w,(a5)
+		move.w	#$83,(DMA_data_thunk).w
+		move.w	(DMA_data_thunk).w,(a5)
 		rts
 ;--------------------------------------------------------------------------------
 loc_110E:
-		lea	($C00004),a5
+		lea	(VDP_control_port),a5
 		move.l	#$94039380,(a5)
 		move.l	#$96E89500,(a5)
 		move.w	#$977F,(a5)
 		move.w	#$4000,(a5)
-		move.w	#$82,($FFFFF640).w
-		move.w	($FFFFF640).w,(a5)
+		move.w	#$82,(DMA_data_thunk).w
+		move.w	(DMA_data_thunk).w,(a5)
 		rts
 ;--------------------------------------------------------------------------------
 loc_1134:
-		lea	($C00004),a5
+		lea	(VDP_control_port),a5
 		move.l	#$94039380,(a5)
 		move.l	#$96E89500,(a5)
 		move.w	#$977F,(a5)
 		move.w	#$4700,(a5)
-		move.w	#$82,($FFFFF640).w
-		move.w	($FFFFF640).w,(a5)
+		move.w	#$82,(DMA_data_thunk).w
+		move.w	(DMA_data_thunk).w,(a5)
 		rts
 ;--------------------------------------------------------------------------------
 loc_115A:
-		lea	($C00004),a5
+		lea	(VDP_control_port),a5
 		move.l	#$94039380,(a5)
 		move.l	#$96E89500,(a5)
 		move.w	#$977F,(a5)
 		move.w	#$4E00,(a5)
-		move.w	#$82,($FFFFF640).w
-		move.w	($FFFFF640).w,(a5)
+		move.w	#$82,(DMA_data_thunk).w
+		move.w	(DMA_data_thunk).w,(a5)
 		rts
 ;--------------------------------------------------------------------------------
 loc_1180:
-		lea	($C00004),a5
+		lea	(VDP_control_port),a5
 		move.l	#$94039380,(a5)
 		move.l	#$96E89500,(a5)
 		move.w	#$977F,(a5)
 		move.w	#$5500,(a5)
-		move.w	#$82,($FFFFF640).w
-		move.w	($FFFFF640).w,(a5)
+		move.w	#$82,(DMA_data_thunk).w
+		move.w	(DMA_data_thunk).w,(a5)
 		rts
 ;--------------------------------------------------------------------------------
 loc_11A6:
 		moveq	#0,d0
 		move.w	($FFFFDB30).w,d0
-		move.l	#$40000010,($C00004)
-		move.l	d0,($C00000)
+		move.l	#$40000010,(VDP_control_port)
+		move.l	d0,(VDP_data_port)
 		rts
 ;--------------------------------------------------------------------------------
 loc_11BE:
@@ -806,48 +828,51 @@ loc_11FA:
 		rts
 ;--------------------------------------------------------------------------------
 loc_1202:
-		dc.b	$3C,$1E,$F,$A,$8,$6,$5,0
+		dc.b	$3C,$1E,$F,$A,$8,$6,$5,$0
 loc_120A:
-		stopZ80
+		move.w	#$100,(Z80_Bus_Request) 
+loc_1212: 
+		btst	#0,(Z80_Bus_Request)
+		bne.s	loc_1212
 		bsr.w	ReadJoypads 
 		tst.b	($FFFFF64E).w
 		bne.s	loc_124C
-		lea	($C00004),a5
+		lea	(VDP_control_port),a5
 		move.l	#$94009340,(a5)
 		move.l	#$96FD9580,(a5)
 		move.w	#$977F,(a5)
 		move.w	#$C000,(a5)
-		move.w	#$80,($FFFFF640).w
-		move.w	($FFFFF640).w,(a5)
+		move.w	#$80,(DMA_data_thunk).w
+		move.w	(DMA_data_thunk).w,(a5)
 		bra.s	loc_1270
 loc_124C:
-		lea	($C00004),a5
+		lea	(VDP_control_port),a5
 		move.l	#$94009340,(a5)
 		move.l	#$96FD9540,(a5)
 		move.w	#$977F,(a5)
 		move.w	#$C000,(a5)
-		move.w	#$80,($FFFFF640).w
-		move.w	($FFFFF640).w,(a5)
+		move.w	#$80,(DMA_data_thunk).w
+		move.w	(DMA_data_thunk).w,(a5)
 loc_1270:
 		move.w	($FFFFF624).w,(a5)
-		lea	($C00004),a5
+		lea	(VDP_control_port),a5
 		move.l	#$940193C0,(a5)
 		move.l	#$96F09500,(a5)
 		move.w	#$977F,(a5)
 		move.w	#$7C00,(a5)
-		move.w	#$83,($FFFFF640).w
-		move.w	($FFFFF640).w,(a5)
-		lea	($C00004),a5
+		move.w	#$83,(DMA_data_thunk).w
+		move.w	(DMA_data_thunk).w,(a5)
+		lea	(VDP_control_port),a5
 		move.l	#$94019340,(a5)
 		move.l	#$96FC9500,(a5)
 		move.w	#$977F,(a5)
 		move.w	#$7800,(a5)
-		move.w	#$83,($FFFFF640).w
-		move.w	($FFFFF640).w,(a5)
+		move.w	#$83,(DMA_data_thunk).w
+		move.w	(DMA_data_thunk).w,(a5)
 		bsr.w	Process_DMA 
 		jsr	Load_Title_Cards_Mappings 
 		jsr	(loc_15A4)
-		startZ80
+		move.w	#0,(Z80_Bus_Request)
 		movem.l	($FFFFEE00).w,d0-d7
 		movem.l	d0-d7,($FFFFEE60).w
 		movem.l	($FFFFEE50).w,d0/d1
@@ -865,79 +890,85 @@ loc_12F8:
 loc_1308:
 		bsr.w	loc_13B8
 		move.w	($FFFFF624).w,(a5)
-		bra	loc_1BDC
+		bra.w	loc_1BDC
 loc_1314:
-		stopZ80
+		move.w	#$100,(Z80_Bus_Request)
+loc_131C: 
+		btst	#0,(Z80_Bus_Request)
+		bne.s	loc_131C
 		bsr.w	ReadJoypads 
-		lea	($C00004),a5
+		lea	(VDP_control_port),a5
 		move.l	#$94009340,(a5)
 		move.l	#$96FD9580,(a5)
 		move.w	#$977F,(a5)
 		move.w	#$C000,(a5)
-		move.w	#$80,($FFFFF640).w
-		move.w	($FFFFF640).w,(a5)
-		lea	($C00004),a5
+		move.w	#$80,(DMA_data_thunk).w
+		move.w	(DMA_data_thunk).w,(a5)
+		lea	(VDP_control_port),a5
 		move.l	#$94019340,(a5)
 		move.l	#$96FC9500,(a5)
 		move.w	#$977F,(a5)
 		move.w	#$7800,(a5)
-		move.w	#$83,($FFFFF640).w
-		move.w	($FFFFF640).w,(a5)
-		lea	($C00004),a5
+		move.w	#$83,(DMA_data_thunk).w
+		move.w	(DMA_data_thunk).w,(a5)
+		lea	(VDP_control_port),a5
 		move.l	#$940193C0,(a5)
 		move.l	#$96F09500,(a5)
 		move.w	#$977F,(a5)
 		move.w	#$7C00,(a5)
-		move.w	#$83,($FFFFF640).w
-		move.w	($FFFFF640).w,(a5)
+		move.w	#$83,(DMA_data_thunk).w
+		move.w	(DMA_data_thunk).w,(a5)
 		bsr.w	Process_DMA 
 		bsr.w	loc_15A4
-		startZ80
+		move.w	#0,(Z80_Bus_Request)
 		bsr.w	loc_1BDC
 		tst.w	($FFFFF614).w
-		beq.w	loc_13B6
+		beq	loc_13B6
 		subq.w	#1,($FFFFF614).w
 loc_13B6:
 		rts
 ;--------------------------------------------------------------------------------
 loc_13B8:
-		stopZ80
+		move.w	#$100,(Z80_Bus_Request)
+loc_13C0: 
+		btst	#0,(Z80_Bus_Request)
+		bne.s	loc_13C0
 		bsr.w	ReadJoypads 
 		tst.b	($FFFFF64E).w
 		bne.s	loc_13FA
-		lea	($C00004),a5
+		lea	(VDP_control_port),a5
 		move.l	#$94009340,(a5)
 		move.l	#$96FD9580,(a5)
 		move.w	#$977F,(a5)
 		move.w	#$C000,(a5)
-		move.w	#$80,($FFFFF640).w
-		move.w	($FFFFF640).w,(a5)
+		move.w	#$80,(DMA_data_thunk).w
+		move.w	(DMA_data_thunk).w,(a5)
 		bra.s	loc_141E
 loc_13FA:
-		lea	($C00004),a5
+		lea	(VDP_control_port),a5
 		move.l	#$94009340,(a5)
 		move.l	#$96FD9540,(a5)
 		move.w	#$977F,(a5)
 		move.w	#$C000,(a5)
-		move.w	#$80,($FFFFF640).w
-		move.w	($FFFFF640).w,(a5)
+		move.w	#$80,(DMA_data_thunk).w
+		move.w	(DMA_data_thunk).w,(a5)
 loc_141E:
-		lea	($C00004),a5
+		lea	(VDP_control_port),a5
 		move.l	#$94019340,(a5)
 		move.l	#$96FC9500,(a5)
 		move.w	#$977F,(a5)
 		move.w	#$7800,(a5)
-		move.w	#$83,($FFFFF640).w
-		move.w	($FFFFF640).w,(a5)
-		lea	($C00004),a5
+		move.w	#$83,(DMA_data_thunk).w
+		move.w	(DMA_data_thunk).w,(a5)
+		lea	(VDP_control_port),a5
 		move.l	#$940193C0,(a5)
 		move.l	#$96F09500,(a5)
 		move.w	#$977F,(a5)
 		move.w	#$7C00,(a5)
-		move.w	#$83,($FFFFF640).w
-		move.w	($FFFFF640).w,(a5)
+		move.w	#$83,(DMA_data_thunk).w
+		move.w	(DMA_data_thunk).w,(a5)
 		bsr.w	loc_15A4
-		startZ80
+		move.w	#0,(Z80_Bus_Request)
 		rts
 ;--------------------------------------------------------------------------------
 ;===============================================================================
@@ -951,53 +982,84 @@ loc_141E:
 ;===============================================================================
 VBlank: 
 		tst.w	($FFFFF644).w
-		beq.w	loc_151E
+		beq	loc_151E
 		tst.w	($FFFFFFD8).w
-		beq.w	VBlank_Not2pMode 
+		beq	VBlank_Not2pMode 
 		move.w	#0,($FFFFF644).w
 		move.l	a5,-(sp)
 		move.l	d0,-(sp)
 loc_148E: 
-		move.w	($C00004),d0
+		move.w	(VDP_control_port),d0
 		and.w	#4,d0
 		beq.s	loc_148E
 		move.w	($FFFFF60C).w,d0
 		and.b	#$BF,d0
-		move.w	d0,($C00004)
-		move.w	#$8228,($C00004)
-		move.l	#$40000010,($C00004)
-		move.l	($FFFFEEEC).w,($C00000)
-		stopZ80
-		lea	($C00004),a5
+		move.w	d0,(VDP_control_port)
+		move.w	#$8228,(VDP_control_port)
+		move.l	#$40000010,(VDP_control_port)
+		move.l	($FFFFEEEC).w,(VDP_data_port)
+		move.w	#$100,(Z80_Bus_Request)
+loc_14CA: 
+		btst	#0,(Z80_Bus_Request)
+		bne.s	loc_14CA
+		lea	(VDP_control_port),a5
 		move.l	#$94019340,(a5)
 		move.l	#$96EE9580,(a5)
 		move.w	#$977F,(a5)
 		move.w	#$7800,(a5)
-		move.w	#$83,($FFFFF640).w
-		move.w	($FFFFF640).w,(a5)
-		startZ80
+		move.w	#$83,(DMA_data_thunk).w
+		move.w	(DMA_data_thunk).w,(a5)
+		move.w	#0,(Z80_Bus_Request)
 loc_1500: 
-		move.w	($C00004),d0
+		move.w	(VDP_control_port),d0
 		and.w	#4,d0
 		beq.s	loc_1500
 		move.w	($FFFFF60C).w,d0
 		or.b	#$40,d0
-		move.w	d0,($C00004)
+		move.w	d0,(VDP_control_port)
 		move.l	(sp)+,d0
 		move.l	(sp)+,a5
 loc_151E:
 		rte
-
 VBlank_Not2pMode: 
 		move	#$2700,sr
 		move.w	#0,($FFFFF644).w
 		movem.l	a0/a1,-(sp)
-		lea	($C00000),a1
+		lea	(VDP_data_port),a1
 		lea	($FFFFFA80).w,a0
-		move.l	#$C0000000,4(a1)
-		rept 32
+		move.l	#$C00000,4(a1)
 		move.l	(a0)+,(a1)
-		endr
+		move.l	(a0)+,(a1)
+		move.l	(a0)+,(a1)
+		move.l	(a0)+,(a1)
+		move.l	(a0)+,(a1)
+		move.l	(a0)+,(a1)
+		move.l	(a0)+,(a1)
+		move.l	(a0)+,(a1)
+		move.l	(a0)+,(a1)
+		move.l	(a0)+,(a1)
+		move.l	(a0)+,(a1)
+		move.l	(a0)+,(a1)
+		move.l	(a0)+,(a1)
+		move.l	(a0)+,(a1)
+		move.l	(a0)+,(a1)
+		move.l	(a0)+,(a1)
+		move.l	(a0)+,(a1)
+		move.l	(a0)+,(a1)
+		move.l	(a0)+,(a1)
+		move.l	(a0)+,(a1)
+		move.l	(a0)+,(a1)
+		move.l	(a0)+,(a1)
+		move.l	(a0)+,(a1)
+		move.l	(a0)+,(a1)
+		move.l	(a0)+,(a1)
+		move.l	(a0)+,(a1)
+		move.l	(a0)+,(a1)
+		move.l	(a0)+,(a1)
+		move.l	(a0)+,(a1)
+		move.l	(a0)+,(a1)
+		move.l	(a0)+,(a1)
+		move.l	(a0)+,(a1)
 		move.w	#$8ADF,4(a1)
 		movem.l	(sp)+,a0/a1
 		tst.b	($FFFFF64F).w
@@ -1006,10 +1068,9 @@ VBlank_Not2pMode:
 loc_1592:
 		clr.b	($FFFFF64F).w
 		movem.l	d0-d7/a0-a6,-(sp)
-		bsr.w	DemoTime
+		bsr.w	DemoTime 
 		movem.l	(sp)+,d0-d7/a0-a6
 		rte
-
 loc_15A4:
 		lea	($FFFFE0),a0
 		lea	($A01B80),a1
@@ -1052,12 +1113,15 @@ loc_15FA:
 ; [ Begin ]
 ;=============================================================================== 
 JoypadInit: 
-		stopZ80
+		move.w	#$100,(Z80_Bus_Request)
+JoypadInit_Z80Wait: 
+		btst	#0,(Z80_Bus_Request)
+		bne.s	JoypadInit_Z80Wait 
 		moveq	#$40,d0
 		move.b	d0,($A10009)
 		move.b	d0,($A1000B)
 		move.b	d0,($A1000D)
-		startZ80
+		move.w	#0,(Z80_Bus_Request)
 		rts
 ;--------------------------------------------------------------------------------
 ;===============================================================================
@@ -1100,8 +1164,8 @@ Joypad_Read:
 ; [ Begin ]
 ;=============================================================================== 
 VDPRegSetup: 
-		lea	($C00004),a0
-		lea	($C00000),a1
+		lea	(VDP_control_port),a0
+		lea	(VDP_data_port),a1
 		lea	(VDPRegSetup_Array),a2 
 		moveq	#$12,d7
 VDPRegSetup_Loop: 
@@ -1111,10 +1175,10 @@ VDPRegSetup_Loop:
 		move.w	d0,($FFFFF60C).w
 		move.w	#$8ADF,($FFFFF624).w
 		moveq	#0,d0
-		move.l	#$40000010,($C00004)
+		move.l	#$40000010,(VDP_control_port)
 		move.w	d0,(a1)
 		move.w	d0,(a1)
-		move.l	#$C0000000,($C00004)
+		move.l	#$C00000,(VDP_control_port)
 		move.w	#$3F,d7
 VDPRegSetup_ClearCRAM: 
 		move.w	d0,(a1)
@@ -1122,12 +1186,12 @@ VDPRegSetup_ClearCRAM:
 		clr.l	($FFFFF616).w
 		clr.l	($FFFFF61A).w
 		move.l	d1,-(sp)
-		lea	($C00004),a5
+		lea	(VDP_control_port),a5
 		move.w	#$8F01,(a5)
 		move.l	#$94FF93FF,(a5)
 		move.w	#$9780,(a5)
 		move.l	#$40000080,(a5)
-		move.w	#0,($C00000)
+		move.w	#0,(VDP_data_port)
 VDPRegSetup_DMAWait: 
 		move.w	(a5),d1
 		btst	#1,d1
@@ -1147,35 +1211,38 @@ VDPReg_01:
 ; [ Begin ]
 ;=============================================================================== 
 ClearScreen: 
-		stopZ80
-		lea	($C00004),a5
+		move.w	#$100,(Z80_Bus_Request)
+loc_1724: 
+		btst	#0,(Z80_Bus_Request)
+		bne.s	loc_1724
+		lea	(VDP_control_port),a5
 		move.w	#$8F01,(a5)
 		move.l	#$9400933F,(a5)
 		move.w	#$9780,(a5)
 		move.l	#$40000080,(a5)
-		move.w	#0,($C00000)
+		move.w	#0,(VDP_data_port)
 ClearScreen_DMAWait: 
 		move.w	(a5),d1
 		btst	#1,d1
 		bne.s	ClearScreen_DMAWait 
 		move.w	#$8F02,(a5)
-		lea	($C00004),a5
+		lea	(VDP_control_port),a5
 		move.w	#$8F01,(a5)
 		move.l	#$940F93FF,(a5)
 		move.w	#$9780,(a5)
 		move.l	#$40000083,(a5)
-		move.w	#0,($C00000)
+		move.w	#0,(VDP_data_port)
 ClearScreen_DMA2Wait: 
 		move.w	(a5),d1
 		btst	#1,d1
 		bne.s	ClearScreen_DMA2Wait 
 		move.w	#$8F02,(a5)
-		lea	($C00004),a5
+		lea	(VDP_control_port),a5
 		move.w	#$8F01,(a5)
 		move.l	#$940F93FF,(a5)
 		move.w	#$9780,(a5)
 		move.l	#$60000083,(a5)
-		move.w	#0,($C00000)
+		move.w	#0,(VDP_data_port)
 loc_17AC: 
 		move.w	(a5),d1
 		btst	#1,d1
@@ -1183,12 +1250,12 @@ loc_17AC:
 		move.w	#$8F02,(a5)
 		tst.w	($FFFFFFD8).w
 		beq.s	loc_17EC
-		lea	($C00004),a5
+		lea	(VDP_control_port),a5
 		move.w	#$8F01,(a5)
 		move.l	#$940F93FF,(a5)
 		move.w	#$9780,(a5)
 		move.l	#$60000082,(a5)
-		move.w	#0,($C00000)
+		move.w	#0,(VDP_data_port)
 loc_17E0: 
 		move.w	(a5),d1
 		btst	#1,d1
@@ -1209,31 +1276,30 @@ ClearScreen_ClearBuffer1:
 ClearScreen_ClearBuffer2: 
 		move.l	d0,(a1)+
 		dbra	d1,ClearScreen_ClearBuffer2 
-		startZ80
+		move.w	#0,(Z80_Bus_Request)
 		rts
 ;--------------------------------------------------------------------------------
-SoundDriverLoad:
+SoundDriverLoad: 
 		nop
-		jmp	Sound_Driver
-				    	; the rest of this below is unused, also leftover in the final game.
-		move.w	#$100,($A11100) ; stop the Z80
-		resetZ80		; reset the Z80
-		lea	($A00000),a1
-		move.b	#$F3,(a1)+	; di
-		move.b	#$F3,(a1)+      ; di
-		move.b	#$C3,(a1)+      ; jp
-		move.b	#0,(a1)+        ; jp address low byte
-		move.b	#0,(a1)+        ; jp address high byte
-		resetZ80a
-		nop
+		jmp	Sound_Driver 
+		move.w	#$100,(Z80_Bus_Request)
+		move.w	#$100,(Z80_Reset)
+		lea	(Z80_RAM),a1
+		move.b	#$F3,(a1)+
+		move.b	#$F3,(a1)+
+		move.b	#$C3,(a1)+
+		move.b	#0,(a1)+
+		move.b	#0,(a1)+
+		move.w	#0,(Z80_Reset)
 		nop
 		nop
 		nop
-		resetZ80		; reset the Z80
-		startZ80		; start the Z80
+		nop
+		move.w	#$100,(Z80_Reset)
+		move.w	#0,(Z80_Bus_Request)
 		rts
 ;--------------------------------------------------------------------------------
-Play_Music:
+Play_Music: 
 		move.b	d0,($FFFFFFE0).w
 		rts
 ;--------------------------------------------------------------------------------
@@ -1241,7 +1307,7 @@ Play_Sfx:
 		move.b	d0,($FFFFFFE1).w
 		rts
 ;--------------------------------------------------------------------------------
-Play_Unknow:
+Play_Unknow: 
 		move.b	d0,($FFFFFFE2).w
 		rts
 ;--------------------------------------------------------------------------------
@@ -1255,11 +1321,11 @@ loc_188E:
 ;===============================================================================
 ; Sub Routine Pause
 ; [ Begin ]
-;===============================================================================
+;=============================================================================== 
 Pause: 
 		nop 
 		tst.b	($FFFFFE12).w
-		beq.w	Unpause 
+		beq	Unpause 
 		tst.w	($FFFFF63A).w
 		bne.s	Pause_AlreadyPaused 
 		btst	#7,($FFFFF605).w
@@ -1307,7 +1373,7 @@ loc_18FC:
 ; [ Begin ]
 ;=============================================================================== 
 ShowVDPGraphics: 
-		lea	($C00000),a6
+		lea	(VDP_data_port),a6
 		move.l	#$800000,d4
 ShowVDPGraphics_LineLoop: 
 		move.l	d0,4(a6)
@@ -1329,7 +1395,7 @@ ShowVDPGraphics_TileLoop:
 ; [ Begin ]
 ;=============================================================================== 
 ShowVDPGraphics_SS: 
-		lea	($C00000),a6
+		lea	(VDP_data_port),a6
 		move.l	#$1000000,d4
 ShowVDPGraphicsSS_TileLoop: 
 		move.l	d0,4(a6)
@@ -1396,7 +1462,7 @@ DMA_68KtoVRAM_NoDMA:
 ; [ Begin ]
 ;=============================================================================== 
 Process_DMA: 
-		lea	($C00004),a5
+		lea	(VDP_control_port),a5
 		lea	($FFFFDC00).w,a1
 Process_DMA_Loop: 
 		move.w	(a1)+,d0
@@ -1427,7 +1493,7 @@ Process_DMA_End:
 NemesisDec: 
 		movem.l	d0-d7/a0/a1/a3-a5,-(sp)
 		lea	(NemesisDec_Output),a3
-		lea	($C00000),a4
+		lea	(VDP_data_port),a4
 		bra.s	loc_19F6
 NemesisDec_ToRAM: 
 		movem.l	d0-d7/a0/a1/a3-a5,-(sp)
@@ -1491,7 +1557,7 @@ loc_1A5C:
 ;===============================================================================
 ; Sub Routine NemesisDec3
 ; [ Begin ] 
-;===============================================================================
+;=============================================================================== 
 NemesisDec3: 
 		moveq	#0,d4
 		moveq	#8,d3
@@ -1718,7 +1784,7 @@ loc_1BDA:
 ;=============================================================================== 
 loc_1BDC:
 		tst.w	($FFFFF6F8).w
-		beq.w	loc_1C74
+		beq	loc_1C74
 		move.w	#6,($FFFFF6FA).w
 		moveq	#0,d0
 		move.w	($FFFFF684).w,d0
@@ -1732,7 +1798,7 @@ loc_1BF8:
 		move.w	($FFFFF684).w,d0
 		add.w	#$60,($FFFFF684).w
 loc_1C10:
-		lea	($C00004),a4
+		lea	(VDP_control_port),a4
 		lsl.l	#2,d0
 		lsr.w	#2,d0
 		or.w	#$4000,d0
@@ -1791,7 +1857,7 @@ loc_1C98:
 		lsr.w	#2,d0
 		or.w	#$4000,d0
 		swap.w	d0
-		move.l	d0,($C00004)
+		move.l	d0,(VDP_control_port)
 		bsr.w	NemesisDec 
 		dbra	d1,loc_1C98
 		rts
@@ -2065,7 +2131,7 @@ loc_1EC2:
 		move.b	(a0)+,d1
 		beq.s	loc_1ED2
 		cmp.b	#1,d1
-		beq.w	loc_1E42
+		beq	loc_1E42
 		move.b	d1,d3
 		bra.s	loc_1EB6
 loc_1ED2:
@@ -2268,7 +2334,7 @@ PalCycle_CNz:
 		move.w	#0,($FFFFF632).w
 loc_210E:
 		lea	0(a0,d0),a0
-		lea	($FFFFFB00).w,a1
+		lea	(Normal_palette).w,a1
 		move.w	0(a0),$4A(a1)
 		move.w	6(a0),$4C(a1)
 		move.w	$C(a0),$4E(a1)
@@ -2293,7 +2359,7 @@ loc_2172:
 		move.w	0(a0,d0),(a1)+
 loc_2182:
 		tst.b	($FFFFF7AA).w
-		beq.w	loc_220A
+		beq	loc_220A
 		subq.w	#1,($FFFFF666).w
 		bpl loc_220A
 		move.w	#3,($FFFFF666).w
@@ -2305,7 +2371,7 @@ loc_2182:
 loc_21AE:
 		lea	(Pal_CNzCyc4),a0 
 		lea	0(a0,d0),a0
-		lea	($FFFFFB00).w,a1
+		lea	(Normal_palette).w,a1
 		move.w	0(a0),$24(a1)
 		move.w	6(a0),$26(a1)
 		move.w	$C(a0),$28(a1)
@@ -2448,8 +2514,8 @@ Pal_MzCyc1:
 Pal_MzCyc2: 
 		dc.w	$422,$866,$ECC,$422,$866,$ECC 
 Pal_MzCyc3: 
-		dc.w	$A0,0,$EE,0,$2E,0,$E2E,0
-		dc.w	$E80,0
+		dc.w	$A0,$0,$EE,$0,$2E,$0,$E2E,$0
+		dc.w	$E80,$0
 ;------------------------------------------------------------------------------- 
 Pal_HPzCyc1: 
 		dc.w	$E44,$E82,$EA8,$EEE,$E44,$E82,$EA8,$EEE
@@ -2499,17 +2565,17 @@ Pal_SFzCyc1:
 		dc.w	$4EE,$2AE,$6E,$2C,$EEE,$4EE,$2AE,$6E
 		dc.w	$4EE,$2AE,$6E,$2C,$2AE,$6E,$2C,$28
 Pal_SFzCyc2: 
-		dc.w	0,$444,$444,$444,$444,0,$444,$444
-		dc.w	$444,$444,0,$444,$444,$444,$444,0 
+		dc.w	$0,$444,$444,$444,$444,$0,$444,$444
+		dc.w	$444,$444,$0,$444,$444,$444,$444,$0 
 Pal_SFzCyc3: 
-		dc.w	$E0,$A0,$60,$20,0,$200,$600,$A20
-		dc.w	$E60,$A20,$600,$200,0,$2,$6,$A
-		dc.w	$E,$4E,$E,$A,$6,$2,0,$22
-		dc.w	$66,$AA,$EE,$AA,$66,$22,0,$20
+		dc.w	$E0,$A0,$60,$20,$0,$200,$600,$A20
+		dc.w	$E60,$A20,$600,$200,$0,$2,$6,$A
+		dc.w	$E,$4E,$E,$A,$6,$2,$0,$22
+		dc.w	$66,$AA,$EE,$AA,$66,$22,$0,$20
 		dc.w	$60,$A0 
 Pal_SFzCyc4: 
-		dc.w	$EC0,0,$E0E,0,$EE,0,$E0,0
-		dc.w	$8E,0,$EEE,0 
+		dc.w	$EC0,$0,$E0E,$0,$EE,$0,$E0,$0
+		dc.w	$8E,$0,$EEE,$0 
 ;===============================================================================
 ; Sub Routine PalCycle_Load
 ; [ End; ]
@@ -2579,7 +2645,7 @@ loc_26AE:
 Pal_FadeTo: 
 		move.w	#$3F,($FFFFF626).w
 		moveq	#0,d0
-		lea	($FFFFFB00).w,a0
+		lea	(Normal_palette).w,a0
 		move.b	($FFFFF626).w,d0
 		add.w	d0,a0
 		moveq	#0,d1
@@ -2607,7 +2673,7 @@ loc_2810:
 ;=============================================================================== 
 Pal_FadeIn: 
 		moveq	#0,d0
-		lea	($FFFFFB00).w,a0
+		lea	(Normal_palette).w,a0
 		lea	($FFFFFB80).w,a1
 		move.b	($FFFFF626).w,d0
 		add.w	d0,a0
@@ -2700,7 +2766,7 @@ loc_289C:
 ;=============================================================================== 
 Pal_FadeOut: 
 		moveq	#0,d0
-		lea	($FFFFFB00).w,a0
+		lea	(Normal_palette).w,a0
 		move.b	($FFFFF626).w,d0
 		add.w	d0,a0
 		move.b	($FFFFF627).w,d0
@@ -2766,7 +2832,7 @@ Pal_NoDec:
 Pal_MakeWhite: 
 		move.w	#$3F,($FFFFF626).w
 		moveq	#0,d0
-		lea	($FFFFFB00).w,a0
+		lea	(Normal_palette).w,a0
 		move.b	($FFFFF626).w,d0
 		add.w	d0,a0
 		move.w	#$EEE,d1
@@ -2785,7 +2851,7 @@ loc_2934:
 ;--------------------------------------------------------------------------------
 Pal_WhiteToBlack: 
 		moveq	#0,d0
-		lea	($FFFFFB00).w,a0
+		lea	(Normal_palette).w,a0
 		lea	($FFFFFB80).w,a1
 		move.b	($FFFFF626).w,d0
 		add.w	d0,a0
@@ -2861,7 +2927,7 @@ loc_29C4:
 ;--------------------------------------------------------------------------------
 Pal_ToWhite: 
 		moveq	#0,d0
-		lea	($FFFFFB00).w,a0
+		lea	(Normal_palette).w,a0
 		move.b	($FFFFF626).w,d0
 		add.w	d0,a0
 		move.b	($FFFFF627).w,d0
@@ -2921,7 +2987,7 @@ loc_2A44:
 ; PalCycle_Sega: 
 		tst.b	($FFFFF635).w
 		bne.s	loc_2AA8
-		lea	($FFFFFB20).w,a1
+		lea	(Normal_palette_line2).w,a1
 		lea	(Pal_SegaCyc1),a0 
 		moveq	#5,d1
 		move.w	($FFFFF632).w,d0
@@ -2978,7 +3044,7 @@ loc_2AC6:
 		move.l	(a0)+,(a1)+
 		move.l	(a0)+,(a1)+
 		move.w	(a0)+,(a1)
-		lea	($FFFFFB20).w,a1
+		lea	(Normal_palette_line2).w,a1
 		moveq	#0,d0
 		moveq	#$2C,d1
 loc_2AE6: 
@@ -3091,7 +3157,7 @@ loc_2B9E:
 ;=============================================================================== 
  
 PalPointers: 
-		dc.l	Pal_Sega_Bg,$FB00001F ; 0 Sega Logo -> loc_2CE6
+		dc.l	Pal_Sega_Bg,$FB00001F ; $0 Sega Logo -> loc_2CE6
 		dc.l	Pal_Title_Screen,$FB00001F ; $1 Title Screen -> loc_2D66
 		dc.l	Pal_Level_Select_Menu,$FB00001F ; $2 Level Select Menu -> loc_2DE6
 		dc.l	Pal_Sonic_And_Miles,$FB00000F ; $3 Sonic & Miles -> loc_2E66
@@ -3174,10 +3240,10 @@ Pal_SCz:
 Pal_DHz_Boss: 
 		incbin 'palettes/dhz_boss.pal'
 loc_3526: 
-		dc.w	0,0,$6E,$AE,$EE,$44,$EEE,$AAA
+		dc.w	$0,$0,$6E,$AE,$EE,$44,$EEE,$AAA
 		dc.w	$888,$444,$666,$EC0,$EE,$88,$A0E,$E0
 loc_3546: 
-		dc.w	$6E,0,$E80,$EC0,$EEA,$44,$EEE,$AAA
+		dc.w	$6E,$0,$E80,$EC0,$EEA,$44,$EEE,$AAA
 		dc.w	$888,$444,$666,$48E,$EE,$88,$6AE,$8CE 
 Pal_Versus_Mode_Menu: 
 		incbin 'palettes/vs_menu.pal'
@@ -3264,7 +3330,7 @@ CalcSine:
 		rts
 ;--------------------------------------------------------------------------------
 Sine_Data: 
-		dc.w	0,$6,$C,$12,$19,$1F,$25,$2B
+		dc.w	$0,$6,$C,$12,$19,$1F,$25,$2B
 		dc.w	$31,$38,$3E,$44,$4A,$50,$56,$5C
 		dc.w	$61,$67,$6D,$73,$78,$7E,$83,$88
 		dc.w	$8E,$93,$98,$9D,$A2,$A7,$AB,$B0
@@ -3280,7 +3346,7 @@ Sine_Data:
 		dc.w	$8E,$88,$83,$7E,$78,$73,$6D,$67
 		dc.w	$61,$5C,$56,$50,$4A,$44,$3E,$38
 		dc.w	$31,$2B,$25,$1F,$19,$12,$C,$6
-		dc.w	0,$FFFA,$FFF4,$FFEE,$FFE7,$FFE1,$FFDB,$FFD5
+		dc.w	$0,$FFFA,$FFF4,$FFEE,$FFE7,$FFE1,$FFDB,$FFD5
 		dc.w	$FFCF,$FFC8,$FFC2,$FFBC,$FFB6,$FFB0,$FFAA,$FFA4
 		dc.w	$FF9F,$FF99,$FF93,$FF8B,$FF88,$FF82,$FF7D,$FF78
 		dc.w	$FF72,$FF6D,$FF68,$FF63,$FF5E,$FF59,$FF55,$FF50
@@ -3296,7 +3362,7 @@ Sine_Data:
 		dc.w	$FF72,$FF78,$FF7D,$FF82,$FF88,$FF8B,$FF93,$FF99
 		dc.w	$FF9F,$FFA4,$FFAA,$FFB0,$FFB6,$FFBC,$FFC2,$FFC8
 		dc.w	$FFCF,$FFD5,$FFDB,$FFE1,$FFE7,$FFEE,$FFF4,$FFFA
-		dc.w	0,$6,$C,$12,$19,$1F,$25,$2B
+		dc.w	$0,$6,$C,$12,$19,$1F,$25,$2B
 		dc.w	$31,$38,$3E,$44,$4A,$50,$56,$5C
 		dc.w	$61,$67,$6D,$73,$78,$7E,$83,$88
 		dc.w	$8E,$93,$98,$9D,$A2,$A7,$AB,$B0
@@ -3362,7 +3428,7 @@ loc_3B2E:
 		rts
 ;--------------------------------------------------------------------------------
 AngleData: 
-		dc.b	0,0,0,0,$1,$1,$1,$1,$1,$1,$2,$2,$2,$2,$2,$2
+		dc.b	$0,$0,$0,$0,$1,$1,$1,$1,$1,$1,$2,$2,$2,$2,$2,$2
 		dc.b	$3,$3,$3,$3,$3,$3,$3,$4,$4,$4,$4,$4,$4,$5,$5,$5
 		dc.b	$5,$5,$5,$6,$6,$6,$6,$6,$6,$6,$7,$7,$7,$7,$7,$7
 		dc.b	$8,$8,$8,$8,$8,$8,$8,$9,$9,$9,$9,$9,$9,$A,$A,$A
@@ -3378,7 +3444,7 @@ AngleData:
 		dc.b	$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1C,$1D,$1D,$1D,$1D,$1D,$1D,$1D,$1D
 		dc.b	$1D,$1D,$1D,$1E,$1E,$1E,$1E,$1E,$1E,$1E,$1E,$1E,$1E,$1E,$1F,$1F
 		dc.b	$1F,$1F,$1F,$1F,$1F,$1F,$1F,$1F,$1F,$1F,$20,$20,$20,$20,$20,$20
-		dc.b	$20,0 
+		dc.b	$20,$0 
 		nop 
 ;===============================================================================
 ; Sub Routine CalcAngle
@@ -3406,7 +3472,7 @@ loc_3C56:
 loc_3C66: 
 		move.l	d0,(a1)+
 		dbra	d1,loc_3C66
-		lea	($C00004),a6
+		lea	(VDP_control_port),a6
 		move.w	#$8004,(a6)
 		move.w	#$8230,(a6)
 		move.w	#$8405,(a6)
@@ -3419,26 +3485,26 @@ loc_3C66:
 		move	#$2700,sr
 		move.w	($FFFFF60C).w,d0
 		and.b	#$BF,d0
-		move.w	d0,($C00004)
+		move.w	d0,(VDP_control_port)
 		bsr.w	ClearScreen 
-		lea	($C00004),a5
+		lea	(VDP_control_port),a5
 		move.w	#$8F01,(a5)
 		move.l	#$941F93FF,(a5)
 		move.w	#$9780,(a5)
 		move.l	#$40000083,(a5)
-		move.w	#0,($C00000)
+		move.w	#0,(VDP_data_port)
 loc_3CCE: 
 		move.w	(a5),d1
 		btst	#1,d1
 		bne.s	loc_3CCE
 		move.w	#$8F02,(a5)
-		move.l	#$40200000,($C00004)
+		move.l	#$40200000,(VDP_control_port)
 		lea	(Sega_Spr),a0 
 		bsr.w	NemesisDec 
-		move.l	#$50000000,($C00004)
+		move.l	#$50000000,(VDP_control_port)
 		lea	(Sega_Blocks_Spr),a0 
 		bsr.w	NemesisDec 
-		move.l	#$51000000,($C00004)
+		move.l	#$51000000,(VDP_control_port)
 		lea	(Metal_Sonic),a0 
 		bsr.w	NemesisDec 
 		lea	($FFFF0000),a1
@@ -3468,7 +3534,7 @@ loc_3D52:
 		move.w	#$F0,($FFFFF614).w
 		move.w	($FFFFF60C).w,d0
 		or.b	#$40,d0
-		move.w	d0,($C00004)
+		move.w	d0,(VDP_control_port)
 loc_3D92: 
 		move.b	#2,($FFFFF62A).w
 		bsr.w	DelayProgram 
@@ -3497,7 +3563,7 @@ loc_3DE4:
 		rts
 ;--------------------------------------------------------------------------------
 loc_3DF4:
-		lea	($C00000),a6
+		lea	(VDP_data_port),a6
 		move.l	#$1000000,d4
 loc_3E00: 
 		move.l	d0,4(a6)
@@ -3526,7 +3592,7 @@ TitleScreen:
 		bsr.w	ClearPLC 
 		bsr.w	Pal_FadeFrom 
 		move	#$2700,sr
-		lea	($C00004),a6
+		lea	(VDP_control_port),a6
 		move.w	#$8004,(a6)
 		move.w	#$8230,(a6)
 		move.w	#$8407,(a6)
@@ -3571,16 +3637,16 @@ loc_3EA8:
 		bsr.w	PalLoad1 
 		bsr.w	Pal_FadeTo 
 		move	#$2700,sr
-		move.l	#$40000000,($C00004)
+		move.l	#$40000000,(VDP_control_port)
 		lea	(Title_Screen_Bg_Wings),a0 
 		bsr.w	NemesisDec 
-		move.l	#$40000001,($C00004)
+		move.l	#$40000001,(VDP_control_port)
 		lea	(Title_Screen_Sonic_Miles),a0 
 		bsr.w	NemesisDec 
-		move.l	#$5E000001,($C00004)
+		move.l	#$5E000001,(VDP_control_port)
 		lea	(_1p2pVs_Spr),a0 
 		bsr.w	NemesisDec 
-		lea	($C00000),a6
+		lea	(VDP_data_port),a6
 		move.l	#$50000003,4(a6)
 		lea	(art_Menu_Text),a5 
 		move.w	#$28F,d1
@@ -3658,7 +3724,7 @@ loc_4046:
 		dbra	d0,loc_4046
 		move.w	($FFFFF60C).w,d0
 		or.b	#$40,d0
-		move.w	d0,($C00004)
+		move.w	d0,(VDP_control_port)
 		bsr.w	Pal_FadeTo 
 TitleScreen_Loop: 
 		move.b	#4,($FFFFF62A).w
@@ -3710,16 +3776,16 @@ Title_Cheat_CountC:
 		addq.w	#1,($FFFFFFD6).w
 loc_40F8:
 		tst.w	($FFFFF614).w
-		beq.w	loc_42B4
+		beq	loc_42B4
 		and.b	#$80,($FFFFF605).w
-		beq.w	TitleScreen_Loop 
+		beq	TitleScreen_Loop 
 loc_410A: 
 		moveq	#0,d0
 		move.b	($FFFFB0DA).w,d0
 		move.w	d0,($FFFFFFD8).w
 		bne.w	PlayLevel
 		tst.b	($FFFFFFD0).w
-		beq.w	PlayLevel 
+		beq	PlayLevel 
 		cmp.b	#$C0,($FFFFF604).w
 		bne.w	PlayLevel 
 		move.b	#$91,d0
@@ -3734,8 +3800,8 @@ LevelSelect_ClearScroll:
 		dbra	d1,LevelSelect_ClearScroll 
 		move.l	d0,($FFFFF616).w
 		move	#$2700,sr
-		lea	($C00000),a6
-		move.l	#$60000003,($C00004)
+		lea	(VDP_data_port),a6
+		move.l	#$60000003,(VDP_control_port)
 		move.w	#$3FF,d1
 LevelSelect_ClearVRAM: 
 		move.l	d0,(a6)
@@ -3781,7 +3847,7 @@ loc_41AE:
 		rts
 ;--------------------------------------------------------------------------------
 Level_Select_Array:
-		dc.w	0,$1 ; GHz
+		dc.w	$0,$1 ; GHz
 		dc.w	$400,$401,$500 ; Mz
 		dc.w	$700,$701 ; HTz
 		dc.w	$FFFF,$FFFF ; HPz - Disabled
@@ -3794,7 +3860,7 @@ Level_Select_Array:
 		dc.w	$600 ; SFz
 		dc.w	$E00 ; DEz
 		dc.w	$4000 ; SS
-		dc.w	0 ; Sound Test
+		dc.w	$0 ; Sound Test
 Level_Select_Level: 
 		and.w	#$3FFF,d0
 		move.w	d0,($FFFFFE10).w
@@ -3826,9 +3892,9 @@ loc_42A2:
 		rts
 ;--------------------------------------------------------------------------------
 Level_Select_Code_US:
-		dc.b	$1,$2,$2,$2,$2,$1,0,$FF
+		dc.b	$1,$2,$2,$2,$2,$1,$0,$FF
 Level_Select_Code_J: 
-		dc.b	$1,$2,$2,$2,$2,$1,0,$FF
+		dc.b	$1,$2,$2,$2,$2,$1,$0,$FF
 loc_42B4:
 		move.w	#$1E,($FFFFF614).w
 loc_42BA: 
@@ -3886,7 +3952,7 @@ loc_434A:
 		rts
 ;--------------------------------------------------------------------------------
 Demo_Mode_Level_Array:
-		dc.w	$D00,0,$C00,$700,$500,$500,$500,$500
+		dc.w	$D00,$0,$C00,$700,$500,$500,$500,$500
 		dc.w	$400,$400,$400,$400
 LevelSelect_Controls:
 		move.b	($FFFFF605).w,d1
@@ -3949,7 +4015,7 @@ loc_442E:
 ;--------------------------------------------------------------------------------
 loc_4430:
 		lea	(Level_Select_Text),a1 
-		lea	($C00000),a6
+		lea	(VDP_data_port),a6
 		move.l	#$608C0003,d4
 		move.w	#$8680,d3
 		moveq	#$17,d1
@@ -3976,7 +4042,7 @@ loc_4448:
 		bne.s	loc_4496
 		move.w	#$C680,d3
 loc_4496:
-		move.l	#$6C300003,($C00004)
+		move.l	#$6C300003,(VDP_control_port)
 		move.w	($FFFFFF84).w,d0
 		add.w	#$80,d0
 		move.b	d0,d2
@@ -4012,7 +4078,7 @@ loc_44DE:
 		dbra	d2,loc_44CE
 		rts
 ;--------------------------------------------------------------------------------
-_0 = 0
+_0 = $0
 _1 = $1
 _2 = $2 
 _A = $11
@@ -4071,7 +4137,7 @@ Level_Select_Text:
 ; Sub Routine Level Select Menu
 ; [ End ]
 ;=============================================================================== 
-Unused_Code_1:
+Unused_Code_1: 
 		lea	($FFFF0000),a1
 		move.w	#$2EB,d2
 Unused_Code_1_Loop: 
@@ -4259,7 +4325,7 @@ Init_Water:
 		move.b	#1,($FFFFF730).w
 		move.w	#0,($FFFFFFD8).w
 Init_No_Water: 
-		lea	($C00004),a6
+		lea	(VDP_control_port),a6
 		move.w	#$8B03,(a6)
 		move.w	#$8230,(a6)
 		move.w	#$8407,(a6)
@@ -4527,7 +4593,7 @@ loc_4DE8:
 		cmp.b	#8,($FFFFF600).w
 		beq.s	loc_4E20
 		cmp.b	#$C,($FFFFF600).w
-		beq.w	Level_Main_Loop 
+		beq	Level_Main_Loop 
 		rts
 ;--------------------------------------------------------------------------------
 loc_4E20:
@@ -4536,7 +4602,7 @@ loc_4E20:
 		tst.w	($FFFFF614).w
 		beq.s	loc_4E3E
 		cmp.b	#8,($FFFFF600).w
-		beq.w	Level_Main_Loop 
+		beq	Level_Main_Loop 
 		move.b	#0,($FFFFF600).w
 		rts
 ;--------------------------------------------------------------------------------
@@ -4738,7 +4804,7 @@ loc_5062:
 		rts
 ;--------------------------------------------------------------------------------
 loc_5064: 
-		dc.b	$15,0,$4,0,$1A,$F0,$5,$80,$20,$F0,$6,$18,$25,0,$6,$80
+		dc.b	$15,$0,$4,$0,$1A,$F0,$5,$80,$20,$F0,$6,$18,$25,$0,$6,$80
 loc_5074:
 		lea	($FFFFB000).w,a1
 		move.b	($FFFFF602).w,d2
@@ -4844,8 +4910,8 @@ loc_518E:
 		rts
 ;--------------------------------------------------------------------------------
 loc_519A:
-		dc.b	$F8,$F8,$F8,$8,$8,0,0,0,$F8,$F8,0,$8,$8,$8,0,$8
-		dc.b	$8,$8,0,$F8,0,0,$F8,$8,$F8,$F8,$F8,$8,$8,$8,$F8,$F8
+		dc.b	$F8,$F8,$F8,$8,$8,$0,$0,$0,$F8,$F8,$0,$8,$8,$8,$0,$8
+		dc.b	$8,$8,$0,$F8,$0,$0,$F8,$8,$F8,$F8,$F8,$8,$8,$8,$F8,$F8
 		dc.b	$2F,$30,$31,$33,$35,$38,$3A,$3C,$63,$64,$83,$90,$91,$93,$A1,$A3
 		dc.b	$BD,$C7,$C8,$CE,$D7,$D8,$E6,$EB,$EC,$ED,$F1,$F2,$F3,$F4,$FA,$FD
 loc_51DA:
@@ -4972,7 +5038,7 @@ Demo_Index:
 Demo_End_Index:
 		dc.w	$8B,$837,$42,$85C,$6A,$85F,$2F,$82C
 		dc.w	$21,$803,$2830,$808,$2E,$815,$F,$846
-		dc.w	$1A,$8FF,$8CA,0,0,0,0,0 
+		dc.w	$1A,$8FF,$8CA,$0,$0,$0,$0,$0 
 Load_Colision_Index: 
 		moveq	#0,d0
 		move.b	($FFFFFE10).w,d0
@@ -5042,10 +5108,10 @@ loc_546C:
 		rts
 ;--------------------------------------------------------------------------------
 Oscillate_Data: 
-		dc.w	$7D,$80,0,$80,0,$80,0,$80
-		dc.w	0,$80,0,$80,0,$80,0,$80
-		dc.w	0,$80,0,$3848,$EE,$2080,$B4,$3080
-		dc.w	$10E,$5080,$1C2,$7080,$276,$80,0,$4000
+		dc.w	$7D,$80,$0,$80,$0,$80,$0,$80
+		dc.w	$0,$80,$0,$80,$0,$80,$0,$80
+		dc.w	$0,$80,$0,$3848,$EE,$2080,$B4,$3080
+		dc.w	$10E,$5080,$1C2,$7080,$276,$80,$0,$4000
 		dc.w	$FE 
 ;===============================================================================
 ; Sub Routine Oscillate_Num_Init
@@ -5156,15 +5222,15 @@ Test_End_Level_Art_Load:
 		tst.w	($FFFFFFD8).w
 		bne.s	Set_End_Level_Flag 
 		cmp.w	#1,($FFFFFE10).w
-		beq.w	Dont_Set_End_Level_Flag 
+		beq	Dont_Set_End_Level_Flag 
 		cmp.w	#$500,($FFFFFE10).w
-		beq.w	Dont_Set_End_Level_Flag 
+		beq	Dont_Set_End_Level_Flag 
 		cmp.w	#$600,($FFFFFE10).w
-		beq.w	Dont_Set_End_Level_Flag 
+		beq	Dont_Set_End_Level_Flag 
 		cmp.w	#$701,($FFFFFE10).w
-		beq.w	Dont_Set_End_Level_Flag 
+		beq	Dont_Set_End_Level_Flag 
 		cmp.w	#$A01,($FFFFFE10).w
-		beq.w	Dont_Set_End_Level_Flag 
+		beq	Dont_Set_End_Level_Flag 
 		cmp.w	#$B01,($FFFFFE10).w
 		beq.s	Dont_Set_End_Level_Flag 
 		cmp.w	#$C01,($FFFFFE10).w
@@ -5209,7 +5275,7 @@ End_Level_Art_Load:
 		tst.w	($FFFFFFD8).w
 		bne.s	Skip_End_Level_Art_Load 
 		moveq	#$27,d0
-		bra	LoadPLC2 
+		bra.w	LoadPLC2 
 loc_5670:
 		tst.w	($FFFFFFD8).w
 		beq.s	Skip_End_Level_Art_Load 
@@ -5231,90 +5297,90 @@ Skip_End_Level_Art_Load:
 ; [ End ]
 ;=============================================================================== 
 Demo_Green_Hill:
-		dc.b	0,$44,$8,0,$28,$5,$8,$59,$28,$4,$8,$35,$28,$6,$8,$42
-		dc.b	$28,$4,$8,$19,0,$F,$8,$A,$28,$9,$8,$4A,$28,$9,$8,$10
-		dc.b	0,$5,$4,$1B,$2,0,$8,$4B,$28,$2D,$8,$55,$28,$9,$8,$26
+		dc.b	$0,$44,$8,$0,$28,$5,$8,$59,$28,$4,$8,$35,$28,$6,$8,$42
+		dc.b	$28,$4,$8,$19,$0,$F,$8,$A,$28,$9,$8,$4A,$28,$9,$8,$10
+		dc.b	$0,$5,$4,$1B,$2,$0,$8,$4B,$28,$2D,$8,$55,$28,$9,$8,$26
 		dc.b	$28,$1C,$8,$19,$28,$8,$8,$FF,$8,$96,$28,$13,$8,$1D,$28,$19
-		dc.b	$8,$2A,$28,$7,$9,0,$1,0,$5,$20,$4,$2,$5,$1,0,0
-		dc.b	$8,$3A,0,$25,$4,$A,$24,$9,$4,$1C,0,$3,$8,$3A,$28,$6
-		dc.b	$8,$C,0,$16,$8,0,$28,$F,$8,$33,$28,$7,$8,$4,0,$46
-		dc.b	$8,$6A,0,$29,$80,0,$C0,0,0,0,0,0,0,0,0,0
-		dc.b	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-		dc.b	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-		dc.b	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-		dc.b	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-		dc.b	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-		dc.b	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-		dc.b	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-		dc.b	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+		dc.b	$8,$2A,$28,$7,$9,$0,$1,$0,$5,$20,$4,$2,$5,$1,$0,$0
+		dc.b	$8,$3A,$0,$25,$4,$A,$24,$9,$4,$1C,$0,$3,$8,$3A,$28,$6
+		dc.b	$8,$C,$0,$16,$8,$0,$28,$F,$8,$33,$28,$7,$8,$4,$0,$46
+		dc.b	$8,$6A,$0,$29,$80,$0,$C0,$0,$0,$0,$0,$0,$0,$0,$0,$0
+		dc.b	$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0
+		dc.b	$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0
+		dc.b	$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0
+		dc.b	$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0
+		dc.b	$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0
+		dc.b	$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0
+		dc.b	$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0
+		dc.b	$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0
 Demo_Green_Hill_Miles:
-		dc.b	0,$46,$8,$1E,$28,$A,$8,$5E,$28,$30,$8,$66,0,$F,$8,$F
-		dc.b	$28,$2E,$8,0,0,$1F,$8,$12,0,$13,$8,$A,0,$16,$4,$D
-		dc.b	0,$8,$4,$10,0,$30,$8,$6B,$28,$14,$8,$80,$A,$2,$2,$23
-		dc.b	0,$7,$8,$13,$28,$17,$8,0,0,$3,$4,$3,$5,0,$1,0
-		dc.b	$9,$1,$8,$3C,$28,$7,0,$18,$8,$4D,$28,$12,$8,$1,0,$4
-		dc.b	$8,$B,0,$7,$8,$1B,0,$9,$20,$5,$28,$13,$8,$4,0,$21
-		dc.b	$8,$11,0,$20,$8,$51,0,$B,$4,$57,0,$D,$2,$27,$A,0
-		dc.b	0,$2,$9,$1,$8,$2A,$28,$15,$8,$3,$28,$19,$8,$A,0,$A
-		dc.b	$8,$2,$28,$1B,$8,$33,0,$27,$8,$3A,$9,$12,$1,$7,0,$13
-		dc.b	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-		dc.b	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-		dc.b	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-		dc.b	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-		dc.b	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-		dc.b	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-		dc.b	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+		dc.b	$0,$46,$8,$1E,$28,$A,$8,$5E,$28,$30,$8,$66,$0,$F,$8,$F
+		dc.b	$28,$2E,$8,$0,$0,$1F,$8,$12,$0,$13,$8,$A,$0,$16,$4,$D
+		dc.b	$0,$8,$4,$10,$0,$30,$8,$6B,$28,$14,$8,$80,$A,$2,$2,$23
+		dc.b	$0,$7,$8,$13,$28,$17,$8,$0,$0,$3,$4,$3,$5,$0,$1,$0
+		dc.b	$9,$1,$8,$3C,$28,$7,$0,$18,$8,$4D,$28,$12,$8,$1,$0,$4
+		dc.b	$8,$B,$0,$7,$8,$1B,$0,$9,$20,$5,$28,$13,$8,$4,$0,$21
+		dc.b	$8,$11,$0,$20,$8,$51,$0,$B,$4,$57,$0,$D,$2,$27,$A,$0
+		dc.b	$0,$2,$9,$1,$8,$2A,$28,$15,$8,$3,$28,$19,$8,$A,$0,$A
+		dc.b	$8,$2,$28,$1B,$8,$33,$0,$27,$8,$3A,$9,$12,$1,$7,$0,$13
+		dc.b	$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0
+		dc.b	$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0
+		dc.b	$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0
+		dc.b	$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0
+		dc.b	$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0
+		dc.b	$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0
+		dc.b	$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0
 Demo_Hill_Top:
-		dc.b	0,$5,$1,$1D,$9,$3,$29,$5,$9,$10,$1,0,0,$13,$4,0
-		dc.b	$5,$A,$25,$7,$5,$10,$4,$1,0,$C,$8,$4,$9,$C,$29,$A
-		dc.b	$9,$10,$8,$3,0,$1C,$20,$7,0,$B,$4,$6,0,$25,$20,$6
-		dc.b	0,$22,$8,$5,0,$25,$4,$E,0,$33,$8,$7,0,$39,$8,$A
-		dc.b	$28,$8,$8,$16,0,$24,$8,$74,$28,$2,$29,$7,$9,$3,0,$F
-		dc.b	$8,$D,0,$5,$4,$C,0,$1,$20,$2,$28,0,$2A,$8,$28,$2
-		dc.b	$8,$1E,0,$4,$4,$13,0,$12,$8,$18,$28,$B,$8,$11,0,$2C
-		dc.b	$8,$C,0,$D,$20,$4,$28,$3,$8,$5,0,$22,$4,$12,0,$4
-		dc.b	$8,$1A,0,$D,$4,$6,0,$37,$8,$C,0,$19,$8,$D,0,$C
-		dc.b	$4,$9,0,$3,$8,$20,0,$1A,$4,$6,0,$22,$8,$9,0,$9
-		dc.b	$8,$16,0,$2F,$8,$E,$28,$4,$20,$2,0,$8,$4,$19,0,$5
-		dc.b	$8,$6,$28,$8,$8,$8,0,$24,$8,$72,$A,$9,$2,$E,$A,$6B
-		dc.b	$8A,0,$40,0,0,0,0,0,0,0,0,0,0,0,0,0
-		dc.b	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-		dc.b	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-		dc.b	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+		dc.b	$0,$5,$1,$1D,$9,$3,$29,$5,$9,$10,$1,$0,$0,$13,$4,$0
+		dc.b	$5,$A,$25,$7,$5,$10,$4,$1,$0,$C,$8,$4,$9,$C,$29,$A
+		dc.b	$9,$10,$8,$3,$0,$1C,$20,$7,$0,$B,$4,$6,$0,$25,$20,$6
+		dc.b	$0,$22,$8,$5,$0,$25,$4,$E,$0,$33,$8,$7,$0,$39,$8,$A
+		dc.b	$28,$8,$8,$16,$0,$24,$8,$74,$28,$2,$29,$7,$9,$3,$0,$F
+		dc.b	$8,$D,$0,$5,$4,$C,$0,$1,$20,$2,$28,$0,$2A,$8,$28,$2
+		dc.b	$8,$1E,$0,$4,$4,$13,$0,$12,$8,$18,$28,$B,$8,$11,$0,$2C
+		dc.b	$8,$C,$0,$D,$20,$4,$28,$3,$8,$5,$0,$22,$4,$12,$0,$4
+		dc.b	$8,$1A,$0,$D,$4,$6,$0,$37,$8,$C,$0,$19,$8,$D,$0,$C
+		dc.b	$4,$9,$0,$3,$8,$20,$0,$1A,$4,$6,$0,$22,$8,$9,$0,$9
+		dc.b	$8,$16,$0,$2F,$8,$E,$28,$4,$20,$2,$0,$8,$4,$19,$0,$5
+		dc.b	$8,$6,$28,$8,$8,$8,$0,$24,$8,$72,$A,$9,$2,$E,$A,$6B
+		dc.b	$8A,$0,$40,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0
+		dc.b	$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0
+		dc.b	$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0
+		dc.b	$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0
 Demo_Casino_Night:
-		dc.b	0,$40,$8,$33,$28,$6,$8,$39,$28,$5,$8,$D,0,$25,$8,$10
-		dc.b	$28,$2A,$8,$1C,$2,0,$26,$3,$22,0,$2A,0,$28,$6,$8,$22
-		dc.b	$2,0,$6,$F,$4,$8,$6,0,$2,$E,$6,$2F,$2,$79,$6,$1
-		dc.b	$4,$43,$24,$F,$4,$17,0,$9,$8,$1C,$28,$3,$8,$45,0,$5
-		dc.b	$8,$1A,$28,$33,$8,$72,0,$F,$4,$15,$24,$10,$4,$B,0,$24
-		dc.b	$4,$1,$24,$8,$4,$7,0,$6,$4,$4,0,$1E,$24,$E,$4,$15
-		dc.b	0,$1E,$20,$3,$24,$F,$4,0,0,$7,$8,$12,$4,$9,$24,$F
-		dc.b	$4,$6,0,$A,$4,$62,$24,$12,$20,$4,0,$21,$28,$E,$8,$16
-		dc.b	0,$19,$8,$29,0,$63,$4,$15,$24,$9,$4,$39,0,$31,$8,$25
-		dc.b	$28,$2,$8,$12,0,$93,$80,0,$C0,0,0,0,0,0,0,0
-		dc.b	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-		dc.b	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-		dc.b	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-		dc.b	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-		dc.b	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-		dc.b	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+		dc.b	$0,$40,$8,$33,$28,$6,$8,$39,$28,$5,$8,$D,$0,$25,$8,$10
+		dc.b	$28,$2A,$8,$1C,$2,$0,$26,$3,$22,$0,$2A,$0,$28,$6,$8,$22
+		dc.b	$2,$0,$6,$F,$4,$8,$6,$0,$2,$E,$6,$2F,$2,$79,$6,$1
+		dc.b	$4,$43,$24,$F,$4,$17,$0,$9,$8,$1C,$28,$3,$8,$45,$0,$5
+		dc.b	$8,$1A,$28,$33,$8,$72,$0,$F,$4,$15,$24,$10,$4,$B,$0,$24
+		dc.b	$4,$1,$24,$8,$4,$7,$0,$6,$4,$4,$0,$1E,$24,$E,$4,$15
+		dc.b	$0,$1E,$20,$3,$24,$F,$4,$0,$0,$7,$8,$12,$4,$9,$24,$F
+		dc.b	$4,$6,$0,$A,$4,$62,$24,$12,$20,$4,$0,$21,$28,$E,$8,$16
+		dc.b	$0,$19,$8,$29,$0,$63,$4,$15,$24,$9,$4,$39,$0,$31,$8,$25
+		dc.b	$28,$2,$8,$12,$0,$93,$80,$0,$C0,$0,$0,$0,$0,$0,$0,$0
+		dc.b	$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0
+		dc.b	$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0
+		dc.b	$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0
+		dc.b	$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0
+		dc.b	$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0
+		dc.b	$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0
 Demo_Chemical_Plant: 
-		dc.b	0,$1B,$1,$30,0,$19,$8,$29,$28,$13,$8,$3,0,$1D,$20,$3
-		dc.b	$28,$1E,$8,$2,0,$9,$4,$5,0,$2E,$8,$1E,$28,$5,$20,$3
-		dc.b	0,$B,$4,$1,$5,$7,$4,0,0,$2F,$28,$3,$2A,$4,$A,0
-		dc.b	$8,$6,0,$24,$8,$2,$28,$6,$8,$1,0,$26,$8,$FF,$8,$14
-		dc.b	$28,$A,$8,$3,0,$60,$8,$E,$28,$7,$8,$C,0,$8,$4,$B
-		dc.b	0,$23,$8,$5,0,$93,$8,$19,$28,$11,$8,$78,$28,$F,$8,$FF
-		dc.b	$8,$83,$28,$D,$8,$82,0,$1F,$80,0,$40,0,0,0,0,0
-		dc.b	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-		dc.b	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-		dc.b	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-		dc.b	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-		dc.b	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-		dc.b	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-		dc.b	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-		dc.b	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-		dc.b	0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+		dc.b	$0,$1B,$1,$30,$0,$19,$8,$29,$28,$13,$8,$3,$0,$1D,$20,$3
+		dc.b	$28,$1E,$8,$2,$0,$9,$4,$5,$0,$2E,$8,$1E,$28,$5,$20,$3
+		dc.b	$0,$B,$4,$1,$5,$7,$4,$0,$0,$2F,$28,$3,$2A,$4,$A,$0
+		dc.b	$8,$6,$0,$24,$8,$2,$28,$6,$8,$1,$0,$26,$8,$FF,$8,$14
+		dc.b	$28,$A,$8,$3,$0,$60,$8,$E,$28,$7,$8,$C,$0,$8,$4,$B
+		dc.b	$0,$23,$8,$5,$0,$93,$8,$19,$28,$11,$8,$78,$28,$F,$8,$FF
+		dc.b	$8,$83,$28,$D,$8,$82,$0,$1F,$80,$0,$40,$0,$0,$0,$0,$0
+		dc.b	$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0
+		dc.b	$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0
+		dc.b	$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0
+		dc.b	$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0
+		dc.b	$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0
+		dc.b	$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0
+		dc.b	$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0
+		dc.b	$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0
+		dc.b	$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0,$0
 ;===============================================================================
 ; Sub Routine Load_8x8_Tiles
 ; [ Begin ]
@@ -5397,7 +5463,7 @@ loc_5C52:
 		sf ($FFFFFE00).w
 loc_5C56:
 		move	#$2700,sr
-		lea	($C00004),a6
+		lea	(VDP_control_port),a6
 		move.w	#$8B03,(a6)
 		move.w	#$8004,(a6)
 		move.w	#$8ADF,($FFFFF624).w
@@ -5410,46 +5476,46 @@ loc_5C56:
 		move.w	#$857C,(a6)
 		move.w	($FFFFF60C).w,d0
 		and.b	#$BF,d0
-		move.w	d0,($C00004)
-		lea	($C00004),a5
+		move.w	d0,(VDP_control_port)
+		lea	(VDP_control_port),a5
 		move.w	#$8F01,(a5)
 		move.l	#$941F93FF,(a5)
 		move.w	#$9780,(a5)
 		move.l	#$40000082,(a5)
-		move.w	#0,($C00000)
+		move.w	#0,(VDP_data_port)
 loc_5CBA: 
 		move.w	(a5),d1
 		btst	#1,d1
 		bne.s	loc_5CBA
 		move.w	#$8F02,(a5)
-		lea	($C00004),a5
+		lea	(VDP_control_port),a5
 		move.w	#$8F01,(a5)
 		move.l	#$941F93FF,(a5)
 		move.w	#$9780,(a5)
 		move.l	#$40000083,(a5)
-		move.w	#0,($C00000)
+		move.w	#0,(VDP_data_port)
 loc_5CE8: 
 		move.w	(a5),d1
 		btst	#1,d1
 		bne.s	loc_5CE8
 		move.w	#$8F02,(a5)
-		lea	($C00004),a5
+		lea	(VDP_control_port),a5
 		move.w	#$8F01,(a5)
 		move.l	#$941F93FF,(a5)
 		move.w	#$9780,(a5)
 		move.l	#$60000082,(a5)
-		move.w	#0,($C00000)
+		move.w	#0,(VDP_data_port)
 loc_5D16: 
 		move.w	(a5),d1
 		btst	#1,d1
 		bne.s	loc_5D16
 		move.w	#$8F02,(a5)
-		lea	($C00004),a5
+		lea	(VDP_control_port),a5
 		move.w	#$8F01,(a5)
 		move.l	#$9403937F,(a5)
 		move.w	#$9780,(a5)
 		move.l	#$7C000083,(a5)
-		move.w	#0,($C00000)
+		move.w	#0,(VDP_data_port)
 loc_5D44: 
 		move.w	(a5),d1
 		btst	#1,d1
@@ -5489,7 +5555,7 @@ loc_5DA6:
 		move.l	d0,(a1)+
 		dbra	d1,loc_5DA6
 		move	#$2300,sr
-		lea	($C00004),a6
+		lea	(VDP_control_port),a6
 		move.w	#$8E02,(a6)
 		bsr.w	loc_7898
 		bsr.w	loc_78E2
@@ -5543,7 +5609,7 @@ loc_5E60:
 		bsr.w	Play_Music 
 		move.w	($FFFFF60C).w,d0
 		or.b	#$40,d0
-		move.w	d0,($C00004)
+		move.w	d0,(VDP_control_port)
 		bsr.w	Pal_MakeWhite 
 loc_5EAC: 
 		bsr.w	Pause 
@@ -5600,7 +5666,7 @@ loc_5F60:
 		tst.w	($FFFFFF8A).w
 		bne.w	loc_6048
 		move	#$2700,sr
-		lea	($C00004),a6
+		lea	(VDP_control_port),a6
 		move.w	#$8230,(a6)
 		move.w	#$8407,(a6)
 		move.w	#$9001,(a6)
@@ -5665,7 +5731,7 @@ loc_6048:
 ;--------------------------------------------------------------------------------
 loc_6056:
 		tst.b	($FFFFDB95).w
-		beq.w	loc_6110
+		beq	loc_6110
 loc_605E: 
 		moveq	#0,d0
 		move.b	($FFFFFE0F).w,d0
@@ -5743,7 +5809,7 @@ loc_6148:
 		moveq	#0,d0
 		move.b	($FFFFDB0A).w,d0
 		cmp.b	($FFFFDB4C).w,d0
-		beq.w	loc_61E8
+		beq	loc_61E8
 		move.b	d0,($FFFFDB4C).w
 		move.l	($FFFFDB8E).w,a1
 		move.b	0(a1,d0),d3
@@ -5804,7 +5870,7 @@ loc_61EA:
 		dc.l	$40000002,$47000002,$4E000002,$55000002
 		dc.l	$40000003,$47000003,$4E000003,$55000003
 loc_620A: 
-		dc.b	$18,$18,$C,$10,$7,0
+		dc.b	$18,$18,$C,$10,$7,$0
 loc_6210:
 		moveq	#0,d0
 		move.b	($FFFFDB0D).w,d0
@@ -5878,8 +5944,8 @@ loc_62DE:
 loc_62E8:
 		lea	loc_61EA(pc),a3
 		move.l	0(a3,d0),a3
-		move.l	a3,($C00004)
-		lea	($C00000),a6
+		move.l	a3,(VDP_control_port)
+		lea	(VDP_data_port),a6
 		bsr.w	loc_7806
 		move.l	($FFFFDB00).w,a0
 		move.l	($FFFFDB04).w,a1
@@ -5895,7 +5961,7 @@ loc_62E8:
 loc_632E: 
 		add.w	#1,a5
 		cmp.w	#0,a5
-		beq.w	loc_6964
+		beq	loc_6964
 loc_633A: 
 		moveq	#0,d1
 		subq.w	#1,d7
@@ -5950,7 +6016,7 @@ loc_6394:
 		cmp.b	#$FF,d2
 		bne.s	loc_63A6
 		moveq	#0,d3
-		bra	loc_632E
+		bra.w	loc_632E
 loc_63A6:
 		moveq	#7,d3
 loc_63A8:
@@ -6001,7 +6067,7 @@ loc_63EA:
 		or.w	#$6000,d0
 		move.w	d0,(a6)
 		moveq	#6,d5
-		bra	loc_633A
+		bra.w	loc_633A
 loc_6412:
 		move.b	d4,d0
 		lsl.w	#2,d0
@@ -6020,7 +6086,7 @@ loc_6412:
 		or.w	#$6000,d0
 		move.w	d0,(a6)
 		moveq	#7,d5
-		bra	loc_633A
+		bra.w	loc_633A
 loc_6442:
 		move.b	d4,d0
 		lsl.w	#2,d0
@@ -6032,7 +6098,7 @@ loc_6442:
 		or.w	#$6000,d0
 		move.w	d0,(a6)
 		moveq	#0,d5
-		bra	loc_633A
+		bra.w	loc_633A
 loc_6462:
 		move.b	d4,d0
 		lsl.w	#2,d0
@@ -6048,7 +6114,7 @@ loc_6462:
 		or.w	#$6000,d0
 		move.w	d0,(a6)
 		moveq	#1,d5
-		bra	loc_633A
+		bra.w	loc_633A
 loc_648C:
 		move.b	d4,d0
 		lsl.w	#2,d0
@@ -6064,7 +6130,7 @@ loc_648C:
 		or.w	#$6000,d0
 		move.w	d0,(a6)
 		moveq	#2,d5
-		bra	loc_633A
+		bra.w	loc_633A
 loc_64B6:
 		move.b	d4,d0
 		lsl.w	#2,d0
@@ -6080,7 +6146,7 @@ loc_64B6:
 		or.w	#$6000,d0
 		move.w	d0,(a6)
 		moveq	#3,d5
-		bra	loc_633A
+		bra.w	loc_633A
 loc_64E0:
 		move.b	d4,d0
 		lsl.w	#2,d0
@@ -6096,7 +6162,7 @@ loc_64E0:
 		or.w	#$6000,d0
 		move.w	d0,(a6)
 		moveq	#4,d5
-		bra	loc_633A
+		bra.w	loc_633A
 loc_650A:
 		move.b	d4,d0
 		lsl.w	#2,d0
@@ -6112,7 +6178,7 @@ loc_650A:
 		or.w	#$6000,d0
 		move.w	d0,(a6)
 		moveq	#5,d5
-		bra	loc_633A
+		bra.w	loc_633A
 loc_6534:
 		move.b	(a1)+,d4
 		ror.b	#2,d4
@@ -6123,7 +6189,7 @@ loc_6534:
 		or.w	#$6000,d0
 		move.w	d0,(a6)
 		moveq	#2,d5
-		bra	loc_633A
+		bra.w	loc_633A
 loc_6550:
 		move.b	d4,d0
 		lsr.b	#2,d0
@@ -6138,7 +6204,7 @@ loc_6550:
 		or.w	#$6000,d0
 		move.w	d0,(a6)
 		moveq	#3,d5
-		bra	loc_633A
+		bra.w	loc_633A
 loc_6576:
 		move.b	d4,d0
 		lsr.b	#2,d0
@@ -6153,7 +6219,7 @@ loc_6576:
 		or.w	#$6000,d0
 		move.w	d0,(a6)
 		moveq	#4,d5
-		bra	loc_633A
+		bra.w	loc_633A
 loc_659C:
 		move.b	d4,d0
 		lsr.b	#2,d0
@@ -6168,7 +6234,7 @@ loc_659C:
 		or.w	#$6000,d0
 		move.w	d0,(a6)
 		moveq	#5,d5
-		bra	loc_633A
+		bra.w	loc_633A
 loc_65C2:
 		move.b	d4,d0
 		lsr.b	#2,d0
@@ -6183,7 +6249,7 @@ loc_65C2:
 		or.w	#$6000,d0
 		move.w	d0,(a6)
 		moveq	#6,d5
-		bra	loc_633A
+		bra.w	loc_633A
 loc_65E8:
 		move.b	d4,d0
 		lsr.b	#2,d0
@@ -6198,7 +6264,7 @@ loc_65E8:
 		or.w	#$6000,d0
 		move.w	d0,(a6)
 		moveq	#7,d5
-		bra	loc_633A
+		bra.w	loc_633A
 loc_660E:
 		lsr.b	#2,d4
 		and.w	#$3F,d4
@@ -6207,7 +6273,7 @@ loc_660E:
 		or.w	#$6000,d4
 		move.w	d4,(a6)
 		moveq	#0,d5
-		bra	loc_633A
+		bra.w	loc_633A
 loc_6626:
 		ror.b	#2,d4
 		move.b	d4,d0
@@ -6217,7 +6283,7 @@ loc_6626:
 		or.w	#$6000,d0
 		move.w	d0,(a6)
 		moveq	#1,d5
-		bra	loc_633A
+		bra.w	loc_633A
 loc_6640:
 		move.b	(a2)+,d2
 		ror.b	#1,d2
@@ -6225,7 +6291,7 @@ loc_6640:
 		and.w	#$7F,d0
 		moveq	#1,d3
 		cmp.b	#$7F,d0
-		beq.w	loc_632E
+		beq	loc_632E
 		add.w	#$40,d0
 		add.w	d0,d0
 		add.w	d0,d0
@@ -6235,7 +6301,7 @@ loc_6640:
 loc_6668: 
 		move.w	d1,(a6)
 		dbra	d0,loc_6668
-		bra	loc_633A
+		bra.w	loc_633A
 loc_6672:
 		move.b	d2,d1
 		lsr.b	#1,d1
@@ -6247,7 +6313,7 @@ loc_6672:
 		or.b	d1,d0
 		moveq	#2,d3
 		cmp.b	#$7F,d0
-		beq.w	loc_632E
+		beq	loc_632E
 		add.w	#$40,d0
 		add.w	d0,d0
 		add.w	d0,d0
@@ -6257,7 +6323,7 @@ loc_6672:
 loc_66A4: 
 		move.w	d1,(a6)
 		dbra	d0,loc_66A4
-		bra	loc_633A
+		bra.w	loc_633A
 loc_66AE:
 		move.b	d2,d1
 		lsr.b	#1,d1
@@ -6269,7 +6335,7 @@ loc_66AE:
 		or.b	d1,d0
 		moveq	#3,d3
 		cmp.b	#$7F,d0
-		beq.w	loc_632E
+		beq	loc_632E
 		add.w	#$40,d0
 		add.w	d0,d0
 		add.w	d0,d0
@@ -6279,7 +6345,7 @@ loc_66AE:
 loc_66E0: 
 		move.w	d1,(a6)
 		dbra	d0,loc_66E0
-		bra	loc_633A
+		bra.w	loc_633A
 loc_66EA:
 		move.b	d2,d1
 		lsr.b	#1,d1
@@ -6291,7 +6357,7 @@ loc_66EA:
 		or.b	d1,d0
 		moveq	#4,d3
 		cmp.b	#$7F,d0
-		beq.w	loc_632E
+		beq	loc_632E
 		add.w	#$40,d0
 		add.w	d0,d0
 		add.w	d0,d0
@@ -6301,7 +6367,7 @@ loc_66EA:
 loc_671C: 
 		move.w	d1,(a6)
 		dbra	d0,loc_671C
-		bra	loc_633A
+		bra.w	loc_633A
 loc_6726:
 		move.b	d2,d1
 		lsr.b	#1,d1
@@ -6313,7 +6379,7 @@ loc_6726:
 		or.b	d1,d0
 		moveq	#5,d3
 		cmp.b	#$7F,d0
-		beq.w	loc_632E
+		beq	loc_632E
 		add.w	#$40,d0
 		add.w	d0,d0
 		add.w	d0,d0
@@ -6323,7 +6389,7 @@ loc_6726:
 loc_6758: 
 		move.w	d1,(a6)
 		dbra	d0,loc_6758
-		bra	loc_633A
+		bra.w	loc_633A
 loc_6762:
 		move.b	d2,d1
 		lsr.b	#1,d1
@@ -6335,7 +6401,7 @@ loc_6762:
 		or.b	d1,d0
 		moveq	#6,d3
 		cmp.b	#$7F,d0
-		beq.w	loc_632E
+		beq	loc_632E
 		add.w	#$40,d0
 		add.w	d0,d0
 		add.w	d0,d0
@@ -6345,7 +6411,7 @@ loc_6762:
 loc_6794: 
 		move.w	d1,(a6)
 		dbra	d0,loc_6794
-		bra	loc_633A
+		bra.w	loc_633A
 loc_679E:
 		move.b	d2,d1
 		lsr.b	#1,d1
@@ -6357,7 +6423,7 @@ loc_679E:
 		or.b	d1,d0
 		moveq	#7,d3
 		cmp.b	#$7F,d0
-		beq.w	loc_632E
+		beq	loc_632E
 		add.w	#$40,d0
 		add.w	d0,d0
 		add.w	d0,d0
@@ -6367,13 +6433,13 @@ loc_679E:
 loc_67D0: 
 		move.w	d1,(a6)
 		dbra	d0,loc_67D0
-		bra	loc_633A
+		bra.w	loc_633A
 loc_67DA:
 		lsr.b	#1,d2
 		and.w	#$7F,d2
 		moveq	#0,d3
 		cmp.b	#$7F,d2
-		beq.w	loc_632E
+		beq	loc_632E
 		add.w	#$40,d2
 		add.w	d2,d2
 		add.w	d2,d2
@@ -6383,7 +6449,7 @@ loc_67DA:
 loc_67FE: 
 		move.w	d1,(a6)
 		dbra	d0,loc_67FE
-		bra	loc_633A
+		bra.w	loc_633A
 loc_6808:
 		move.b	(a2)+,d2
 		ror.b	#2,d2
@@ -6398,7 +6464,7 @@ loc_6808:
 loc_6824: 
 		move.w	d1,(a6)
 		dbra	d0,loc_6824
-		bra	loc_633A
+		bra.w	loc_633A
 loc_682E:
 		move.b	d2,d0
 		lsr.b	#2,d0
@@ -6417,7 +6483,7 @@ loc_682E:
 loc_6854: 
 		move.w	d1,(a6)
 		dbra	d0,loc_6854
-		bra	loc_633A
+		bra.w	loc_633A
 loc_685E:
 		move.b	d2,d0
 		lsr.b	#2,d0
@@ -6436,7 +6502,7 @@ loc_685E:
 loc_6884: 
 		move.w	d1,(a6)
 		dbra	d0,loc_6884
-		bra	loc_633A
+		bra.w	loc_633A
 loc_688E:
 		move.b	d2,d0
 		lsr.b	#2,d0
@@ -6455,7 +6521,7 @@ loc_688E:
 loc_68B4: 
 		move.w	d1,(a6)
 		dbra	d0,loc_68B4
-		bra	loc_633A
+		bra.w	loc_633A
 loc_68BE:
 		move.b	d2,d0
 		lsr.b	#2,d0
@@ -6474,7 +6540,7 @@ loc_68BE:
 loc_68E4: 
 		move.w	d1,(a6)
 		dbra	d0,loc_68E4
-		bra	loc_633A
+		bra.w	loc_633A
 loc_68EE:
 		move.b	d2,d0
 		lsr.b	#2,d0
@@ -6493,7 +6559,7 @@ loc_68EE:
 loc_6914: 
 		move.w	d1,(a6)
 		dbra	d0,loc_6914
-		bra	loc_633A
+		bra.w	loc_633A
 loc_691E:
 		lsr.b	#2,d2
 		and.w	#$3F,d2
@@ -6506,7 +6572,7 @@ loc_691E:
 loc_6936: 
 		move.w	d1,(a6)
 		dbra	d0,loc_6936
-		bra	loc_633A
+		bra.w	loc_633A
 loc_6940:
 		ror.b	#2,d2
 		move.b	d2,d0
@@ -6520,7 +6586,7 @@ loc_6940:
 loc_695A: 
 		move.w	d1,(a6)
 		dbra	d0,loc_695A
-		bra	loc_633A
+		bra.w	loc_633A
 loc_6964:
 		cmp.b	#3,($FFFFDB0D).w
 		beq.s	loc_6982
@@ -6545,7 +6611,7 @@ loc_6982:
 loc_6996:
 		add.w	#1,a5
 		cmp.w	#0,a5
-		beq.w	loc_6964
+		beq	loc_6964
 		lea	($FFFFD000).w,a6
 		swap.w	d0
 		add.w	#$100,d0
@@ -6606,7 +6672,7 @@ loc_6A12:
 		cmp.b	#$FF,d2
 		bne.s	loc_6A24
 		moveq	#0,d3
-		bra	loc_6996
+		bra.w	loc_6996
 loc_6A24:
 		moveq	#7,d3
 loc_6A26:
@@ -6657,7 +6723,7 @@ loc_6A6C:
 		eor.w	#$6800,d0
 		move.w	d0,-(a6)
 		moveq	#6,d5
-		bra	loc_69B4
+		bra.w	loc_69B4
 loc_6A96:
 		move.b	d4,d0
 		lsl.w	#2,d0
@@ -6676,7 +6742,7 @@ loc_6A96:
 		eor.w	#$6800,d0
 		move.w	d0,-(a6)
 		moveq	#7,d5
-		bra	loc_69B4
+		bra.w	loc_69B4
 loc_6AC6:
 		move.b	d4,d0
 		lsl.w	#2,d0
@@ -6688,7 +6754,7 @@ loc_6AC6:
 		eor.w	#$6800,d0
 		move.w	d0,-(a6)
 		moveq	#0,d5
-		bra	loc_69B4
+		bra.w	loc_69B4
 loc_6AE6:
 		move.b	d4,d0
 		lsl.w	#2,d0
@@ -6704,7 +6770,7 @@ loc_6AE6:
 		eor.w	#$6800,d0
 		move.w	d0,-(a6)
 		moveq	#1,d5
-		bra	loc_69B4
+		bra.w	loc_69B4
 loc_6B10:
 		move.b	d4,d0
 		lsl.w	#2,d0
@@ -6720,7 +6786,7 @@ loc_6B10:
 		eor.w	#$6800,d0
 		move.w	d0,-(a6)
 		moveq	#2,d5
-		bra	loc_69B4
+		bra.w	loc_69B4
 loc_6B3A:
 		move.b	d4,d0
 		lsl.w	#2,d0
@@ -6736,7 +6802,7 @@ loc_6B3A:
 		eor.w	#$6800,d0
 		move.w	d0,-(a6)
 		moveq	#3,d5
-		bra	loc_69B4
+		bra.w	loc_69B4
 loc_6B64:
 		move.b	d4,d0
 		lsl.w	#2,d0
@@ -6752,7 +6818,7 @@ loc_6B64:
 		eor.w	#$6800,d0
 		move.w	d0,-(a6)
 		moveq	#4,d5
-		bra	loc_69B4
+		bra.w	loc_69B4
 loc_6B8E:
 		move.b	d4,d0
 		lsl.w	#2,d0
@@ -6768,7 +6834,7 @@ loc_6B8E:
 		eor.w	#$6800,d0
 		move.w	d0,-(a6)
 		moveq	#5,d5
-		bra	loc_69B4
+		bra.w	loc_69B4
 loc_6BB8:
 		move.b	(a1)+,d4
 		ror.b	#2,d4
@@ -6779,7 +6845,7 @@ loc_6BB8:
 		eor.w	#$6800,d0
 		move.w	d0,-(a6)
 		moveq	#2,d5
-		bra	loc_69B4
+		bra.w	loc_69B4
 loc_6BD4:
 		move.b	d4,d0
 		lsr.b	#2,d0
@@ -6794,7 +6860,7 @@ loc_6BD4:
 		eor.w	#$6800,d0
 		move.w	d0,-(a6)
 		moveq	#3,d5
-		bra	loc_69B4
+		bra.w	loc_69B4
 loc_6BFA:
 		move.b	d4,d0
 		lsr.b	#2,d0
@@ -6809,7 +6875,7 @@ loc_6BFA:
 		eor.w	#$6800,d0
 		move.w	d0,-(a6)
 		moveq	#4,d5
-		bra	loc_69B4
+		bra.w	loc_69B4
 loc_6C20:
 		move.b	d4,d0
 		lsr.b	#2,d0
@@ -6824,7 +6890,7 @@ loc_6C20:
 		eor.w	#$6800,d0
 		move.w	d0,-(a6)
 		moveq	#5,d5
-		bra	loc_69B4
+		bra.w	loc_69B4
 loc_6C46:
 		move.b	d4,d0
 		lsr.b	#2,d0
@@ -6839,7 +6905,7 @@ loc_6C46:
 		eor.w	#$6800,d0
 		move.w	d0,-(a6)
 		moveq	#6,d5
-		bra	loc_69B4
+		bra.w	loc_69B4
 loc_6C6C:
 		move.b	d4,d0
 		lsr.b	#2,d0
@@ -6854,7 +6920,7 @@ loc_6C6C:
 		eor.w	#$6800,d0
 		move.w	d0,-(a6)
 		moveq	#7,d5
-		bra	loc_69B4
+		bra.w	loc_69B4
 loc_6C92:
 		lsr.b	#2,d4
 		and.w	#$3F,d4
@@ -6863,7 +6929,7 @@ loc_6C92:
 		eor.w	#$6800,d0
 		move.w	d0,-(a6)
 		moveq	#0,d5
-		bra	loc_69B4
+		bra.w	loc_69B4
 loc_6CAA:
 		ror.b	#2,d4
 		move.b	d4,d0
@@ -6873,7 +6939,7 @@ loc_6CAA:
 		eor.w	#$6800,d0
 		move.w	d0,-(a6)
 		moveq	#1,d5
-		bra	loc_69B4
+		bra.w	loc_69B4
 loc_6CC4:
 		move.b	(a2)+,d2
 		ror.b	#1,d2
@@ -6881,7 +6947,7 @@ loc_6CC4:
 		and.w	#$7F,d0
 		moveq	#1,d3
 		cmp.b	#$7F,d0
-		beq.w	loc_6996
+		beq	loc_6996
 		add.w	#$40,d0
 		add.w	d0,d0
 		add.w	d0,d0
@@ -6891,7 +6957,7 @@ loc_6CC4:
 loc_6CEC: 
 		move.w	d1,-(a6)
 		dbra	d0,loc_6CEC
-		bra	loc_69B4
+		bra.w	loc_69B4
 loc_6CF6:
 		move.b	d2,d1
 		lsr.b	#1,d1
@@ -6903,7 +6969,7 @@ loc_6CF6:
 		or.b	d1,d0
 		moveq	#2,d3
 		cmp.b	#$7F,d0
-		beq.w	loc_6996
+		beq	loc_6996
 		add.w	#$40,d0
 		add.w	d0,d0
 		add.w	d0,d0
@@ -6913,7 +6979,7 @@ loc_6CF6:
 loc_6D28: 
 		move.w	d1,-(a6)
 		dbra	d0,loc_6D28
-		bra	loc_69B4
+		bra.w	loc_69B4
 loc_6D32:
 		move.b	d2,d1
 		lsr.b	#1,d1
@@ -6925,7 +6991,7 @@ loc_6D32:
 		or.b	d1,d0
 		moveq	#3,d3
 		cmp.b	#$7F,d0
-		beq.w	loc_6996
+		beq	loc_6996
 		add.w	#$40,d0
 		add.w	d0,d0
 		add.w	d0,d0
@@ -6935,7 +7001,7 @@ loc_6D32:
 loc_6D64: 
 		move.w	d1,-(a6)
 		dbra	d0,loc_6D64
-		bra	loc_69B4
+		bra.w	loc_69B4
 loc_6D6E:
 		move.b	d2,d1
 		lsr.b	#1,d1
@@ -6947,7 +7013,7 @@ loc_6D6E:
 		or.b	d1,d0
 		moveq	#4,d3
 		cmp.b	#$7F,d0
-		beq.w	loc_6996
+		beq	loc_6996
 		add.w	#$40,d0
 		add.w	d0,d0
 		add.w	d0,d0
@@ -6957,7 +7023,7 @@ loc_6D6E:
 loc_6DA0: 
 		move.w	d1,-(a6)
 		dbra	d0,loc_6DA0
-		bra	loc_69B4
+		bra.w	loc_69B4
 loc_6DAA:
 		move.b	d2,d1
 		lsr.b	#1,d1
@@ -6969,7 +7035,7 @@ loc_6DAA:
 		or.b	d1,d0
 		moveq	#5,d3
 		cmp.b	#$7F,d0
-		beq.w	loc_6996
+		beq	loc_6996
 		add.w	#$40,d0
 		add.w	d0,d0
 		add.w	d0,d0
@@ -6979,7 +7045,7 @@ loc_6DAA:
 loc_6DDC: 
 		move.w	d1,-(a6)
 		dbra	d0,loc_6DDC
-		bra	loc_69B4
+		bra.w	loc_69B4
 loc_6DE6:
 		move.b	d2,d1
 		lsr.b	#1,d1
@@ -6991,7 +7057,7 @@ loc_6DE6:
 		or.b	d1,d0
 		moveq	#6,d3
 		cmp.b	#$7F,d0
-		beq.w	loc_6996
+		beq	loc_6996
 		add.w	#$40,d0
 		add.w	d0,d0
 		add.w	d0,d0
@@ -7001,7 +7067,7 @@ loc_6DE6:
 loc_6E18: 
 		move.w	d1,-(a6)
 		dbra	d0,loc_6E18
-		bra	loc_69B4
+		bra.w	loc_69B4
 loc_6E22:
 		move.b	d2,d1
 		lsr.b	#1,d1
@@ -7013,7 +7079,7 @@ loc_6E22:
 		or.b	d1,d0
 		moveq	#7,d3
 		cmp.b	#$7F,d0
-		beq.w	loc_6996
+		beq	loc_6996
 		add.w	#$40,d0
 		add.w	d0,d0
 		add.w	d0,d0
@@ -7023,13 +7089,13 @@ loc_6E22:
 loc_6E54: 
 		move.w	d1,-(a6)
 		dbra	d0,loc_6E54
-		bra	loc_69B4
+		bra.w	loc_69B4
 loc_6E5E:
 		lsr.b	#1,d2
 		and.w	#$7F,d2
 		moveq	#0,d3
 		cmp.b	#$7F,d2
-		beq.w	loc_6996
+		beq	loc_6996
 		add.w	#$40,d2
 		add.w	d2,d2
 		add.w	d2,d2
@@ -7039,7 +7105,7 @@ loc_6E5E:
 loc_6E82: 
 		move.w	d1,-(a6)
 		dbra	d0,loc_6E82
-		bra	loc_69B4
+		bra.w	loc_69B4
 loc_6E8C:
 		move.b	(a2)+,d2
 		ror.b	#2,d2
@@ -7054,7 +7120,7 @@ loc_6E8C:
 loc_6EA8: 
 		move.w	d1,-(a6)
 		dbra	d0,loc_6EA8
-		bra	loc_69B4
+		bra.w	loc_69B4
 loc_6EB2:
 		move.b	d2,d0
 		lsr.b	#2,d0
@@ -7073,7 +7139,7 @@ loc_6EB2:
 loc_6ED8: 
 		move.w	d1,-(a6)
 		dbra	d0,loc_6ED8
-		bra	loc_69B4
+		bra.w	loc_69B4
 loc_6EE2:
 		move.b	d2,d0
 		lsr.b	#2,d0
@@ -7092,7 +7158,7 @@ loc_6EE2:
 loc_6F08: 
 		move.w	d1,-(a6)
 		dbra	d0,loc_6F08
-		bra	loc_69B4
+		bra.w	loc_69B4
 loc_6F12:
 		move.b	d2,d0
 		lsr.b	#2,d0
@@ -7111,7 +7177,7 @@ loc_6F12:
 loc_6F38: 
 		move.w	d1,-(a6)
 		dbra	d0,loc_6F38
-		bra	loc_69B4
+		bra.w	loc_69B4
 loc_6F42:
 		move.b	d2,d0
 		lsr.b	#2,d0
@@ -7130,7 +7196,7 @@ loc_6F42:
 loc_6F68: 
 		move.w	d1,-(a6)
 		dbra	d0,loc_6F68
-		bra	loc_69B4
+		bra.w	loc_69B4
 loc_6F72:
 		move.b	d2,d0
 		lsr.b	#2,d0
@@ -7149,7 +7215,7 @@ loc_6F72:
 loc_6F98: 
 		move.w	d1,-(a6)
 		dbra	d0,loc_6F98
-		bra	loc_69B4
+		bra.w	loc_69B4
 loc_6FA2:
 		lsr.b	#2,d2
 		and.w	#$3F,d2
@@ -7162,7 +7228,7 @@ loc_6FA2:
 loc_6FBA: 
 		move.w	d1,-(a6)
 		dbra	d0,loc_6FBA
-		bra	loc_69B4
+		bra.w	loc_69B4
 loc_6FC4:
 		ror.b	#2,d2
 		move.b	d2,d0
@@ -7176,7 +7242,7 @@ loc_6FC4:
 loc_6FDE: 
 		move.w	d1,-(a6)
 		dbra	d0,loc_6FDE
-		bra	loc_69B4
+		bra.w	loc_69B4
 ;-------------------------------------------------------------------------------
 loc_6FE8:
 		dc.w	loc_6FF2-loc_6FE8
@@ -7185,7 +7251,7 @@ loc_6FE8:
 		dc.w	loc_702E-loc_6FE8
 		dc.w	loc_703E-loc_6FE8
 loc_6FF2:
-		dc.b	$26,$27,$28,$29,$2A,$2B,$26,0,$1,$2,$3,$4,$5,$6,$7,$8
+		dc.b	$26,$27,$28,$29,$2A,$2B,$26,$0,$1,$2,$3,$4,$5,$6,$7,$8
 		dc.b	$9,$A,$B,$C,$D,$E,$F,$10
 loc_700A:
 		dc.b	$26,$27,$28,$29,$2A,$2B,$26,$15,$16,$17,$18,$19,$1A,$1B,$1C,$1D
@@ -7195,7 +7261,7 @@ loc_7022:
 loc_702E:
 		dc.b	$11,$12,$13,$14,$11,$12,$13,$14,$11,$12,$13,$14,$11,$12,$13,$14
 loc_703E:
-		dc.b	$31,$32,$33,$34,$35,$36,$37,0 
+		dc.b	$31,$32,$33,$34,$35,$36,$37,$0 
 ;-------------------------------------------------------------------------------
 loc_7046:
 		dc.l	loc_C8310
@@ -7267,9 +7333,9 @@ loc_7126:
 		dc.b	$80,$9,$80,$5A,$88,$30,$88,$4E,$88,$52,$88,$51,$88,$9,$88,$40
 		dc.b	$80,$2F,$88,$5A,$88,$18,$80,$34,$88,$19,$88,$2F,$88,$3D,$80,$3E
 		dc.b	$80,$18,$88,$C,$80,$12,$88,$4,$80,$26,$88,$34,$88,$5,$80,$3B
-		dc.b	$88,$3E,$88,$3B,$80,0,$88,$2,$80,$5,$80,$D,$80,$55,$80,$AF
+		dc.b	$88,$3E,$88,$3B,$80,$0,$88,$2,$80,$5,$80,$D,$80,$55,$80,$AF
 		dc.b	$80,$1C,$80,$1B,$88,$D,$80,$16,$88,$12,$80,$1F,$88,$32,$80,$13
-		dc.b	$80,$92,$88,$26,$80,$10,$80,$4D,$80,$47,$88,$92,$88,0,$80,$62
+		dc.b	$80,$92,$88,$26,$80,$10,$80,$4D,$80,$47,$88,$92,$88,$0,$80,$62
 		dc.b	$80,$66,$80,$90,$80,$8,$88,$7C,$88,$67,$88,$F7,$80,$E,$80,$60
 		dc.b	$80,$32,$80,$94,$88,$1C,$89,$5,$88,$B0,$80,$59,$80,$F,$80,$67
 		dc.b	$80,$68,$88,$94,$80,$7C,$80,$B0,$80,$B1,$80,$6,$88,$41,$80,$87
@@ -7298,7 +7364,7 @@ loc_7126:
 		dc.b	$88,$81,$88,$85,$88,$77,$88,$7E,$88,$95,$88,$DF,$88,$87,$88,$6C
 		dc.b	$88,$F5,$89,$8,$88,$79,$88,$6D,$89,$2A,$88,$AA,$80,$1E,$80,$27
 		dc.b	$80,$46,$80,$5F,$80,$70,$80,$79,$80,$9A,$80,$AA,$80,$C3,$80,$D3
-		dc.b	$80,$D4,$80,$DE,$80,$DF,$80,$F8,$81,0,$81,$1,$81,$2B,$81,$33
+		dc.b	$80,$D4,$80,$DE,$80,$DF,$80,$F8,$81,$0,$81,$1,$81,$2B,$81,$33
 		dc.b	$81,$36,$81,$43,$81,$51,$88,$2E,$88,$9E,$88,$99,$88,$D3,$88,$DD
 		dc.b	$88,$DE,$88,$E9,$88,$EF,$88,$F0,$88,$F8,$89,$27,$88,$BE,$88,$96
 		dc.b	$80,$4F,$80,$6F,$80,$81,$80,$8B,$80,$8E,$80,$9C,$80,$A3,$80,$B3
@@ -7313,7 +7379,7 @@ loc_7126:
 		dc.b	$81,$15,$81,$1A,$81,$1F,$81,$22,$81,$23,$81,$39,$81,$3A,$81,$3C
 		dc.b	$81,$42,$81,$44,$81,$47,$81,$48,$81,$5E,$81,$5F,$81,$63,$81,$68
 		dc.b	$81,$6A,$81,$6C,$81,$70,$88,$E5,$88,$CE,$88,$EE,$88,$F1,$88,$84
-		dc.b	$88,$FD,$89,0,$88,$B9,$89,$17,$88,$71,$89,$9,$89,$D,$88,$65
+		dc.b	$88,$FD,$89,$0,$88,$B9,$89,$17,$88,$71,$89,$9,$89,$D,$88,$65
 		dc.b	$89,$25,$89,$22,$88,$31,$88,$3C,$89,$F,$88,$C5,$89,$33,$89,$37
 		dc.b	$89,$1F,$80,$2E,$80,$6B,$80,$82,$80,$83,$80,$8C,$80,$99,$80,$9B
 		dc.b	$80,$A2,$80,$A5,$80,$A7,$80,$A9,$80,$AB,$80,$AD,$80,$B9,$80,$BA
@@ -7456,8 +7522,8 @@ loc_78E2:
 		lea	(SS_Tiles_8x8_Tiles),a0 
 		lea	($FFFF0000),a1
 		bsr.w	KosinskiDec 
-		move.l	#$40000000,($C00004)
-		lea	($C00000),a1
+		move.l	#$40000000,(VDP_control_port)
+		lea	(VDP_data_port),a1
 		move.l	#$FFFF0000,a0
 		move.w	(a0)+,d0
 		subq.w	#1,d0
@@ -7518,7 +7584,7 @@ loc_794E:
 loc_79D0:
 		lea	(SS_Sonic_Miles),a0 
 		lea	($FF0000),a4
-		bra	NemesisDec_ToRAM 
+		bra.w	NemesisDec_ToRAM 
 loc_79E0:
 		bsr.w	loc_7A38
 		bsr.w	loc_7ADC
@@ -7544,7 +7610,7 @@ loc_7A05:
 loc_7A0A:
 		dc.b	$B,$B,$B,$B,$C
 loc_7A0F:
-		dc.b	0,0,$1,0,0
+		dc.b	$0,$0,$1,$0,$0
 loc_7A14:
 		dc.b	$1,$1,$1,$1,$1
 loc_7A19:
@@ -7554,11 +7620,11 @@ loc_7A1E:
 loc_7A23:
 		dc.b	$7,$7,$6,$7,$7
 loc_7A28:
-		dc.b	0,$1,$1,$1,0
+		dc.b	$0,$1,$1,$1,$0
 loc_7A2D:
 		dc.b	$4,$3,$3,$3,$4
 loc_7A32:
-		dc.b	0,0,$FF,0,0,0
+		dc.b	$0,$0,$FF,$0,$0,$0
 ;------------------------------------------------------------------------------- 
 loc_7A38:
 		moveq	#0,d7
@@ -7666,7 +7732,7 @@ loc_7B26:
 ;--------------------------------------------------------------------------------
 loc_7B30:
 		dc.b	$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$FF,$10,$12,$E,$C,$A
-		dc.b	$4,$4,$4,$4,$4,$4,$2,0
+		dc.b	$4,$4,$4,$4,$4,$4,$2,$0
 ;------------------------------------------------------------------------------- 
 loc_7B48:
 		tst.b	($FFFFDB87).w
@@ -7819,11 +7885,11 @@ loc_81C0:
 loc_81D8:
 		dc.w	$1300,$1300,$1300,$1300,$9F6,$E4,$E4,$E0
 		dc.w	$DC,$D6,$F0,$6,$E,$10,$12,$12
-		dc.w	$912,0,0,0,0,$1300,$1300,$1300
+		dc.w	$912,$0,$0,$0,$0,$1300,$1300,$1300
 		dc.w	$1300,$B0C,$C,$12,$A,$8,$2,$10
 		dc.w	$E0,$E1,$E2,$E5,$E8,$F2,$1300,$1300
 		dc.w	$1300,$1300,$1300,$1300,$1300,$1300,$1300,$1300
-		dc.w	$B00,0,0,0,0,0,0,$300
+		dc.w	$B00,$0,$0,$0,$0,$0,$0,$300
 ;===============================================================================
 ; Sub Routine loc_819E
 ; [ End ]
@@ -7923,7 +7989,7 @@ loc_8346:
 		dbra	d4,loc_8346
 		move.l	(sp)+,d0
 		move.l	(sp)+,d0
-		bra	J_EntryPoint 
+		bra.w	J_EntryPoint 
 loc_8358:
 		move.b	d3,($FFFFFE16).w
 		move.w	d3,d0
@@ -7992,8 +8058,8 @@ Continue:
 		move	#$2700,sr
 		move.w	($FFFFF60C).w,d0
 		and.b	#$BF,d0
-		move.w	d0,($C00004)
-		lea	($C00004),a6
+		move.w	d0,(VDP_control_port)
+		lea	(VDP_control_port),a6
 		move.w	#$8004,(a6)
 		move.w	#$8700,(a6)
 		bsr.w	ClearScreen 
@@ -8004,10 +8070,10 @@ loc_83E2:
 		move.l	d0,(a1)+
 		dbra	d1,loc_83E2
 		bsr.w	loc_8536
-		move.l	#$60000002,($C00004) 
+		move.l	#$60000002,(VDP_control_port)
 		lea	(Miles_In_Continue),a0 
 		bsr.w	NemesisDec 
-		move.l	#$64800002,($C00004) 
+		move.l	#$64800002,(VDP_control_port)
 		lea	(Mini_Sonic),a0 
 		bsr.w	NemesisDec 
 		moveq	#$A,d1
@@ -8033,7 +8099,7 @@ loc_83E2:
 		bsr.w	DelayProgram 
 		move.w	($FFFFF60C).w,d0
 		or.b	#$40,d0
-		move.w	d0,($C00004)
+		move.w	d0,(VDP_control_port)
 		bsr.w	Pal_FadeTo 
 loc_8492: 
 		move.b	#$16,($FFFFF62A).w
@@ -8077,16 +8143,16 @@ loc_84EC:
 		rts
 ;--------------------------------------------------------------------------------
 loc_8536:
-		move.l	#$70000002,($C00004) 
+		move.l	#$70000002,(VDP_control_port)
 		lea	(Title_Card_ZONE_123),a0 
 		bsr.w	NemesisDec 
 		lea	($FFFF8000).w,a4
 		lea	(Title_Card_AY),a0 
 		bsr.w	NemesisDec_ToRAM 
 		lea	(Load_Continue_Font),a0 
-		move.l	#$72000002,($C00004)
+		move.l	#$72000002,(VDP_control_port)
 		lea	($FFFF8000).w,a1
-		lea	($C00000),a6
+		lea	(VDP_data_port),a6
 loc_8572: 
 		moveq	#0,d0
 		move.b	(a0)+,d0
@@ -8137,9 +8203,9 @@ Versus_Mode_Results:
 		move	#$2700,sr
 		move.w	($FFFFF60C).w,d0
 		and.b	#$BF,d0
-		move.w	d0,($C00004)
+		move.w	d0,(VDP_control_port)
 		bsr.w	ClearScreen 
-		lea	($C00004),a6
+		lea	(VDP_control_port),a6
 		move.w	#$8004,(a6)
 		move.w	#$8230,(a6)
 		move.w	#$8407,(a6)
@@ -8159,10 +8225,10 @@ loc_88CA:
 loc_88DA: 
 		move.l	d0,(a1)+
 		dbra	d1,loc_88DA
-		move.l	#$42000000,($C00004)
+		move.l	#$42000000,(VDP_control_port)
 		lea	(Menu_Font),a0 
 		bsr.w	NemesisDec 
-		move.l	#$4C000000,($C00004)
+		move.l	#$4C000000,(VDP_control_port)
 		lea	(Versus_Result_Font),a0 
 		bsr.w	NemesisDec 
 		lea	($FFFF0000),a1
@@ -8214,7 +8280,7 @@ loc_899C:
 		bsr.w	DelayProgram 
 		move.w	($FFFFF60C).w,d0
 		or.b	#$40,d0
-		move.w	d0,($C00004)
+		move.w	d0,(VDP_control_port)
 		bsr.w	Pal_FadeTo 
 loc_89D0: 
 		move.b	#$16,($FFFFF62A).w
@@ -8348,7 +8414,7 @@ loc_8B3A:
 		rts
 ;--------------------------------------------------------------------------------
 loc_8B48:
-		bra	loc_8A9A 
+		bra.w	loc_8A9A 
 ;===============================================================================
 ; Sub Routine Versus Mode Results
 ; [ End ]
@@ -8924,7 +8990,7 @@ loc_91BE:
 		dc.l	$186A0,$2710,$3E8,$64
 		dc.l	$A,$1 
 ;------------------------------------------------------------------------------- 
-___ = 0
+___ = $0
 __1 = $11
 __2 = $12
 __A = $1E
@@ -8984,7 +9050,7 @@ Map_Blank:
 		dc.b	$3,___,___,___,___
 ;-------------------------------------------------------------------------------
 Menu_Animate: 
-		dc.w	0 ; Total of Animations 
+		dc.w	$0 ; Total of Animations 
 		dc.l	($FF<<$18)|Sonic_Miles 
 		dc.w	$20 ; VRam 
 		dc.w	$60A ; Frames/Tiles
@@ -9028,9 +9094,9 @@ Versus_Mode_Menu:
 		move	#$2700,sr
 		move.w	($FFFFF60C).w,d0
 		and.b	#$BF,d0
-		move.w	d0,($C00004)
+		move.w	d0,(VDP_control_port)
 		bsr.w	ClearScreen 
-		lea	($C00004),a6
+		lea	(VDP_control_port),a6
 		move.w	#$8004,(a6)
 		move.w	#$8230,(a6)
 		move.w	#$8407,(a6)
@@ -9051,13 +9117,13 @@ loc_96AE:
 loc_96BE: 
 		move.l	d0,(a1)+
 		dbra	d1,loc_96BE
-		move.l	#$42000000,($C00004)
+		move.l	#$42000000,(VDP_control_port)
 		lea	(Menu_Font),a0 
 		bsr.w	NemesisDec 
-		move.l	#$4C000000,($C00004)
+		move.l	#$4C000000,(VDP_control_port)
 		lea	(Menu_Frame),a0 
 		bsr.w	NemesisDec 
-		move.l	#$50000000,($C00004)
+		move.l	#$50000000,(VDP_control_port)
 		lea	(Level_Icons),a0 
 		bsr.w	NemesisDec 
 		lea	($FFFF0000),a1
@@ -9106,7 +9172,7 @@ loc_976C:
 		bsr.w	loc_9EBA
 		moveq	#$26,d0
 		bsr.w	PalLoad1 
-		lea	($FFFFFB40).w,a1
+		lea	(Normal_palette_line3).w,a1
 		lea	($FFFFFBC0).w,a2
 		moveq	#7,d1
 loc_97D6: 
@@ -9122,7 +9188,7 @@ loc_97D6:
 		bsr.w	DelayProgram 
 		move.w	($FFFFF60C).w,d0
 		or.b	#$40,d0
-		move.w	d0,($C00004)
+		move.w	d0,(VDP_control_port)
 		bsr.w	Pal_FadeTo 
 loc_9812: 
 		move.b	#$16,($FFFFF62A).w
@@ -9138,13 +9204,13 @@ loc_9812:
 		or.b	($FFFFF607).w,d0
 		and.b	#$80,d0
 		bne.s	loc_984C
-		bra	loc_9812
+		bra.w	loc_9812
 loc_984C:
 		bsr.w	loc_994A
 		bmi.s	loc_985E
 		move.w	#$ED,d0
 		bsr.w	Play_Sfx
-		bra	loc_9812
+		bra.w	loc_9812
 loc_985E:
 		moveq	#0,d0
 		move.b	($FFFFFF88).w,d0
@@ -9166,7 +9232,7 @@ loc_988A:
 		rts
 ;--------------------------------------------------------------------------------
 loc_989E:
-		dc.w	0,$B00,$C00,$FFFF
+		dc.w	$0,$B00,$C00,$FFFF
 loc_98A6:
 		move.b	($FFFFF605).w,d0
 		or.b	($FFFFF607).w,d0
@@ -9216,7 +9282,7 @@ loc_9910:
 		move.b	(a3),d0
 		lsl.w	#5,d0
 		lea	0(a1,d0),a1
-		lea	($FFFFFB40).w,a2
+		lea	(Normal_palette_line3).w,a2
 		moveq	#7,d1
 loc_9942: 
 		move.l	(a1)+,(a2)+
@@ -9265,7 +9331,7 @@ loc_99AE:
 		move.l	(a3)+,d0
 		moveq	#$10,d1
 		moveq	#$B,d2
-		bra	loc_9EB4 
+		bra.w	loc_9EB4 
 ;-------------------------------------------------------------------------------
 loc_99CA: 
 		dc.l	Map_Emerald_Hill 
@@ -9346,7 +9412,7 @@ Level_Size_Load:
 		move.w	#$1010,($FFFFEE40).w
 		move.w	#$60,($FFFFEED8).w
 		move.w	#$60,($FFFFEEDA).w
-		bra	Level_Size_Check_Lamp_Post 
+		bra.w	Level_Size_Check_Lamp_Post 
 Level_Size_Array:
 		dc.l	$29A0,$320,$2940,$420 ; GHz
 		dc.l	$3FFF,$720,$3FFF,$720 ;
@@ -9364,7 +9430,7 @@ Level_Size_Array:
 		dc.l	$2780,$720,$2A80,$720 ; CPz
 		dc.l	$1000,$C800C8,$1000,$C800C8 ; DEz
 		dc.l	$28C0,$2000600,$3FFF,$1800780 ; NGHz
-		dc.l	$3FFF,0,$3FFF,$720 ; SCz 
+		dc.l	$3FFF,$0,$3FFF,$720 ; SCz 
 Level_Size_Check_Lamp_Post: 
 		tst.b	($FFFFFE30).w
 		beq.s	Level_Size_Start_Loc 
@@ -9661,7 +9727,7 @@ loc_A31C:
 		cmp.b	#$10,($FFFFFE10).w
 		bne.w	loc_A34E
 		tst.w	($FFFFFE08).w
-		beq.w	loc_A3D4
+		beq	loc_A3D4
 loc_A34E:
 		lea	($FFFFB000).w,a0
 		lea	($FFFFEE00).w,a1
@@ -9852,10 +9918,10 @@ loc_A52E:
 		rts
 ;--------------------------------------------------------------------------------
 Bg_Scroll_Data: 
-		dc.b	$1,$2,$1,$3,$1,$2,$2,$1,$2,$3,$1,$2,$1,$2,0,0
-		dc.b	$2,0,$3,$2,$2,$3,$2,$2,$1,$3,0,0,$1,0,$1,$3
-		dc.b	$1,$2,$1,$3,$1,$2,$2,$1,$2,$3,$1,$2,$1,$2,0,0
-		dc.b	$2,0,$3,$2,$2,$3,$2,$2,$1,$3,0,0,$1,0,$1,$3
+		dc.b	$1,$2,$1,$3,$1,$2,$2,$1,$2,$3,$1,$2,$1,$2,$0,$0
+		dc.b	$2,$0,$3,$2,$2,$3,$2,$2,$1,$3,$0,$0,$1,$0,$1,$3
+		dc.b	$1,$2,$1,$3,$1,$2,$2,$1,$2,$3,$1,$2,$1,$2,$0,$0
+		dc.b	$2,$0,$3,$2,$2,$3,$2,$2,$1,$3,$0,$0,$1,$0,$1,$3
 		dc.b	$1,$2 
 Bg_Scroll_GHz_2p: 
 		move.b	($FFFFFE0F).w,d1
@@ -10392,7 +10458,7 @@ loc_AAB4:
 		and.w	#$3F0,d0
 		lsr.w	#3,d0
 		lea	0(a2,d0),a2
-		bra	loc_B47C
+		bra.w	loc_B47C
 ;===============================================================================
 ; Sub Routine Hidden Palace Background Scroll 
 ; [ End ]
@@ -10840,7 +10906,7 @@ loc_AF22:
 		sub.w	#$10,d2
 		bra.s	loc_AEFA
 CNz_Bg_Scroll_Data: 
-		dc.b	$10,$10,$10,$10,$10,$10,$10,$10,0,$F0
+		dc.b	$10,$10,$10,$10,$10,$10,$10,$10,$0,$F0
 loc_AF3E:
 		lea	($FFFFA800).w,a1
 		move.w	d2,d0
@@ -10948,7 +11014,7 @@ loc_B03E:
 CNz_Bg_Scroll_Data_2P: 
 		dc.b	$4
 CNz_Bg_Scroll_Data_2P_01: 
-		dc.b	$8,$8,$8,$8,$8,$8,$8,$8,0,$78
+		dc.b	$8,$8,$8,$8,$8,$8,$8,$8,$0,$78
 ;===============================================================================
 ; Sub Routine Casino Night Background Scroll 
 ; [ End ]
@@ -11603,7 +11669,7 @@ loc_B5F8:
 		add.w	(a1),d1
 		tst.w	d0
 		bpl loc_B636
-		bra	loc_B612
+		bra.w	loc_B612
 loc_B608:
 		neg.w	d1
 		ext.l	d1
@@ -11842,8 +11908,8 @@ loc_B7B0:
 loc_B7B6:
 		rts
 ;--------------------------------------------------------------------------------
-		lea	($C00004),a5
-		lea	($C00000),a6
+		lea	(VDP_control_port),a5
+		lea	(VDP_data_port),a6
 		lea	($FFFFEE52).w,a2
 		lea	($FFFFEE08).w,a3
 		lea	($FFFF8080).w,a4
@@ -11851,14 +11917,14 @@ loc_B7B6:
 		bsr.w	loc_B94A
 		lea	($FFFFEE54).w,a2
 		lea	($FFFFEE10).w,a3
-		bra	loc_BA1A 
+		bra.w	loc_BA1A 
 ;===============================================================================
 ; Sub Routine LoadTilesAsYouMove 
 ; [ Begin ]
 ;=============================================================================== 
 LoadTilesAsYouMove: 
-		lea	($C00004),a5
-		lea	($C00000),a6
+		lea	(VDP_control_port),a5
+		lea	(VDP_data_port),a6
 		lea	($FFFFEEA2).w,a2
 		lea	($FFFFEE68).w,a3
 		lea	($FFFF8080).w,a4
@@ -11985,7 +12051,7 @@ loc_B948:
 ;--------------------------------------------------------------------------------
 loc_B94A:
 		tst.b	(a2)
-		beq.w	loc_BA18
+		beq	loc_BA18
 		bclr	#0,(a2)
 		beq.s	loc_B966
 		moveq	#$FFFFFFF0,d4
@@ -12066,7 +12132,7 @@ loc_BA18:
 ;--------------------------------------------------------------------------------
 loc_BA1A:
 		tst.b	(a2)
-		beq.w	loc_BA5C
+		beq	loc_BA5C
 		bclr	#0,(a2)
 		beq.s	loc_BA3C
 		move.w	#$70,d4
@@ -12090,9 +12156,9 @@ loc_BA5C:
 		rts
 ;--------------------------------------------------------------------------------
 loc_BA5E:
-		dc.b	0
+		dc.b	$0
 loc_BA5F:
-		dc.b	0,0,0,0,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$4,$4
+		dc.b	$0,$0,$0,$0,$6,$6,$6,$6,$6,$6,$6,$6,$6,$6,$4,$4
 		dc.b	$4,$4,$4,$4,$4,$2,$2,$2,$2,$2,$2,$2,$2,$2,$2,$2
 		even 
 loc_BA80:
@@ -12145,12 +12211,12 @@ loc_BAF4:
 		and.w	#$1F0,d0
 		lsr.w	#4,d0
 		lea	0(a0,d0),a0
-		bra	loc_BC0E
+		bra.w	loc_BC0E
 loc_BB0A:
 		tst.b	(a2)
-		beq.w	loc_BB56
+		beq	loc_BB56
 		cmp.b	#$D,($FFFFFE10).w
-		beq.w	loc_BB9A
+		beq	loc_BB9A
 		bclr	#0,(a2)
 		beq.s	loc_BB36
 		move.w	#$40,d4
@@ -12221,7 +12287,7 @@ loc_BBF0:
 		and.w	#$7F0,d0
 		lsr.w	#4,d0
 		lea	0(a0,d0),a0
-		bra	loc_BC0E
+		bra.w	loc_BC0E
 loc_BC06:
 		dc.w	$EE68,$EE68,$EE70,$EE78
 loc_BC0E:
@@ -12780,18 +12846,18 @@ loc_C06C:
 ; [ Begin ]
 ;===============================================================================
 Load_Tiles_From_Start: 
-		lea	($C00004),a5
-		lea	($C00000),a6
+		lea	(VDP_control_port),a5
+		lea	(VDP_data_port),a6
 		lea	($FFFFEE08).w,a3
 		lea	($FFFF8080).w,a4
 		move.w	#$6000,d2
 		moveq	#0,d4
 		cmp.b	#$C,($FFFFFE10).w
-		beq.w	loc_C0C0
+		beq	loc_C0C0
 		tst.w	($FFFFFFD8).w
-		beq.w	loc_C0BE
+		beq	loc_C0BE
 		cmp.b	#$B,($FFFFFE10).w
-		beq.w	loc_C11E
+		beq	loc_C11E
 loc_C0BE:
 		moveq	#$FFFFFFF0,d4
 loc_C0C0:
@@ -12925,7 +12991,7 @@ loc_C1F0:
 		move.w	0(a0,d0),d0
 		lea	0(a0,d0.l),a0
 		lea	($FFFF8000).w,a1
-		bra	J_KosinskiDec 
+		bra.w	J_KosinskiDec 
 		lea	($FFFF8000).w,a3
 		move.w	#$3FF,d1
 		moveq	#0,d0
@@ -13055,7 +13121,7 @@ J_LoadPLC:
 		jmp	LoadPLC 
 J_KosinskiDec: 
 		jmp	KosinskiDec 
-		dc.w	0 ; Filler
+		dc.w	$0 ; Filler
 ;===============================================================================
 ; Sub Routine Dynamic Screen Size Boss
 ; [ Begin ]
@@ -13318,7 +13384,7 @@ loc_C616:
 		move.w	($FFFFEEB2).w,($FFFFEEB6).w
 		move.w	($FFFFEE00).w,d0
 		move.w	($FFFFEE04).w,d1
-		bra	loc_C8E6
+		bra.w	loc_C8E6
 loc_C62E:
 		cmp.w	#$800,($FFFFEEE2).w
 		beq.s	loc_C63A
@@ -13340,7 +13406,7 @@ loc_C65A:
 		move.w	($FFFFEEB2).w,($FFFFEEB6).w
 		move.w	($FFFFEE00).w,d0
 		move.w	($FFFFEE04).w,d1
-		bra	loc_C8E6
+		bra.w	loc_C8E6
 loc_C672:
 		cmp.w	#$FD40,($FFFFEEE2).w
 		beq.s	loc_C6A0
@@ -13362,7 +13428,7 @@ loc_C6A0:
 		move.w	($FFFFEEB2).w,($FFFFEEB6).w
 		move.w	($FFFFEE00).w,d0
 		move.w	($FFFFEE04).w,d1
-		bra	loc_C8E6
+		bra.w	loc_C8E6
 loc_C6B8:
 		cmp.w	#$2880,($FFFFEE00).w
 		bcs.s	loc_C6D8
@@ -13483,7 +13549,7 @@ loc_C80E:
 		move.w	($FFFFEEB2).w,($FFFFEEB6).w
 		move.w	($FFFFEE00).w,d0
 		move.w	($FFFFEE04).w,d1
-		bra	loc_C8E6
+		bra.w	loc_C8E6
 loc_C836:
 		move.l	#$4000000,($FFFFEE08).w
 		moveq	#0,d0
@@ -13688,7 +13754,7 @@ loc_CA90:
 		move.w	($FFFFEEB2).w,($FFFFEEB6).w
 		move.w	($FFFFEE00).w,d0
 		move.w	($FFFFEE04).w,d1
-		bra	loc_C8E6
+		bra.w	loc_C8E6
 loc_CAB8:
 		move.l	#$4000000,($FFFFEE08).w
 		moveq	#0,d0
@@ -13789,7 +13855,7 @@ loc_CBF2:
 		move.w	($FFFFEEB2).w,($FFFFEEB6).w
 		move.w	($FFFFEE00).w,d0
 		move.w	($FFFFEE04).w,d1
-		bra	loc_C8E6
+		bra.w	loc_C8E6
 loc_CC1A:
 		move.l	#$4000000,($FFFFEE08).w
 		moveq	#0,d0
@@ -13880,7 +13946,7 @@ loc_CD18:
 		clr.b	($FFFFF73A).w
 		move.b	#3,($FFFFF7AA).w
 		moveq	#$2A,d0
-		bra	J_LoadPLC_01 
+		bra.w	J_LoadPLC_01 
 loc_CD54:
 		rts
 ;--------------------------------------------------------------------------------
@@ -13961,7 +14027,7 @@ loc_CDF6:
 		clr.b	($FFFFF73A).w
 		move.b	#8,($FFFFF7AA).w
 		moveq	#$2F,d0
-		bra	J_LoadPLC_01 
+		bra.w	J_LoadPLC_01 
 loc_CE32:
 		rts
 ;--------------------------------------------------------------------------------
@@ -14038,8 +14104,8 @@ loc_CEDE:
 		move.w	#$F9,d0
 		bsr.w	J_Play_Music 
 		clr.b	($FFFFF73A).w
-		move.l	#$6C000002,($C00004)
-		lea	($C00000),a6
+		move.l	#$6C000002,(VDP_control_port)
+		lea	(VDP_data_port),a6
 		lea	(DHz_Boss_Rocks),a2 
 		moveq	#7,d0
 loc_CF26: 
@@ -14143,7 +14209,7 @@ loc_D016:
 		clr.b	($FFFFF73A).w
 		move.b	#6,($FFFFF7AA).w
 		moveq	#$2D,d0
-		bra	J_LoadPLC_01 
+		bra.w	J_LoadPLC_01 
 loc_D058:
 		rts
 ;--------------------------------------------------------------------------------
@@ -14217,7 +14283,7 @@ loc_D0FE:
 		clr.b	($FFFFF73A).w
 		move.b	#1,($FFFFF7AA).w
 		moveq	#$28,d0
-		bra	J_LoadPLC_01 
+		bra.w	J_LoadPLC_01 
 loc_D13A:
 		rts
 ;--------------------------------------------------------------------------------
@@ -14270,7 +14336,7 @@ loc_D1A0:
 		move.w	#$348,8(a1)
 		move.w	#$A0,$C(a1)
 		moveq	#$30,d0
-		bra	J_LoadPLC_01 
+		bra.w	J_LoadPLC_01 
 loc_D1D0:
 		rts
 ;--------------------------------------------------------------------------------
@@ -14283,7 +14349,7 @@ loc_D1D4:
 		bcs.s	loc_D1EC
 		addq.b	#2,($FFFFEEDF).w
 		moveq	#$31,d0
-		bra	J_LoadPLC_01 
+		bra.w	J_LoadPLC_01 
 loc_D1EC:
 		rts
 ;--------------------------------------------------------------------------------
@@ -14432,7 +14498,7 @@ loc_D366:
 ;===============================================================================
 Boss_Defeated_Music_Restore: 
 		move.w	($FFFFFF90).w,d0
-		bra	J_Play_Music 
+		bra.w	J_Play_Music 
 ;===============================================================================
 ; Sub Routine Boss Defeated Music Restore
 ; [ End ]
@@ -14467,7 +14533,7 @@ J_LoadPLC_01:
 		jmp	LoadPLC 
 J_Play_Music: 
 		jmp	Play_Music 
-		dc.w	0 ; Filler
+		dc.w	$0 ; Filler
 ;------------------------------------------------------------------------------- 
 Obj_0x11_Bridge: 
 		include 'objects/obj_0x11.asm'
@@ -14485,7 +14551,7 @@ loc_E036:
 		jmp	CalcSine 
 loc_E03C:
 		jmp	(loc_1AD98) 
-		dc.w	0 ; Filler
+		dc.w	$0 ; Filler
 ;------------------------------------------------------------------------------- 
 Obj_0x17: 
 		include 'objects/obj_0x17.asm'
@@ -14496,7 +14562,7 @@ Obj_0x18_Platforms
 		nop ; Filler
 loc_E5DC:
 		jmp	CalcSine 
-		dc.w	0 ; Filler
+		dc.w	$0 ; Filler
 ;------------------------------------------------------------------------------- 
 Obj_0x1A_Collapsing_Platforms:
 		include 'objects/obj_0x1A.asm'
@@ -14631,7 +14697,7 @@ loc_F2D2:
 		dc.w	$1
 		dc.l	$FC0C0005,$2FFF0
 loc_F2DC:
-		dc.w	0 
+		dc.w	$0 
 		nop ; Filler
 ;------------------------------------------------------------------------------- 
 Obj_0x2A_Up_Down_Pillar: 
@@ -14749,7 +14815,7 @@ loc_FC3E:
 ;------------------------------------------------------------------------------- 
 loc_FC50:
 		jmp	PseudoRandomNumber 
-		dc.w	0 ; Filler
+		dc.w	$0 ; Filler
 ;-------------------------------------------------------------------------------
 Obj_0x25_Rings: 
 		include 'objects/obj_0x25.asm'
@@ -14863,7 +14929,7 @@ loc_100CC:
 		dc.w	$1
 		dc.l	$F805100A,$1005FFF8
 loc_100D6:
-		dc.w	0
+		dc.w	$0
 ;------------------------------------------------------------------------------- 
 Big_Ring_Mappings: 
 		dc.w	loc_100E0-Big_Ring_Mappings
@@ -14905,7 +14971,7 @@ Big_Ring_Flash_Mappings:
 		dc.w	loc_102B6-Big_Ring_Flash_Mappings
 loc_101E8:
 		dc.w	$2
-		dc.l	$E00F0000,0,$F1000,$10000000
+		dc.l	$E00F0000,$0,$F1000,$10000000
 loc_101FA:
 		dc.w	$4
 		dc.l	$E00F0010,$8FFF0,$E0070020,$100010
@@ -14936,7 +15002,7 @@ loc_102B6:
 ;------------------------------------------------------------------------------- 
 loc_102D8:
 		jmp	CalcSine 
-		dc.w	0 ; Filler
+		dc.w	$0 ; Filler
 Obj_0x26_Monitors: 
 		include 'objects/obj_0x26.asm'
 Obj_0x2E_Monitors_Contents: 
@@ -14954,27 +15020,27 @@ Monitors_AnimateData:
 		dc.w	loc_108E6-Monitors_AnimateData
 		dc.w	loc_108EE-Monitors_AnimateData
 loc_108A2:
-		dc.b	$1,0,$1,$FF
+		dc.b	$1,$0,$1,$FF
 loc_108A6:
-		dc.b	$1,0,$2,$2,$1,$2,$2,$FF
+		dc.b	$1,$0,$2,$2,$1,$2,$2,$FF
 loc_108AE:
-		dc.b	$1,0,$3,$3,$1,$3,$3,$FF
+		dc.b	$1,$0,$3,$3,$1,$3,$3,$FF
 loc_108B6:
-		dc.b	$1,0,$4,$4,$1,$4,$4,$FF
+		dc.b	$1,$0,$4,$4,$1,$4,$4,$FF
 loc_108BE:
-		dc.b	$1,0,$5,$5,$1,$5,$5,$FF
+		dc.b	$1,$0,$5,$5,$1,$5,$5,$FF
 loc_108C6:
-		dc.b	$1,0,$6,$6,$1,$6,$6,$FF
+		dc.b	$1,$0,$6,$6,$1,$6,$6,$FF
 loc_108CE:
-		dc.b	$1,0,$7,$7,$1,$7,$7,$FF
+		dc.b	$1,$0,$7,$7,$1,$7,$7,$FF
 loc_108D6:
-		dc.b	$1,0,$8,$8,$1,$8,$8,$FF
+		dc.b	$1,$0,$8,$8,$1,$8,$8,$FF
 loc_108DE:
-		dc.b	$1,0,$9,$9,$1,$9,$9,$FF
+		dc.b	$1,$0,$9,$9,$1,$9,$9,$FF
 loc_108E6:
-		dc.b	$1,0,$A,$A,$1,$A,$A,$FF
+		dc.b	$1,$0,$A,$A,$1,$A,$A,$FF
 loc_108EE:
-		dc.b	$2,0,$1,$B,$FE,$1 
+		dc.b	$2,$0,$1,$B,$FE,$1 
 Monitors_Mappings: 
 		dc.w	loc_1090C-Monitors_Mappings
 		dc.w	loc_10916-Monitors_Mappings
@@ -15036,17 +15102,17 @@ Obj_0x0F_1Player2Vs:
 ;------------------------------------------------------------------------------- 
 Unk_Sub_loc_10AC0:
 		lea	(Unk_Animate_Data_loc_10AD8),a1
-		bra	AnimateSprite 
+		bra.w	AnimateSprite 
 ;------------------------------------------------------------------------------- 
 Unk_Animate_Data_loc_10ACA:
 		dc.w	loc_10ACC-Unk_Animate_Data_loc_10ACA
 loc_10ACC:
-		dc.b	$7,0,$1,$2,$3,$4,$5,$6,$7,$FE,$2,0
+		dc.b	$7,$0,$1,$2,$3,$4,$5,$6,$7,$FE,$2,$0
 ;------------------------------------------------------------------------------- 
 Unk_Animate_Data_loc_10AD8: 
 		dc.w	loc_10ADA-Unk_Animate_Data_loc_10AD8
 loc_10ADA:
-		dc.b	$1F,0,$1,$FF
+		dc.b	$1F,$0,$1,$FF
 ;------------------------------------------------------------------------------- 
 _1Player2Vs_Mappings: 
 		dc.w	loc_10AE2-_1Player2Vs_Mappings
@@ -15412,7 +15478,7 @@ loc_11EDE:
 ; [ Begin ]
 ;=============================================================================== 
 Load_Title_Cards_Mappings: 
-		lea	($C00000),a6
+		lea	(VDP_data_port),a6
 		tst.w	($FFFFB0BE).w
 		bne.w	loc_11FDC
 		moveq	#$3F,d5
@@ -15640,7 +15706,7 @@ TC_Y = $5604
 TC_Break = $FFFF
 
 Load_Title_Cards_Art: 
-		move.l	#$70000002,($C00004)
+		move.l	#$70000002,(VDP_control_port)
 		lea	(Title_Card_ZONE_123),a0 
 		bsr.w	loc_12244
 		lea	($FFFF8000).w,a4
@@ -15652,9 +15718,9 @@ Load_Title_Cards_Art:
 		lea	TC_Loader(pc),a0 
 		lea	0(a0,d0),a0
 		move	#$2700,sr
-		move.l	#$7BC00002,($C00004)
+		move.l	#$7BC00002,(VDP_control_port)
 		lea	($FFFF8000).w,a1
-		lea	($C00000),a6
+		lea	(VDP_data_port),a6
 loc_1215C: 
 		moveq	#0,d0
 		move.b	(a0)+,d0
@@ -15737,7 +15803,7 @@ Obj_0x36_Spikes:
 ;------------------------------------------------------------------------------- 
 Obj_0x3B: 
 		include 'objects/obj_0x3B.asm'
-		dc.w	0 ; Filler
+		dc.w	$0 ; Filler
 ;------------------------------------------------------------------------------- 
 Obj_0x3C: 
 		include 'objects/obj_0x3C.asm'
@@ -15814,7 +15880,7 @@ loc_128AE:
 ; [ End ]
 ;=============================================================================== 
 
-		bra	Obj_Null 
+		bra.w	Obj_Null 
 ;===============================================================================
 ; Sub Routine Load_Objects
 ; [ Begin ]
@@ -16086,7 +16152,7 @@ Object_List:
 ; [ End ]
 ;===============================================================================
 Obj_Null: 
-		bra	DeleteObject 
+		bra.w	DeleteObject 
 ;=============================================================================== 
 ; Sub Routine ObjectFall
 ; [ Begin ] 
@@ -16143,14 +16209,14 @@ SpeedToPos:
 MarkObjGone: 
 		tst.w	($FFFFFFD8).w
 		beq.s	loc_12D1E
-		bra	DisplaySprite 
+		bra.w	DisplaySprite 
 loc_12D1E:
 		move.w	8(a0),d0
 		and.w	#$FF80,d0
 		sub.w	($FFFFF7DA).w,d0
 		cmp.w	#$280,d0
 		bhi loc_12D36
-		bra	DisplaySprite 
+		bra.w	DisplaySprite 
 loc_12D36:
 		lea	($FFFFFC00).w,a2
 		moveq	#0,d0
@@ -16158,7 +16224,7 @@ loc_12D36:
 		beq.s	loc_12D48
 		bclr	#7,2(a2,d0)
 loc_12D48:
-		bra	DeleteObject 
+		bra.w	DeleteObject 
 ;=============================================================================== 
 ; Sub Routine MarkObjGone
 ; [ End ] 
@@ -16166,13 +16232,13 @@ loc_12D48:
 loc_12D4C: 
 		tst.w	($FFFFFFD8).w
 		beq.s	loc_12D56
-		bra	DisplaySprite 
+		bra.w	DisplaySprite 
 loc_12D56:
 		and.w	#$FF80,d0
 		sub.w	($FFFFF7DA).w,d0
 		cmp.w	#$280,d0
 		bhi loc_12D6A
-		bra	DisplaySprite 
+		bra.w	DisplaySprite 
 loc_12D6A:
 		lea	($FFFFFC00).w,a2
 		moveq	#0,d0
@@ -16180,7 +16246,7 @@ loc_12D6A:
 		beq.s	loc_12D7C
 		bclr	#7,2(a2,d0)
 loc_12D7C:
-		bra	DeleteObject 
+		bra.w	DeleteObject 
 ;=============================================================================== 
 ; Sub Routine MarkObjGone
 ; [ End ] 
@@ -16206,7 +16272,7 @@ loc_12D9E:
 		beq.s	loc_12DB0
 		bclr	#7,2(a2,d0)
 loc_12DB0:
-		bra	DeleteObject 
+		bra.w	DeleteObject 
 loc_12DB4: 
 		tst.w	($FFFFFFD8).w
 		bne.s	loc_12DE8
@@ -16215,7 +16281,7 @@ loc_12DB4:
 		sub.w	($FFFFF7DA).w,d0
 		cmp.w	#$280,d0
 		bhi loc_12DD2
-		bra	DisplaySprite 
+		bra.w	DisplaySprite 
 loc_12DD2:
 		lea	($FFFFFC00).w,a2
 		moveq	#0,d0
@@ -16223,7 +16289,7 @@ loc_12DD2:
 		beq.s	loc_12DE4
 		bclr	#7,2(a2,d0)
 loc_12DE4:
-		bra	DeleteObject 
+		bra.w	DeleteObject 
 loc_12DE8:
 		move.w	8(a0),d0
 		and.w	#$FF00,d0
@@ -16231,12 +16297,12 @@ loc_12DE8:
 		sub.w	($FFFFF7DA).w,d0
 		cmp.w	#$300,d0
 		bhi loc_12E02
-		bra	DisplaySprite 
+		bra.w	DisplaySprite 
 loc_12E02:
 		sub.w	($FFFFF7DC).w,d1
 		cmp.w	#$300,d1
 		bhi loc_12E12
-		bra	DisplaySprite 
+		bra.w	DisplaySprite 
 loc_12E12:
 		lea	($FFFFFC00).w,a2
 		moveq	#0,d0
@@ -16244,7 +16310,7 @@ loc_12E12:
 		beq.s	loc_12E24
 		bclr	#7,2(a2,d0)
 loc_12E24:
-		bra	DeleteObject 
+		bra.w	DeleteObject 
 ;=============================================================================== 
 ; Sub Routine DeleteObject
 ; [ Begin ] 
@@ -16435,14 +16501,14 @@ loc_12F64:
 		moveq	#7,d7
 loc_12F6A: 
 		tst.w	(a4)
-		beq.w	loc_13044
+		beq	loc_13044
 		moveq	#2,d6
 loc_12F72: 
 		move.w	0(a4,d6),a0
 		tst.b	(a0)
-		beq.w	loc_13066
+		beq	loc_13066
 		tst.l	4(a0)
-		beq.w	loc_13066
+		beq	loc_13066
 		and.b	#$7F,1(a0)
 		move.b	1(a0),d0
 		move.b	d0,d4
@@ -16613,7 +16679,7 @@ loc_1314E:
 		dbra	d0,loc_1311A
 loc_13154:
 		move.l	(sp)+,a4
-		bra	loc_1303C
+		bra.w	loc_1303C
 loc_1315A:
 		cmp.b	#$50,d5
 		bcs.s	loc_1316C
@@ -16764,13 +16830,13 @@ loc_132CC:
 		moveq	#7,d7
 loc_132D2: 
 		move.w	(a4),d0
-		beq.w	loc_133AA
+		beq	loc_133AA
 		move.w	d0,-(sp)
 		moveq	#2,d6
 loc_132DC: 
 		move.w	0(a4,d6),a0
 		tst.b	(a0)
-		beq.w	loc_133A0
+		beq	loc_133A0
 		and.b	#$7F,1(a0)
 		move.b	1(a0),d0
 		move.b	d0,d4
@@ -16865,13 +16931,13 @@ loc_133E6:
 		moveq	#7,d7
 loc_133EC: 
 		move.w	(a4),d0
-		beq.w	loc_134C8
+		beq	loc_134C8
 		move.w	d0,-(sp) 
 		moveq	#2,d6
 loc_133F6: 
 		move.w	0(a4,d6),a0
 		tst.b	(a0)
-		beq.w	loc_134B4
+		beq	loc_134B4
 		move.b	1(a0),d0
 		move.b	d0,d4
 		btst	#6,d0
@@ -17042,7 +17108,7 @@ loc_135C8:
 		dbra	d0,loc_13598
 loc_135CE:
 		move.l	(sp)+,a4
-		bra	loc_133A0
+		bra.w	loc_133A0
 loc_135D4:
 		move.l	a4,-(sp)
 		lea	($FFFFEE20).w,a4
@@ -17129,7 +17195,7 @@ loc_136B2:
 		dbra	d0,loc_13682
 loc_136B8:
 		move.l	(sp)+,a4
-		bra	loc_134B4
+		bra.w	loc_134B4
 ;===============================================================================
 ; Sub Routine ModifySpriteAttr_2P
 ; [ Begin ]
@@ -17207,7 +17273,7 @@ loc_13742:
 		rts
 ;--------------------------------------------------------------------------------
 loc_13744:
-		dc.b	0,0,$1,$1,$4,$4,$5,$5,$8,$8,$9,$9,$C,$C,$D,$D
+		dc.b	$0,$0,$1,$1,$4,$4,$5,$5,$8,$8,$9,$9,$C,$C,$D,$D
 loc_13754:
 		btst	#1,d4
 		bne.w	loc_13812
@@ -17271,7 +17337,7 @@ loc_137EA:
 		rts
 ;--------------------------------------------------------------------------------
 loc_137F2:
-		dc.b	0,0,$1,$1,$4,$4,$5,$5,$8,$8,$9,$9,$C,$C,$D,$D
+		dc.b	$0,$0,$1,$1,$4,$4,$5,$5,$8,$8,$9,$9,$C,$C,$D,$D
 loc_13802:
 		dc.b	$8,$10,$18,$20,$8,$10,$18,$20,$8,$10,$18,$20,$8,$10,$18,$20 
 loc_13812:
@@ -17359,7 +17425,7 @@ loc_138D0:
 ; Sub Routine loc_12F46
 ; [ End ]
 ;===============================================================================
-		dc.w	0 ; Filler
+		dc.w	$0 ; Filler
 		
 ;===============================================================================
 ; Sub Routine Load_Ring_Pos
@@ -17437,7 +17503,7 @@ loc_1397E:
 loc_13986: 
 		subq.w	#6,a1
 loc_13988:
-		cmp.w	$FFFFFFFC(a1),d4
+		cmp.w	Checksum_fourcc(a1),d4
 		bls.s	loc_13986
 		move.w	a1,($FFFFF712).w
 		move.w	($FFFFF714).w,a2
@@ -17452,7 +17518,7 @@ loc_139A0:
 loc_139A8: 
 		subq.w	#6,a2
 loc_139AA:
-		cmp.w	$FFFFFFFC(a2),d4
+		cmp.w	Checksum_fourcc(a2),d4
 		bls.s	loc_139A8
 		move.w	a2,($FFFFF714).w
 		tst.w	($FFFFFFD8).w
@@ -17477,7 +17543,7 @@ loc_139D8:
 loc_139E0: 
 		subq.w	#6,a1
 loc_139E2:
-		cmp.w	$FFFFFFFC(a1),d4
+		cmp.w	Checksum_fourcc(a1),d4
 		bls.s	loc_139E0
 		move.w	a1,($FFFFF716).w
 		move.w	($FFFFF718).w,a2
@@ -17492,7 +17558,7 @@ loc_139FA:
 loc_13A02: 
 		subq.w	#6,a2
 loc_13A04:
-		cmp.w	$FFFFFFFC(a2),d4
+		cmp.w	Checksum_fourcc(a2),d4
 		bls.s	loc_13A02
 		move.w	a2,($FFFFF718).w
 		rts
@@ -17515,7 +17581,7 @@ TouchRings:
 		move.w	($FFFFF718).w,a2
 loc_13A26:
 		cmp.l	a1,a2
-		beq.w	loc_13ABC
+		beq	loc_13ABC
 		cmp.w	#$5A,$30(a0)
 		bcc loc_13ABC
 		move.w	8(a0),d2
@@ -17543,7 +17609,7 @@ loc_13A68:
 		bcc.s	loc_13A80
 		add.w	d6,d0
 		bcs.s	loc_13A86
-		bra	loc_13AB2
+		bra.w	loc_13AB2
 loc_13A80:
 		cmp.w	d4,d0
 		bhi loc_13AB2
@@ -17554,7 +17620,7 @@ loc_13A86:
 		bcc.s	loc_13A98
 		add.w	d6,d0
 		bcs.s	loc_13A9E
-		bra	loc_13AB2
+		bra.w	loc_13AB2
 loc_13A98:
 		cmp.w	d5,d0
 		bhi loc_13AB2
@@ -17576,8 +17642,8 @@ loc_13ABC:
 ;--------------------------------------------------------------------------------
 loc_13ABE:
 		cmp.w	#$B000,a0
-		beq.w	loc_FCDC
-		bra	loc_FD20 
+		beq	loc_FCDC
+		bra.w	loc_FD20 
 ;===============================================================================
 ; Sub Routine Load_Ring_Pos
 ; [ End ]
@@ -17709,7 +17775,7 @@ loc_13BDA:
 		rts
 ;--------------------------------------------------------------------------------
 loc_13BE6:
-		dc.b	0,0,$1,$1,$4,$4,$5,$5,$8,$8,$9,$9,$C,$C,$D,$D 
+		dc.b	$0,$0,$1,$1,$4,$4,$5,$5,$8,$8,$9,$9,$C,$C,$D,$D 
 ;===============================================================================
 ; Sub Routine loc_13B4A
 ; [ End ]
@@ -17887,7 +17953,7 @@ loc_13D86:
 loc_13D8E: 
 		subq.w	#6,a1
 loc_13D90:
-		cmp.w	$FFFFFFFC(a1),d4
+		cmp.w	Checksum_fourcc(a1),d4
 		bls.s	loc_13D8E
 		move.l	a1,($FFFFF71C).w
 		move.l	($FFFFF720).w,a2
@@ -17902,7 +17968,7 @@ loc_13DA8:
 loc_13DB0: 
 		subq.w	#6,a2
 loc_13DB2:
-		cmp.w	$FFFFFFFC(a2),d4
+		cmp.w	Checksum_fourcc(a2),d4
 		bls.s	loc_13DB0
 		move.l	a2,($FFFFF720).w
 		tst.w	($FFFFFFD8).w
@@ -17927,7 +17993,7 @@ loc_13DE0:
 loc_13DE8: 
 		subq.w	#6,a1
 loc_13DEA:
-		cmp.w	$FFFFFFFC(a1),d4
+		cmp.w	Checksum_fourcc(a1),d4
 		bls.s	loc_13DE8
 		move.l	a1,($FFFFF724).w
 		move.l	($FFFFF728).w,a2
@@ -17942,7 +18008,7 @@ loc_13E02:
 loc_13E0A: 
 		subq.w	#6,a2
 loc_13E0C:
-		cmp.w	$FFFFFFFC(a2),d4
+		cmp.w	Checksum_fourcc(a2),d4
 		bls.s	loc_13E0A
 		move.l	a2,($FFFFF728).w
 		rts
@@ -17966,7 +18032,7 @@ Touch_Response_CNz_Triangles:
 		move.l	($FFFFF728).w,a2
 loc_13E2E:
 		cmp.l	a1,a2
-		beq.w	loc_13EC8
+		beq	loc_13EC8
 		move.w	8(a0),d2
 		move.w	$C(a0),d3
 		sub.w	#9,d2
@@ -17994,7 +18060,7 @@ loc_13E5E:
 		add.w	d1,d1
 		add.w	d1,d0
 		bcs.s	loc_13E86
-		bra	loc_13EBE
+		bra.w	loc_13EBE
 loc_13E80:
 		cmp.w	d4,d0
 		bhi loc_13EBE
@@ -18008,7 +18074,7 @@ loc_13E86:
 		add.w	d1,d1
 		add.w	d1,d0
 		bcs loc_13EB4
-		bra	loc_13EBE
+		bra.w	loc_13EBE
 loc_13EA0:
 		cmp.w	d5,d0
 		bhi loc_13EBE
@@ -18040,7 +18106,7 @@ loc_13ED6:
 		cmp.w	#$20,d0
 		blt.s	loc_13EF0
 		move.w	#$A00,$12(a0)
-		bra	loc_1414A
+		bra.w	loc_1414A
 loc_13EF0:
 		move.w	2(a1),d0
 		sub.w	8(a0),d0
@@ -18048,7 +18114,7 @@ loc_13EF0:
 		cmp.w	#$20,d0
 		blt.s	loc_13F0A
 		move.w	#$A00,$10(a0)
-		bra	loc_1414A
+		bra.w	loc_1414A
 loc_13F0A:
 		move.w	2(a1),d0
 		sub.w	8(a0),d0
@@ -18064,7 +18130,7 @@ loc_13F1C:
 		bcc.s	loc_13F38
 		move.w	#$20,d3
 		bsr.s	loc_13F3A
-		bra	loc_1414A
+		bra.w	loc_1414A
 loc_13F38:
 		rts
 ;--------------------------------------------------------------------------------
@@ -18103,14 +18169,14 @@ loc_13F88:
 		cmp.w	#$20,d0
 		blt.s	loc_13FA2
 		move.w	#$A00,$12(a0)
-		bra	loc_1414A
+		bra.w	loc_1414A
 loc_13FA2:
 		move.w	2(a1),d0
 		sub.w	8(a0),d0
 		cmp.w	#$20,d0
 		blt.s	loc_13FBA
 		move.w	#$F600,$10(a0)
-		bra	loc_1414A
+		bra.w	loc_1414A
 loc_13FBA:
 		move.w	2(a1),d0
 		sub.w	8(a0),d0
@@ -18127,7 +18193,7 @@ loc_13FCE:
 		bcc.s	loc_13FEC
 		move.w	#$60,d3
 		bsr.w	loc_13F3A
-		bra	loc_1414A
+		bra.w	loc_1414A
 loc_13FEC:
 		rts
 ;--------------------------------------------------------------------------------
@@ -18138,20 +18204,20 @@ loc_13FEE:
 		cmp.w	#8,d0
 		blt.s	loc_14008
 		move.w	#$A00,$12(a0)
-		bra	loc_1414A
+		bra.w	loc_1414A
 loc_14008:
 		move.w	2(a1),d0
 		sub.w	8(a0),d0
 		cmp.w	#$40,d0
 		blt.s	loc_14020
 		move.w	#$F600,$10(a0)
-		bra	loc_1414A
+		bra.w	loc_1414A
 loc_14020:
 		neg.w	d0
 		cmp.w	#$40,d0
 		blt.s	loc_14032
 		move.w	#$A00,$10(a0)
-		bra	loc_1414A
+		bra.w	loc_1414A
 loc_14032:
 		move.w	#$38,d3
 		tst.w	d0
@@ -18159,27 +18225,27 @@ loc_14032:
 		move.w	#$48,d3
 loc_1403E:
 		bsr.w	loc_13F3A
-		bra	loc_1414A
+		bra.w	loc_1414A
 loc_14046:
 		move.w	4(a1),d0
 		sub.w	$C(a0),d0
 		cmp.w	#8,d0
 		blt.s	loc_1405E
 		move.w	#$F600,$12(a0)
-		bra	loc_1414A
+		bra.w	loc_1414A
 loc_1405E:
 		move.w	2(a1),d0
 		sub.w	8(a0),d0
 		cmp.w	#$40,d0
 		blt.s	loc_14076
 		move.w	#$F600,$10(a0)
-		bra	loc_1414A
+		bra.w	loc_1414A
 loc_14076:
 		neg.w	d0
 		cmp.w	#$40,d0
 		blt.s	loc_14088
 		move.w	#$A00,$10(a0)
-		bra	loc_1414A
+		bra.w	loc_1414A
 loc_14088:
 		move.w	#$C8,d3
 		tst.w	d0
@@ -18187,7 +18253,7 @@ loc_14088:
 		move.w	#$B8,d3
 loc_14094:
 		bsr.w	loc_13F3A
-		bra	loc_1414A
+		bra.w	loc_1414A
 loc_1409C:
 		move.w	2(a1),d0
 		sub.w	8(a0),d0
@@ -18195,20 +18261,20 @@ loc_1409C:
 		cmp.w	#8,d0
 		blt.s	loc_140B6
 		move.w	#$A00,$10(a0)
-		bra	loc_1414A
+		bra.w	loc_1414A
 loc_140B6:
 		move.w	4(a1),d0
 		sub.w	$C(a0),d0
 		cmp.w	#$40,d0
 		blt.s	loc_140CE
 		move.w	#$F600,$12(a0)
-		bra	loc_1414A
+		bra.w	loc_1414A
 loc_140CE:
 		neg.w	d0
 		cmp.w	#$40,d0
 		blt.s	loc_140E0
 		move.w	#$A00,$10(a0)
-		bra	loc_1414A
+		bra.w	loc_1414A
 loc_140E0:
 		move.w	#8,d3
 		tst.w	d0
@@ -18216,27 +18282,27 @@ loc_140E0:
 		move.w	#$F8,d3
 loc_140EC:
 		bsr.w	loc_13F3A
-		bra	loc_1414A
+		bra.w	loc_1414A
 loc_140F4:
 		move.w	2(a1),d0
 		sub.w	8(a0),d0
 		cmp.w	#8,d0
 		blt.s	loc_1410C
 		move.w	#$A00,$10(a0)
-		bra	loc_1414A
+		bra.w	loc_1414A
 loc_1410C:
 		move.w	4(a1),d0
 		sub.w	$C(a0),d0
 		cmp.w	#$40,d0
 		blt.s	loc_14124
 		move.w	#$F600,$12(a0)
-		bra	loc_1414A
+		bra.w	loc_1414A
 loc_14124:
 		neg.w	d0
 		cmp.w	#$40,d0
 		blt.s	loc_14136
 		move.w	#$A00,$10(a0)
-		bra	loc_1414A
+		bra.w	loc_1414A
 loc_14136:
 		move.w	#$78,d3
 		tst.w	d0
@@ -18244,7 +18310,7 @@ loc_14136:
 		move.w	#$88,d3
 loc_14142:
 		bsr.w	loc_13F3A
-		bra	loc_1414A
+		bra.w	loc_1414A
 loc_1414A:
 		bset	#1,$22(a0)
 		bclr	#4,$22(a0)
@@ -18335,7 +18401,7 @@ loc_14492:
 		tst.w	($FFFFFFD8).w
 		beq.s	loc_144B4
 		addq.b	#2,($FFFFF76C).w
-		bra	loc_14580 
+		bra.w	loc_14580 
 loc_144B4:
 		move.w	($FFFFEE00).w,d1
 		sub.w	#$80,d1
@@ -18346,7 +18412,7 @@ loc_144B4:
 		move.w	($FFFFEE00).w,d6
 		and.w	#$FF80,d6
 		cmp.w	($FFFFF76E).w,d6
-		beq.w	loc_1457E
+		beq	loc_1457E
 		bge.s	loc_1453A
 		move.w	d6,($FFFFF76E).w
 		move.l	($FFFFF774).w,a0
@@ -18378,7 +18444,7 @@ loc_14516:
 loc_14522: 
 		cmp.w	$FFFFFFFA(a0),d6
 		bgt.s	loc_14534
-		tst.b	$FFFFFFFC(a0)
+		tst.b	Checksum_fourcc(a0)
 		bpl.s	loc_14530
 		subq.b	#1,(a2)
 loc_14530:
@@ -18493,7 +18559,7 @@ loc_14666:
 		lea	($FFFFFC00).w,a2
 		moveq	#0,d2
 		cmp.w	d0,d6
-		beq.w	loc_1457E
+		beq	loc_1457E
 		bge loc_14714
 		move.b	2(a1),d2
 		move.b	1(a1),2(a1)
@@ -18516,7 +18582,7 @@ loc_146A0:
 loc_146AA: 
 		cmp.b	$FFFFFFFA(a0),d6
 		bne.s	loc_146BE
-		tst.b	$FFFFFFFC(a0)
+		tst.b	Checksum_fourcc(a0)
 		bpl.s	loc_146BA
 		subq.b	#1,1(a5)
 loc_146BA:
@@ -18555,7 +18621,7 @@ loc_146FA:
 loc_146FE: 
 		cmp.b	$FFFFFFFA(a0),d6
 		bne.s	loc_14710
-		tst.b	$FFFFFFFC(a0)
+		tst.b	Checksum_fourcc(a0)
 		bpl.s	loc_1470C
 		subq.b	#1,(a5)
 loc_1470C:
@@ -18880,7 +18946,7 @@ SolidObject:
 		addq.b	#1,d6
 loc_1577A:
 		btst D6,$22(a0)
-		beq.w	loc_15A2C
+		beq	loc_15A2C
 		move.w	d1,d2
 		add.w	d2,d2
 		btst	#1,$22(a1)
@@ -18915,7 +18981,7 @@ loc_157BC:
 		addq.b	#1,d6
 loc_157D2:
 		btst D6,$22(a0)
-		beq.w	loc_15A34
+		beq	loc_15A34
 		move.w	d1,d2
 		add.w	d2,d2
 		btst	#1,$22(a1)
@@ -18954,7 +19020,7 @@ loc_15814: ; Called by Flippers
 ;------------------------------------------------------------------------------- 
 loc_1582A:
 		btst D6,$22(a0)
-		beq.w	loc_15972
+		beq	loc_15972
 		move.w	d1,d2
 		add.w	d2,d2
 		btst	#1,$22(a1)
@@ -18987,7 +19053,7 @@ loc_15862:
 		addq.b	#1,d6
 loc_15882:
 		btst D6,$22(a0)
-		beq.w	loc_159CC
+		beq	loc_159CC
 		move.w	d1,d2
 		add.w	d2,d2
 		btst	#1,$22(a1)
@@ -19021,7 +19087,7 @@ loc_158C4:
 		addq.b	#1,d6
 loc_158DA:
 		btst D6,$22(a0)
-		beq.w	loc_15930
+		beq	loc_15930
 		btst	#1,$22(a1)
 		bne.s	loc_158FC
 		move.w	8(a1),d0
@@ -19074,7 +19140,7 @@ loc_15930:
 		add.w	d4,d4
 		cmp.w	d4,d3
 		bcc loc_15B08
-		bra	loc_15A72
+		bra.w	loc_15A72
 loc_15972: 
 		move.w	8(a1),d0
 		sub.w	8(a0),d0
@@ -19108,7 +19174,7 @@ loc_15998:
 		add.w	d4,d4
 		cmp.w	d4,d3
 		bcc loc_15B08
-		bra	loc_15A72
+		bra.w	loc_15A72
 loc_159CC: 
 		move.w	8(a1),d0
 		sub.w	8(a0),d0
@@ -19143,7 +19209,7 @@ loc_159F2:
 		add.w	d5,d4
 		cmp.w	d4,d3
 		bcc loc_15B08
-		bra	loc_15A72
+		bra.w	loc_15A72
 loc_15A2C: 
 		tst.b	1(a0)
 		bpl loc_15B08
@@ -19384,7 +19450,7 @@ loc_15C6A:
 		addq.b	#1,d6
 loc_15C80:
 		btst D6,$22(a0)
-		beq.w	loc_15DF2
+		beq	loc_15DF2
 		move.w	d1,d2
 		add.w	d2,d2
 		btst	#1,$22(a1)
@@ -19422,7 +19488,7 @@ loc_15CC2:
 		addq.b	#1,d6
 loc_15CD8:
 		btst D6,$22(a0)
-		beq.w	loc_15EC0
+		beq	loc_15EC0
 		move.w	d1,d2
 		add.w	d2,d2
 		btst	#1,$22(a1)
@@ -19465,7 +19531,7 @@ loc_15D1A:
 		addq.b	#1,d6
 loc_15D30:
 		btst D6,$22(a0)
-		beq.w	loc_15EF8
+		beq	loc_15EF8
 		move.w	d1,d2
 		add.w	d2,d2
 		btst	#1,$22(a1)
@@ -19511,7 +19577,7 @@ loc_15D88:
 		bne.s	loc_15D9A
 		btst	#3,$22(a1)
 		bne.s	loc_15DC6
-		bra	loc_15DF2
+		bra.w	loc_15DF2
 loc_15D9A:
 		move.w	d1,d2
 		add.w	d2,d2
@@ -19643,7 +19709,7 @@ loc_15EE6:
 		ext.w	d3
 		move.w	$C(a0),d0
 		sub.w	d3,d0
-		bra	loc_15E16 
+		bra.w	loc_15E16 
 ;===============================================================================
 ; Sub Routine loc_15EC0
 ; [ End ] 
@@ -19665,7 +19731,7 @@ loc_15EF8:
 		bcc loc_15EBE
 		move.w	$C(a0),d0
 		sub.w	d3,d0
-		bra	loc_15E16
+		bra.w	loc_15E16
 ;------------------------------------------------------------------------------- 
 loc_15F20: ; Called by Object 0x30 
 		lea	($FFFFB000).w,a1
@@ -19713,7 +19779,7 @@ Obj_0x05_Miles_Tail:
 ;------------------------------------------------------------------------------- ; Filler
 Kill_Miles: 
 		jmp	Kill_Player 
-		dc.w	0 ; Filler
+		dc.w	$0 ; Filler
 ;------------------------------------------------------------------------------- 
 Obj_0x0A_Sonic_Miles_Underwater: 
 		include 'objects/obj_0x0A.asm'
@@ -19727,7 +19793,7 @@ Obj_0x35_Invincibility:
 Shield_AnimateData: 
 		dc.w	loc_19A92-Shield_AnimateData
 loc_19A92:
-		dc.b	0,$5,0,$5,$1,$5,$2,$5,$3,$5,$4,$FF 
+		dc.b	$0,$5,$0,$5,$1,$5,$2,$5,$3,$5,$4,$FF 
 ;------------------------------------------------------------------------------- 
 Shield_Mappings: 
 		dc.w	loc_19AAA-Shield_Mappings
@@ -19772,7 +19838,7 @@ Invicibility_Stars_Mappings:
 		dc.w	loc_19BC6-Invicibility_Stars_Mappings
 		dc.w	loc_19BD0-Invicibility_Stars_Mappings
 loc_19B88:
-		dc.w	0
+		dc.w	$0
 loc_19B8A:
 		dc.w	$1
 		dc.l	$F8010000,$FFFC
@@ -19843,11 +19909,11 @@ loc_1A132:
 loc_1A136:
 		and.b	#$C0,d0
 		cmp.b	#$40,d0
-		beq.w	Sonic_WalkVertL 
+		beq	Sonic_WalkVertL 
 		cmp.b	#$80,d0
-		beq.w	Sonic_WalkCeiling 
+		beq	Sonic_WalkCeiling 
 		cmp.b	#$C0,d0
-		beq.w	Sonic_WalkVertR 
+		beq	Sonic_WalkVertR 
 		move.w	$C(a0),d2
 		move.w	8(a0),d3
 		moveq	#0,d0
@@ -20177,7 +20243,7 @@ Floor_ChkTile:
 		rts
 ;--------------------------------------------------------------------------------
 loc_1A474:
-		dc.w	0,$80,$100,$180,$200,$280,$300,$380
+		dc.w	$0,$80,$100,$180,$200,$280,$300,$380
 		dc.w	$400,$480,$500,$580,$600,$680,$700,$780
 		dc.w	$800,$880,$900,$980,$A00,$A80,$B00,$B80
 		dc.w	$C00,$C80,$D00,$D80,$E00,$E80,$F00,$F80
@@ -20684,16 +20750,16 @@ loc_1AA7A:
 		add.b	#$1F,d0
 loc_1AA7E:
 		and.b	#$C0,d0
-		beq.w	loc_1AB7E
+		beq	loc_1AB7E
 		cmp.b	#$80,d0
-		beq.w	loc_1AE36
+		beq	loc_1AE36
 		and.b	#$38,d1
 		bne.s	loc_1AA96
 		addq.w	#8,d2
 loc_1AA96:
 		cmp.b	#$40,d0
-		beq.w	loc_1AEFE
-		bra	loc_1AD7C
+		beq	loc_1AEFE
+		bra.w	loc_1AD7C
 loc_1AAA2:
 		move.l	#$FFFFD000,($FFFFF796).w
 		cmp.b	#$C,$3E(a0)
@@ -20706,11 +20772,11 @@ loc_1AABA:
 		add.b	#$20,d0
 		and.b	#$C0,d0
 		cmp.b	#$40,d0
-		beq.w	loc_1AE8E
+		beq	loc_1AE8E
 		cmp.b	#$80,d0
-		beq.w	Sonic_DontRunOnWalls 
+		beq	Sonic_DontRunOnWalls 
 		cmp.b	#$C0,d0
-		beq.w	loc_1AD14
+		beq	loc_1AD14
 loc_1AAE6:
 		move.l	#$FFFFD000,($FFFFF796).w
 		cmp.b	#$C,$3E(a0)
@@ -20914,7 +20980,7 @@ loc_1ACC8:
 		move.w	#$10,a3
 		move.w	#0,d6
 		moveq	#$C,d5
-		bra	FindFloor 
+		bra.w	FindFloor 
 loc_1ACEE: 
 		move.w	8(a0),d3
 		move.w	$C(a0),d2
@@ -20926,7 +20992,7 @@ loc_1ACEE:
 		move.w	#$10,a3
 		move.w	#0,d6
 		moveq	#$C,d5
-		bra	loc_1A7B0
+		bra.w	loc_1A7B0
 loc_1AD14:
 		move.w	$C(a0),d2
 		move.w	8(a0),d3
@@ -20957,7 +21023,7 @@ loc_1AD14:
 		bsr.w	FindWall 
 		move.w	(sp)+,d0
 		move.b	#$C0,d2
-		bra	loc_1AB5E
+		bra.w	loc_1AB5E
 loc_1AD74:
 		move.w	$C(a0),d2
 		move.w	8(a0),d3
@@ -20968,7 +21034,7 @@ loc_1AD7C:
 		move.w	#0,d6
 		bsr.w	FindWall 
 		move.b	#$C0,d2
-		bra	loc_1AB96 
+		bra.w	loc_1AB96 
 ;=============================================================================== 
 ; Sub Routine loc_1AD98
 ; [ Begin ] 
@@ -21030,7 +21096,7 @@ Sonic_DontRunOnWalls:
 		bsr.w	FindFloor 
 		move.w	(sp)+,d0
 		move.b	#$80,d2
-		bra	loc_1AB5E
+		bra.w	loc_1AB5E
 		move.w	$C(a0),d2
 		move.w	8(a0),d3
 ;=============================================================================== 
@@ -21045,7 +21111,7 @@ loc_1AE36:
 		move.w	#$800,d6
 		bsr.w	FindFloor 
 		move.b	#$80,d2
-		bra	loc_1AB96
+		bra.w	loc_1AB96
 loc_1AE56: ; Called by Pillar Falling ( Neo Green Hill ) 
 		move.w	$C(a0),d2
 		move.w	8(a0),d3
@@ -21098,7 +21164,7 @@ loc_1AE8E:
 		bsr.w	FindWall 
 		move.w	(sp)+,d0
 		move.b	#$40,d2
-		bra	loc_1AB5E
+		bra.w	loc_1AB5E
 loc_1AEF6:
 		move.w	$C(a0),d2
 		move.w	8(a0),d3
@@ -21110,7 +21176,7 @@ loc_1AEFE:
 		move.w	#$400,d6
 		bsr.w	FindWall 
 		move.b	#$40,d2
-		bra	loc_1AB96
+		bra.w	loc_1AB96
 loc_1AF1E: ; Called by Arrow Shooter ( NGHz ) 
 		add.w	8(a0),d3
 		move.w	$C(a0),d2
@@ -21220,7 +21286,7 @@ loc_1BB02:
 		dc.w	$1
 		dc.l	$F8050004,$2FFF8
 loc_1BB0C:
-		dc.w	0
+		dc.w	$0
 loc_1BB0E:
 		dc.w	$1
 		dc.l	$F4061F31,$1B98FFF8 
@@ -21238,7 +21304,7 @@ Obj_0x03_Layer_Switch:
 		include 'objects/obj_0x03.asm'
 J_ModifySpriteAttr_2P: 
 		jmp	ModifySpriteAttr_2P 
-		dc.w	0 ; Filler
+		dc.w	$0 ; Filler
 ;------------------------------------------------------------------------------- 
 Obj_0x0B_Open_Close_Platform: 
 		include 'objects/obj_0x0B.asm'
@@ -21268,7 +21334,7 @@ loc_1C1DA:
 		jmp	DeleteObject 
 loc_1C1E0:
 		jmp	ModifySpriteAttr_2P 
-		dc.w	0 ; Filler
+		dc.w	$0 ; Filler
 ;------------------------------------------------------------------------------- 
 Obj_0x13_HPz_Waterfalls: 
 		include 'objects/obj_0x13.asm'
@@ -21315,13 +21381,13 @@ loc_1D302:
 		jmp	ModifySpriteAttr_2P 
 loc_1D308: 
 		jmp	(loc_13866) 
-		dc.w	0 ; Filler
+		dc.w	$0 ; Filler
 ;------------------------------------------------------------------------------- 
 Obj_0x06_Spiral_Attributes: 
 		include 'objects/obj_0x06.asm'
 J_CalcSine: 
 		jmp	CalcSine 
-		dc.w	0 ; Filler
+		dc.w	$0 ; Filler
 ;------------------------------------------------------------------------------- 
 Obj_0x14_See_saw: 
 		include 'objects/obj_0x14.asm'
@@ -21363,7 +21429,7 @@ loc_1E0BA:
 		jmp	(loc_15C6A)
 loc_1E0C0:
 		jmp	SpeedToPos 
-		dc.w	0 ; Filler
+		dc.w	$0 ; Filler
 ;------------------------------------------------------------------------------- 
 Obj_0x1B_Speed_Booster: 
 		include 'objects/obj_0x1B.asm'
@@ -21390,7 +21456,7 @@ Obj_0x1E_Tube_Attributes:
 		nop ; Filler
 loc_1EE0C:
 		jmp	(loc_12D80) 
-		dc.w	0 ; Filler
+		dc.w	$0 ; Filler
 ;------------------------------------------------------------------------------- 
 Obj_0x20_HTz_Boss_FireBall: 
 		include 'objects/obj_0x20.asm'
@@ -21453,7 +21519,7 @@ loc_1FC4E:
 		jmp	S1SingleObjectLoad 
 loc_1FC54:
 		jmp	SolidObject 
-		dc.w	0 ; Filler
+		dc.w	$0 ; Filler
 ;------------------------------------------------------------------------------- 
 Obj_0x43_Giant_Spikeball: 
 		include 'objects/obj_0x43.asm'
@@ -21524,7 +21590,7 @@ loc_21022:
 		jmp	SolidObject 
 loc_21028:
 		jmp	SpeedToPos 
-		dc.w	0 ; Filler
+		dc.w	$0 ; Filler
 ;------------------------------------------------------------------------------- 
 Obj_0x48_Cannon: 
 		include 'objects/obj_0x48.asm'
@@ -21534,7 +21600,7 @@ loc_21442:
 		jmp	MarkObjGone 
 loc_21448:
 		jmp	ModifySpriteAttr_2P 
-		dc.w	0 ; Filler
+		dc.w	$0 ; Filler
 ;-------------------------------------------------------------------------------
 Obj_0x22_Arrow_Shooter: 
 		include 'objects/obj_0x22.asm'
@@ -21571,7 +21637,7 @@ loc_21EAE:
 		jmp	SolidObject 
 loc_21EB4:
 		jmp	SpeedToPos 
-		dc.w	0 ; Filler
+		dc.w	$0 ; Filler
 ;------------------------------------------------------------------------------- 
 Obj_0x2C_Leaves: 
 		include 'objects/obj_0x2C.asm'
@@ -21585,7 +21651,7 @@ loc_22122:
 		jmp	PseudoRandomNumber 
 loc_22128:
 		jmp	CalcSine 
-		dc.w	0 ; Filler
+		dc.w	$0 ; Filler
 ;------------------------------------------------------------------------------- 
 Obj_0x40_Diagonal_Springs: 
 		include 'objects/obj_0x40.asm'
@@ -21740,11 +21806,11 @@ loc_246D6:
 		jmp	Modify_A1_SpriteAttr_2P 
 loc_246DC:
 		jmp	SolidObject 
-		dc.w	0 ; Filler
+		dc.w	$0 ; Filler
 ;------------------------------------------------------------------------------- 
 Obj_0x72_Conveyor_Belt_Attributes: 
 		include 'objects/obj_0x72.asm'
-		dc.w	0 ; Filler
+		dc.w	$0 ; Filler
 ;------------------------------------------------------------------------------- 
 Obj_0x73_Rotating_Rings: 
 		include 'objects/obj_0x73.asm'
@@ -21758,7 +21824,7 @@ loc_24962:
 		jmp	ModifySpriteAttr_2P 
 loc_24968:
 		jmp	SolidObject 
-		dc.w	0 ; Filler
+		dc.w	$0 ; Filler
 ;------------------------------------------------------------------------------- 
 Obj_0x75_Spikeball_Chain: 
 		include 'objects/obj_0x75.asm'
@@ -21781,7 +21847,7 @@ loc_24B92:
 		jmp	CalcSine 
 loc_24B98:
 		jmp	SolidObject 
-		dc.w	0 ; Filler
+		dc.w	$0 ; Filler
 ;------------------------------------------------------------------------------- 
 Obj_0x76_Platform_Spikes: 
 		include 'objects/obj_0x76.asm'
@@ -21913,7 +21979,7 @@ loc_263AA:
 		jmp	(loc_15C6A)
 loc_263B0:
 		jmp	(loc_12D4C)
-		dc.w	0 ; Filler
+		dc.w	$0 ; Filler
 ;------------------------------------------------------------------------------- 
 Obj_0x3F_Fans: 
 		include 'objects/obj_0x3F.asm'
@@ -22010,12 +22076,12 @@ Load_Slot_Machine_Sprites:
 		move.b	0(a4),d0
 		jmp	loc_27918(pc,d0)
 loc_27918: 
-		bra	loc_27932
-		bra	loc_27980
-		bra	loc_279A0
-		bra	loc_27A56
-		bra	loc_27A8E
-		bra	loc_27BD4
+		bra.w	loc_27932
+		bra.w	loc_27980
+		bra.w	loc_279A0
+		bra.w	loc_27A56
+		bra.w	loc_27A8E
+		bra.w	loc_27BD4
 		rts
 ;--------------------------------------------------------------------------------
 loc_27932:
@@ -22134,7 +22200,7 @@ loc_27A8E:
 		cmp.b	#$C,$D(a4)
 		bne.s	loc_27AAC
 		cmp.b	#$C,$11(a4)
-		beq.w	loc_27BD4
+		beq	loc_27BD4
 loc_27AAC:
 		moveq	#0,d0
 		move.b	3(a4),d0
@@ -22147,10 +22213,10 @@ loc_27AAC:
 		move.b	3(a1),d0
 		jmp	loc_27ACC(pc,d0)
 loc_27ACC 
-		bra	loc_27B1A
-		bra	loc_27B56
-		bra	loc_27BC0
-		bra	loc_27BD2
+		bra.w	loc_27B1A
+		bra.w	loc_27B56
+		bra.w	loc_27BC0
+		bra.w	loc_27BD2
 loc_27ADC: 
 		move.w	4(a4),d1
 		move.b	3(a4),d0
@@ -22280,8 +22346,8 @@ loc_27BF0:
 		add.w	d0,a3
 		jmp	loc_27C0A(pc,d0)
 loc_27C0A: 
-		bra	loc_27C20
-		bra	loc_27C2C
+		bra.w	loc_27C20
+		bra.w	loc_27C2C
 		clr.b	3(a4)
 		subq.b	#1,1(a4)
 		move.w	#$AE00,d2
@@ -22289,7 +22355,7 @@ loc_27C0A:
 loc_27C20:
 		addq.b	#4,3(a4)
 		move.w	#$AA00,d2
-		bra	loc_27C34
+		bra.w	loc_27C34
 loc_27C2C:
 		addq.b	#4,3(a4)
 		move.w	#$AC00,d2
@@ -22362,9 +22428,9 @@ loc_27CDE:
 loc_27CE6:
 		jmp	loc_27CEA(pc,d0)
 loc_27CEA: 
-		bra	loc_27D5A
-		bra	loc_27D30
-		bra	loc_27D02
+		bra.w	loc_27D5A
+		bra.w	loc_27D30
+		bra.w	loc_27D02
 		move.w	d2,d0
 		bsr.w	loc_27DB0
 		move.w	d0,4(a4)
@@ -22502,17 +22568,17 @@ loc_27E0E:
 		dc.w	$30,$25,$FFFF,$150,$10,$20
 ;------------------------------------------------------------------------------- 
 loc_27E1A:
-		dc.b	$8,$3,$33,$12,0,0,$12,$1,$11,$24,$2,$22,$1E,$4,$44,$1E
+		dc.b	$8,$3,$33,$12,$0,$0,$12,$1,$11,$24,$2,$22,$1E,$4,$44,$1E
 		dc.b	$5,$55,$FF,$F,$FF 
 ;------------------------------------------------------------------------------- 
 loc_27E2F:
-		dc.b	$3,0,$1,$4,$2,$5,$4,$1 
+		dc.b	$3,$0,$1,$4,$2,$5,$4,$1 
 ;------------------------------------------------------------------------------- 
 loc_27E37:
-		dc.b	$3,0,$1,$4,$2,$5,0,$2 
+		dc.b	$3,$0,$1,$4,$2,$5,$0,$2 
 ;------------------------------------------------------------------------------- 
 loc_27E3F:
-		dc.b	$3,0,$1,$4,$2,$5,$4,$1 
+		dc.b	$3,$0,$1,$4,$2,$5,$4,$1 
 ;------------------------------------------------------------------------------- 
 		even 
 ;===============================================================================
@@ -22562,7 +22628,7 @@ Obj_0xD9_SFz_Hang_Attributes:
 		nop ; Filler 
 loc_2842C:
 		jmp	(loc_12D80) 
-		dc.w	0 ; Filler
+		dc.w	$0 ; Filler
 ;------------------------------------------------------------------------------- 
 Obj_0x4C_Batbot: 
 		include 'objects/obj_0x4C.asm'
@@ -22573,7 +22639,7 @@ loc_288AE:
 		jmp	AnimateSprite 
 loc_288B4:
 		jmp	SpeedToPos 
-		dc.w	0 ; Filler
+		dc.w	$0 ; Filler
 ;------------------------------------------------------------------------------- 
 Obj_0x4E_Crocobot: 
 		include 'objects/obj_0x4E.asm'
@@ -22588,7 +22654,7 @@ loc_28BAE:
 ;------------------------------------------------------------------------------- 
 Obj_0x4A_Octus: 
 		include 'objects/obj_0x4A.asm'
-		dc.w	0 ; Filler
+		dc.w	$0 ; Filler
 J_DisplaySprite: 
 		jmp	DisplaySprite 
 J_DeleteObject: 
@@ -22671,7 +22737,7 @@ loc_2992C:
 ;-------------------------------------------------------------------------------
 Obj_0x5C_Masher: 
 		include 'objects/obj_0x5C.asm'
-		dc.w	0 ; Filler
+		dc.w	$0 ; Filler
 loc_29A1C:
 		jmp	MarkObjGone 
 loc_29A22:
@@ -22879,7 +22945,7 @@ loc_29CC6:
 		jmp	Add_Points 
 loc_29CCC:
 		jmp	ModifySpriteAttr_2P 
-		dc.w	0 ; Filler
+		dc.w	$0 ; Filler
 ;-------------------------------------------------------------------------------
 Obj_0x5D_CPz_Boss: 
 		include 'objects/obj_0x5D.asm'
@@ -22910,7 +22976,7 @@ loc_2B4B2:
 ;-------------------------------------------------------------------------------
 Obj_0x56_GHz_Boss: 
 		include 'objects/obj_0x56.asm'
-		dc.w	0 ; Filler
+		dc.w	$0 ; Filler
 loc_2C198:
 		jmp	DisplaySprite 
 loc_2C19E:
@@ -22941,11 +23007,11 @@ loc_2C1E6:
 		jmp	Boss_Defeated_Load_Flickies 
 loc_2C1EC:
 		jmp	ObjectFall 
-		dc.w	0 ; Filler
+		dc.w	$0 ; Filler
 ;------------------------------------------------------------------------------- 
 Obj_0x52_HTz_Boss: 
 		include 'objects/obj_0x52.asm'
-		dc.w	0 ; Filler
+		dc.w	$0 ; Filler
 loc_2C970:
 		jmp	DisplaySprite 
 loc_2C976:
@@ -22998,7 +23064,7 @@ loc_2D49E:
 		jmp	(loc_15C6A)
 loc_2D4A4:
 		jmp	SolidObject 
-		dc.w	0 ; Filler
+		dc.w	$0 ; Filler
 ;------------------------------------------------------------------------------- 
 Obj_0x57_DHz_Boss: 
 		include 'objects/obj_0x57.asm'
@@ -23021,7 +23087,7 @@ loc_2DDF2:
 		jmp	Boss_Defeated_Load_Flickies 
 loc_2DDF8:
 		jmp	ObjectFall 
-		dc.w	0 ; Filler
+		dc.w	$0 ; Filler
 ;------------------------------------------------------------------------------- 
 Obj_0x51_CNz_Boss: 
 		include 'objects/obj_0x51.asm'
@@ -23539,7 +23605,7 @@ loc_30CC6:
 		dc.w	$8230
 loc_30CC8:
 		dc.w	$82C0
-		dc.w	0 ; Filler
+		dc.w	$0 ; Filler
 loc_30CCC:
 		jmp	DisplaySprite 
 loc_30CD2:
@@ -23562,9 +23628,9 @@ Obj_0x60_SS_Rings:
 		include 'objects/obj_0x60.asm'
 ;------------------------------------------------------------------------------- 
 loc_3185A:
-		dc.b	$38,$48,$2A,$56,$1C,$64,$E,$72,0,$80 
+		dc.b	$38,$48,$2A,$56,$1C,$64,$E,$72,$0,$80 
 loc_31864:
-		dc.b	$40,$30,$50,$20,$60,$10,$70,0,$80,0 
+		dc.b	$40,$30,$50,$20,$60,$10,$70,$0,$80,$0 
 Obj_0x5B: 
 		include 'objects/obj_0x5B.asm'
 		rts
@@ -23657,15 +23723,15 @@ loc_31E62:
 		dc.w	loc_31ED2-loc_31E62
 		dc.w	loc_31ED6-loc_31E62
 loc_31E84:
-		dc.b	0,$1,$2,$FF
+		dc.b	$0,$1,$2,$FF
 loc_31E88:
-		dc.b	$3,$4,$5,0,$6,$FF
+		dc.b	$3,$4,$5,$0,$6,$FF
 loc_31E8E:
 		dc.b	$7,$8,$8,$9,$11,$FF
 loc_31E94:
 		dc.b	$5,$8,$2,$FF
 loc_31E98:
-		dc.b	$1,$5,$8,$A,0,$B,$FF
+		dc.b	$1,$5,$8,$A,$0,$B,$FF
 loc_31E9F:
 		dc.b	$C,$9,$D,$E,$1,$3,$FF
 loc_31EA6:
@@ -23979,7 +24045,7 @@ loc_3247A:
 		dc.w	loc_324C6-loc_3247A
 		dc.w	loc_324CC-loc_3247A
 loc_32490:
-		dc.b	$5,0,$A,$14,$A,$FF
+		dc.b	$5,$0,$A,$14,$A,$FF
 loc_32496:
 		dc.b	$5,$1,$B,$15,$B,$FF
 loc_3249C:
@@ -23999,7 +24065,7 @@ loc_324C0:
 loc_324C6:
 		dc.b	$5,$9,$13,$1D,$13,$FF
 loc_324CC:
-		dc.b	$1,$1E,$1F,$20,$FF,0
+		dc.b	$1,$1E,$1F,$20,$FF,$0
 ;-------------------------------------------------------------------------------
 loc_324D2:
 		dc.w	loc_32514-loc_324D2
@@ -24148,7 +24214,7 @@ loc_32676:
 		dc.w	loc_326A7-loc_32676
 		dc.w	loc_326AA-loc_32676
 loc_3268C:
-		dc.b	$B,0,$FF
+		dc.b	$B,$0,$FF
 loc_3268F:
 		dc.b	$B,$1,$FF
 loc_32692:
@@ -24168,7 +24234,7 @@ loc_326A4:
 loc_326A7:
 		dc.b	$B,$9,$FF
 loc_326AA:
-		dc.b	$2,$A,$B,$C,$FF,0
+		dc.b	$2,$A,$B,$C,$FF,$0
 ;------------------------------------------------------------------------------- 
 loc_326B0:
 		dc.w	loc_326CA-loc_326B0
@@ -24423,7 +24489,7 @@ loc_328D6:
 		cmp.w	d5,d3
 		bcc.s	loc_32926
 		move.w	d6,d3
-		bra	loc_32922
+		bra.w	loc_32922
 loc_328EE:
 		moveq	#0,d0
 		moveq	#0,d1
@@ -24464,7 +24530,7 @@ loc_3292A:
 		cmp.w	d0,d2
 		bcc.s	loc_32942
 		move.w	d0,d2
-		bra	loc_32942
+		bra.w	loc_32942
 loc_3293C:
 		cmp.w	d0,d2
 		bls.s	loc_32942
@@ -24476,7 +24542,7 @@ loc_32942:
 		cmp.w	d1,d3
 		bcc.s	loc_3295A
 		move.w	d1,d3
-		bra	loc_3295A
+		bra.w	loc_3295A
 loc_32954:
 		cmp.w	d1,d3
 		bls.s	loc_3295A
@@ -24529,13 +24595,13 @@ loc_329AC:
 loc_329BE: ; Called by Clouds ( Object 0xB3 )
 		tst.w	($FFFFFFD8).w
 		beq.s	loc_329C8
-		bra	loc_3A892
+		bra.w	loc_3A892
 loc_329C8:
 		move.w	8(a0),d0
 		and.w	#$FF80,d0
 		sub.w	($FFFFF7DA).w,d0
 		bmi loc_3A898
-		bra	loc_3A892 
+		bra.w	loc_3A892 
 ;-------------------------------------------------------------------------------
 loc_329DC: ; Called by Grabber Sub 
 		move.b	1(a0),d0
@@ -24653,16 +24719,16 @@ loc_32AFE:
 loc_32B00:
 		tst.w	($FFFFFFD8).w
 		beq.s	loc_32B0A
-		bra	loc_3A892
+		bra.w	loc_3A892
 loc_32B0A:
 		move.w	8(a0),d0
 		and.w	#$FF80,d0
 		sub.w	($FFFFF7DA).w,d0
 		cmp.w	#$280,d0
 		bhi loc_32B22
-		bra	loc_3A892
+		bra.w	loc_3A892
 loc_32B22:
-		bra	loc_3A898 
+		bra.w	loc_3A898 
 ;------------------------------------------------------------------------------- 
 Obj_0x8C_NGHz_Whisp: 
 		include 'objects/obj_0x8C.asm'
@@ -24721,12 +24787,12 @@ Obj_0x98_Enemies_Weapons:
 ;------------------------------------------------------------------------------- 
 loc_338FA: ; Called by Nebula
 		bchg	#5,2(a0)
-		bra	loc_3A8FE
+		bra.w	loc_3A8FE
 ;------------------------------------------------------------------------------- 
 loc_33904: ; Called by Turtloid
 		bsr.w	loc_3A904
 		lea	(loc_33D3A),a1
-		bra	loc_3A8BC
+		bra.w	loc_3A8BC
 ;------------------------------------------------------------------------------- 
 loc_33912:
 		add.w	#$20,$12(a0)
@@ -24737,18 +24803,18 @@ loc_33912:
 loc_3391E:
 		bsr.w	loc_3A904
 		lea	(Clucker_Animate_Data),a1 
-		bra	loc_3A8BC 
+		bra.w	loc_3A8BC 
 ;-------------------------------------------------------------------------------
 loc_3392C:
 		add.w	#$20,$12(a0)
 		bsr.w	loc_3A904
 		lea	(Lander_Animate_Data),a1 
-		bra	loc_3A8BC
+		bra.w	loc_3A8BC
 ;-------------------------------------------------------------------------------
 loc_33940:
 		bsr.w	loc_3A904
 		lea	(SFz_Cannon_Animate_Data),a1 
-		bra	loc_3A8BC
+		bra.w	loc_3A8BC
 ;-------------------------------------------------------------------------------
 Obj_0x97_Rexon_Fireball: 
 		dc.l	Rexon_Mappings 
@@ -24915,14 +24981,14 @@ loc_352F2:
 loc_352F4:
 		tst.w	($FFFFFFD8).w
 		beq.s	loc_352FE
-		bra	loc_3A892
+		bra.w	loc_3A892
 loc_352FE:
 		move.w	8(a0),d0
 		and.w	#$FF80,d0
 		sub.w	($FFFFF7DA).w,d0
 		cmp.w	#$280,d0
 		bhi loc_35316
-		bra	loc_3A892
+		bra.w	loc_3A892
 loc_35316:
 		lea	($FFFFFC00).w,a3
 		moveq	#0,d0
@@ -24942,7 +25008,7 @@ loc_35344:
 		move.w	(a2)+,a1
 		bsr.w	loc_3A8AA
 		dbra	d6,loc_35344
-		bra	loc_3A898 
+		bra.w	loc_3A898 
 ;-------------------------------------------------------------------------------
 Load_Object_0xA9: 
 		dc.w	$3E,$A93A ; Load Object 0xA9
@@ -24964,17 +25030,17 @@ Obj_0xA8_Ptr:
 Obj_0xA9_Ptr: 
 		dc.l	Grabber_Mappings 
 		dc.w	$A500
-		dc.b	$4,$4,$4,0
+		dc.b	$4,$4,$4,$0
 ;------------------------------------------------------------------------------- 
 Obj_0xAA_Ptr: 
 		dc.l	loc_3539A
 		dc.w	$A500
-		dc.b	$4,$5,$4,0
+		dc.b	$4,$5,$4,$0
 ;-------------------------------------------------------------------------------
 loc_35386:
 		dc.w	loc_35388-loc_35386
 loc_35388:
-		dc.b	$7,0,$1,$FF
+		dc.b	$7,$0,$1,$FF
 ;-------------------------------------------------------------------------------
 Grabber_Mappings: 
 		dc.w	loc_353AC-Grabber_Mappings
@@ -25075,7 +25141,7 @@ Obj_0xB1_Sonic_Sega_Logo:
 ;===============================================================================
 loc_36798:
 		move.w	($FFFFF662).w,d0
-		beq.w	Null_Sub_01 
+		beq	Null_Sub_01 
 		clr.w	($FFFFF662).w
 		move.w	loc_367AC-2(pc,d0),d0
 		jmp	loc_367AC(pc,d0)
@@ -25083,23 +25149,23 @@ loc_367AC:
 		dc.w	loc_367B0-loc_367AC
 		dc.w	loc_367E2-loc_367AC
 loc_367B0:
-		lea	($C00004),a5
+		lea	(VDP_control_port),a5
 		move.l	#$94169300,(a5)
 		move.l	#$96859580,(a5)
 		move.w	#$977F,(a5)
 		move.w	#$5100,(a5)
-		move.w	#$80,($FFFFF640).w
-		move.w	($FFFFF640).w,(a5)
+		move.w	#$80,(DMA_data_thunk).w
+		move.w	(DMA_data_thunk).w,(a5)
 		lea	loc_3685A(pc),a1
 		move.l	#$49500003,d0
-		bra	loc_3681E
+		bra.w	loc_3681E
 loc_367E2:
-		lea	($C00004),a5
+		lea	(VDP_control_port),a5
 		move.w	#$8F01,(a5)
 		move.l	#$941F93FF,(a5)
 		move.w	#$9780,(a5)
 		move.l	#$40000083,(a5)
-		move.w	#0,($C00000)
+		move.w	#0,(VDP_data_port)
 loc_36804: 
 		move.w	(a5),d1
 		btst	#1,d1
@@ -25107,9 +25173,9 @@ loc_36804:
 		move.w	#$8F02,(a5)
 		lea	loc_3686A(pc),a1
 		move.l	#$49A00003,d0
-		bra	loc_3681E
+		bra.w	loc_3681E
 loc_3681E:
-		lea	($C00000),a6
+		lea	(VDP_data_port),a6
 		move.l	#$1000000,d6
 		moveq	#7,d1
 		moveq	#9,d2
@@ -25144,9 +25210,9 @@ loc_3686A:
 		dc.w	$A487,$A086,$A085,$A084,$A083,$A082,$A081,$A080 
 ;------------------------------------------------------------------------------- 
 loc_3687A:
-		dc.b	$12,$4,$4,$2,$2,$2,$2,0,0,0,0,0,0,0,0,$4
+		dc.b	$12,$4,$4,$2,$2,$2,$2,$0,$0,$0,$0,$0,$0,$0,$0,$4
 		dc.b	$4,$6,$A,$8,$6,$4,$4,$4,$4,$6,$6,$8,$8,$A,$A,$C
-		dc.b	$E,$10,$16,0 
+		dc.b	$E,$10,$16,$0 
 ;===============================================================================
 ; Sub Routine loc_36798
 ; [ End ]
@@ -25239,7 +25305,7 @@ loc_3A6EE:
 		swap.w	d3
 		bsr.w	loc_3A71A
 		btst	#1,d0
-		beq.w	Null_Sub_01 
+		beq	Null_Sub_01 
 		btst	#1,d1
 		bne.s	loc_3A718
 		move.l	a3,a5
@@ -25518,7 +25584,7 @@ Touch_Height:
 		add.w	d1,d1
 		add.w	d1,d0
 		bcs.s	loc_3B420
-		bra	loc_3B3EC
+		bra.w	loc_3B3EC
 loc_3B41A:
 		cmp.w	d4,d0
 		bhi loc_3B3EC
@@ -25532,11 +25598,11 @@ loc_3B420:
 		add.w	d1,d1
 		add.w	d1,d0
 		bcs loc_3B534
-		bra	loc_3B3EC
+		bra.w	loc_3B3EC
 loc_3B43A:
 		cmp.w	d5,d0
 		bhi loc_3B3EC
-		bra	loc_3B534 
+		bra.w	loc_3B534 
 Touch_Sizes: 
 		dc.b	$4,$4,$14,$14,$C,$14,$14,$C,$4,$10,$C,$12,$10,$10,$6,$6
 		dc.b	$18,$C,$C,$10,$10,$8,$8,$8,$14,$10,$14,$8,$E,$E,$18,$18
@@ -25608,9 +25674,9 @@ loc_3B530:
 loc_3B534:
 		move.b	$20(a1),d1
 		and.b	#$C0,d1
-		beq.w	loc_3B5CE
+		beq	loc_3B5CE
 		cmp.b	#$C0,d1
-		beq.w	Touch_Special 
+		beq	Touch_Special 
 		tst.b	d1
 		bmi loc_3B6A4
 		move.b	$20(a1),d0
@@ -25757,7 +25823,7 @@ loc_3B6CE:
 		btst	#0,$2B(a0)
 		bne.s	HurtShield 
 		tst.w	d0
-		beq.w	Kill_Player 
+		beq	Kill_Player 
 		jsr	SingleObjectLoad 
 		bne.s	HurtShield 
 		move.b	#$37,0(a1)
@@ -25835,7 +25901,7 @@ Touch_Special:
 		cmp.b	#6,d1
 		beq.s	loc_3B844
 		cmp.b	#7,d1
-		beq.w	loc_3B85C
+		beq	loc_3B85C
 		cmp.b	#$B,d1
 		beq.s	loc_3B80E
 		cmp.b	#$A,d1
@@ -25859,7 +25925,7 @@ Touch_Special:
 		rts
 ;--------------------------------------------------------------------------------
 loc_3B80E:
-		bra	loc_3B69E
+		bra.w	loc_3B69E
 loc_3B812:
 		sub.w	d0,d5
 		cmp.w	#8,d5
@@ -25879,9 +25945,9 @@ loc_3B838:
 		cmp.w	d4,d0
 		bhi.s	loc_3B840
 loc_3B83C:
-		bra	loc_3B6A4
+		bra.w	loc_3B6A4
 loc_3B840:
-		bra	loc_3B5CE
+		bra.w	loc_3B5CE
 loc_3B844:
 		move.w	a0,d1
 		sub.w	#$B000,d1
@@ -25897,10 +25963,10 @@ loc_3B856:
 ;--------------------------------------------------------------------------------
 loc_3B85C:
 		move.b	#2,$21(a1)
-		bra	loc_3B5CE
+		bra.w	loc_3B5CE
 loc_3B866:
 		move.b	#$FF,$21(a1)
-		bra	loc_3B5CE
+		bra.w	loc_3B5CE
 loc_3B870:
 		cmp.b	#$F,d0
 		bne.s	loc_3B88A
@@ -25964,7 +26030,7 @@ loc_3B8EC:
 ;--------------------------------------------------------------------------------
 ;------------------------------------------------------------------------------- 
 loc_3B8F4: 
-		dc.b	0,$1C,0,$20,0,$28,0,$34,0,$3C,0,$44,0,$60,0,$70
+		dc.b	$0,$1C,$0,$20,$0,$28,$0,$34,$0,$3C,$0,$44,$0,$60,$0,$70
 loc_3B904:
 		dc.b	$4,$4,$8,$C,$14,$1C,$24,$8
 ;-------------------------------------------------------------------------------
@@ -26083,9 +26149,9 @@ loc_3BA3E:
 		rts
 ;--------------------------------------------------------------------------------
 loc_3BA54:
-		dc.b	0,$14
+		dc.b	$0,$14
 loc_3BA56: 
-		dc.b	0,0,0,$10,0,$10,0,$10,$FF,$F0 
+		dc.b	$0,$0,$0,$10,$0,$10,$0,$10,$FF,$F0 
 loc_3BA60:
 		move.w	d7,-(sp)
 		move.w	8(a1),d0
@@ -26131,7 +26197,7 @@ loc_3BAA2:
 loc_3BAB4:
 		cmp.w	d5,d7
 		bhi loc_3BA9C
-		bra	loc_3B6A4
+		bra.w	loc_3B6A4
 loc_3BABE:
 		sub.w	d1,d0
 		sub.w	d2,d0
@@ -26173,7 +26239,7 @@ J_Touch_Response_CNz_Triangles:
 		jmp	Touch_Response_CNz_Triangles 
 J_TouchRings: 
 		jmp	TouchRings 
-		dc.w	0
+		dc.w	$0
 ;===============================================================================
 ; Sub Routine Dynamic_Art_Cues
 ; [ Begin ]
@@ -26268,7 +26334,7 @@ loc_3BBC0:
 		add.w	#$80,d4
 		dbra	d5,loc_3BBC0
 loc_3BBDC:
-		bra	loc_3BCA0 
+		bra.w	loc_3BCA0 
 		
 HTz_Ram_Dyn_Sprites: 
 		dc.w	$80,$180,$280,$580,$600,$700,$80,$180
@@ -26346,7 +26412,7 @@ loc_3BD30:
 		jsr	DMA_68KtoVRAM 
 		move.l	(sp)+,a2
 		addq.w	#2,a3
-		bra	loc_3BD74 
+		bra.w	loc_3BD74 
 Dynamic_CNz: 
 		tst.b	($FFFFF7AA).w
 		beq.s	loc_3BD54
@@ -26505,15 +26571,15 @@ HPz_Animate:
 		dc.l	($8<<$18)|HPz_Orbs 
 		dc.w	$5D00 ; VRam
 		dc.w	$608 ; Frames/Tiles
-		dc.w	0,$810,$1008 ; Frame Load/Frame Time 
+		dc.w	$0,$810,$1008 ; Frame Load/Frame Time 
 		dc.l	($8<<$18)|HPz_Orbs 
 		dc.w	$5E00 ; VRam
 		dc.w	$608 ; Frames/Tiles
-		dc.w	$810,$1008,0 ; Frame Load/Frame Time
+		dc.w	$810,$1008,$0 ; Frame Load/Frame Time
 		dc.l	($8<<$18)|HPz_Orbs 
 		dc.w	$5F00 ; VRam
 		dc.w	$608 ; Frames/Tiles
-		dc.w	$1008,0,$810 ; Frame Load/Frame Time 
+		dc.w	$1008,$0,$810 ; Frame Load/Frame Time 
 ;===============================================================================
 ; HPz Animate Script
 ; [ End ]
@@ -26588,7 +26654,7 @@ CNz_Animate_2P:
 ; [ Begin ]
 ;===============================================================================
 CPz_Animate: 
-		dc.w	0 ; Total of Animations
+		dc.w	$0 ; Total of Animations
 		dc.l	($4<<$18)|CPz_Dyn_Background 
 		dc.w	$6E00 ; VRam
 		dc.w	$802 ; Frames/Tiles
@@ -26603,7 +26669,7 @@ CPz_Animate:
 ; [ Begin ]
 ;===============================================================================
 DEz_Animate: 
-		dc.w	0 ; Total of Animations
+		dc.w	$0 ; Total of Animations
 		dc.l	($4<<$18)|CPz_Dyn_Background 
 		dc.w	$64C0 ; VRam
 		dc.w	$802 ; Frames/Tiles
@@ -26780,7 +26846,7 @@ Map16Delta_Index:
 ;=============================================================================== 
 Map16Delta_GHz: 
 		dc.w	$1788 ; Ram Address to start loading ($1788+$FFFF9000) -> add.w	(a0)+,a1
-		dc.w	$3B ; Number of words to load in Ram Array (0..$3B) -> move.w	(a0)+,d1 
+		dc.w	$3B ; Number of words to load in Ram Array ($0..$3B) -> move.w	(a0)+,d1 
 		dc.w	$4500,$4504,$4501,$4505,$4508,$450C,$4509,$450D
 		dc.w	$4510,$4514,$4511,$4515,$4502,$4506,$4503,$4507
 		dc.w	$450A,$450E,$450B,$450F,$4512,$4516,$4513,$4517
@@ -26800,7 +26866,7 @@ Map16Delta_GHz:
 ;=============================================================================== 
 Map16Delta_Mz: 
 		dc.w	$1730 ; Ram Address to start loading ($1730+$FFFF9000) -> add.w	(a0)+,a1
-		dc.w	$67 ; Number of words to load in Ram Array (0..$67) -> move.w	(a0)+,d1 
+		dc.w	$67 ; Number of words to load in Ram Array ($0..$67) -> move.w	(a0)+,d1 
 		dc.w	$235C,$2B5C,$235D,$2B5D,$235E,$2B5E,$235F,$2B5F
 		dc.w	$635A,$635A,$635B,$635B,$6358,$6358,$6359,$6359
 		dc.w	$6356,$6356,$6357,$6357,$6354,$6354,$6355,$6355
@@ -26825,22 +26891,22 @@ Map16Delta_Mz:
 ;=============================================================================== 
 Map16Delta_HPz: 
 		dc.w	$1710 ; Ram Address to start loading ($1710+$FFFF9000) -> add.w	(a0)+,a1
-		dc.w	$77 ; Number of words to load in Ram Array (0..$77) -> move.w	(a0)+,d1 
+		dc.w	$77 ; Number of words to load in Ram Array ($0..$77) -> move.w	(a0)+,d1 
 		dc.w	$62E8,$62E9,$62EA,$62EB,$62EC,$62ED,$62EE,$62EF
 		dc.w	$62F0,$62F1,$62F2,$62F3,$62F4,$62F5,$62F6,$62F7
 		dc.w	$62F8,$62F9,$62FA,$62FB,$62FC,$62FD,$62FE,$62FF
 		dc.w	$42E8,$42E9,$42EA,$42EB,$42EC,$42ED,$42EE,$42EF
 		dc.w	$42F0,$42F1,$42F2,$42F3,$42F4,$42F5,$42F6,$42F7
 		dc.w	$42F8,$42F9,$42FA,$42FB,$42FC,$42FD,$42FE,$42FF
-		dc.w	0,$62E8,0,$62EA,$62E9,$62EC,$62EB,$62EE
-		dc.w	$62ED,0,$62EF,0,0,$62F0,0,$62F2
-		dc.w	$62F1,$62F4,$62F3,$62F6,$62F5,0,$62F7,0
-		dc.w	0,$62F8,0,$62FA,$62F9,$62FC,$62FB,$62FE
-		dc.w	$62FD,0,$62FF,0,0,$42E8,0,$42EA
-		dc.w	$42E9,$42EC,$42EB,$42EE,$42ED,0,$42EF,0
-		dc.w	0,$42F0,0,$42F2,$42F1,$42F4,$42F3,$42F6
-		dc.w	$42F5,0,$42F7,0,0,$42F8,0,$42FA
-		dc.w	$42F9,$42FC,$42FB,$42FE,$42FD,0,$42FF,0
+		dc.w	$0,$62E8,$0,$62EA,$62E9,$62EC,$62EB,$62EE
+		dc.w	$62ED,$0,$62EF,$0,$0,$62F0,$0,$62F2
+		dc.w	$62F1,$62F4,$62F3,$62F6,$62F5,$0,$62F7,$0
+		dc.w	$0,$62F8,$0,$62FA,$62F9,$62FC,$62FB,$62FE
+		dc.w	$62FD,$0,$62FF,$0,$0,$42E8,$0,$42EA
+		dc.w	$42E9,$42EC,$42EB,$42EE,$42ED,$0,$42EF,$0
+		dc.w	$0,$42F0,$0,$42F2,$42F1,$42F4,$42F3,$42F6
+		dc.w	$42F5,$0,$42F7,$0,$0,$42F8,$0,$42FA
+		dc.w	$42F9,$42FC,$42FB,$42FE,$42FD,$0,$42FF,$0
 ;===============================================================================
 ; Hidden Palace Mappings 16x16 Delta 
 ; [ End ]
@@ -26852,9 +26918,9 @@ Map16Delta_HPz:
 ;=============================================================================== 
 Map16Delta_OOz: 
 		dc.w	$17A0 ; Ram Address to start loading ($17A0+$FFFF9000) -> add.w	(a0)+,a1
-		dc.w	$2F ; Number of words to load in Ram Array (0..$2F) -> move.w	(a0)+,d1
+		dc.w	$2F ; Number of words to load in Ram Array ($0..$2F) -> move.w	(a0)+,d1
 		dc.w	$82B6,$82B8,$82B7,$82B9,$E2BA,$E2BB,$E2BC,$E2BD
-		dc.w	0,$62BE,0,$62C0,$62BF,0,$62C1,0
+		dc.w	$0,$62BE,$0,$62C0,$62BF,$0,$62C1,$0
 		dc.w	$C2C2,$C2C3,$C2CA,$C2CB,$C2C4,$C2C5,$C2CC,$C2CD
 		dc.w	$C2C6,$C2C7,$C2CE,$C2CF,$C2C8,$C2C9,$C2D0,$C2D1
 		dc.w	$C2D2,$C2D3,$C2DA,$C2DB,$C2D4,$C2D5,$C2DC,$C2DD
@@ -26870,7 +26936,7 @@ Map16Delta_OOz:
 ;=============================================================================== 
 Map16Delta_CNz: 
 		dc.w	$1760 ; Ram Address to start loading ($1760+$FFFF9000) -> add.w	(a0)+,a1
-		dc.w	$4F ; Number of words to load in Ram Array (0..$4F) -> move.w	(a0)+,d1
+		dc.w	$4F ; Number of words to load in Ram Array ($0..$4F) -> move.w	(a0)+,d1
 		dc.w	$550,$554,$551,$555,$558,$55C,$559,$55D
 		dc.w	$552,$556,$553,$557,$55A,$55E,$55B,$55F
 		dc.w	$560,$564,$561,$565,$568,$56C,$569,$56D
@@ -26884,7 +26950,7 @@ Map16Delta_CNz:
 ;------------------------------------------------------------------------------- 
 Map16Delta_CNz_2P: 
 		dc.w	$1760 ; Ram Address to start loading ($1760+$FFFF9000) -> add.w	(a0)+,a1
-		dc.w	$4F ; Number of words to load in Ram Array (0..$4F) -> move.w	(a0)+,d1
+		dc.w	$4F ; Number of words to load in Ram Array ($0..$4F) -> move.w	(a0)+,d1
 		dc.w	$750,$754,$751,$755,$758,$75C,$759,$75D
 		dc.w	$752,$756,$753,$757,$75A,$75E,$75B,$75F
 		dc.w	$760,$764,$761,$765,$768,$76C,$769,$76D
@@ -26906,7 +26972,7 @@ Map16Delta_CNz_2P:
 ;=============================================================================== 
 Map16Delta_CPz: 
 		dc.w	$17F8 ; Ram Address to start loading ($17F8+$FFFF9000) -> add.w	(a0)+,a1
-		dc.w	$3 ; Number of words to load in Ram Array (0..$3) -> move.w	(a0)+,d1
+		dc.w	$3 ; Number of words to load in Ram Array ($0..$3) -> move.w	(a0)+,d1
 		dc.w	$4370,$4371,$4370,$4371
 ;===============================================================================
 ; Chemical Plant Mappings 16x16 Delta 
@@ -26919,7 +26985,7 @@ Map16Delta_CPz:
 ;=============================================================================== 
 Map16Delta_DEz: 
 		dc.w	$17F8 ; Ram Address to start loading ($17F8+$FFFF9000) -> add.w	(a0)+,a1
-		dc.w	$3 ; Number of words to load in Ram Array (0..$3) -> move.w	(a0)+,d1
+		dc.w	$3 ; Number of words to load in Ram Array ($0..$3) -> move.w	(a0)+,d1
 		dc.w	$4326,$4327,$4326,$4327 
 ;===============================================================================
 ; Dath Egg Mappings 16x16 Delta 
@@ -26932,7 +26998,7 @@ Map16Delta_DEz:
 ;=============================================================================== 
 Map16Delta_NGHz: 
 		dc.w	$17C0 ; Ram Address to start loading ($17C0+$FFFF9000) -> add.w	(a0)+,a1
-		dc.w	$1F ; Number of words to load in Ram Array (0..$1F) -> move.w	(a0)+,d1
+		dc.w	$1F ; Number of words to load in Ram Array ($0..$1F) -> move.w	(a0)+,d1
 		dc.w	$C428,$C429,$C42A,$C42B,$C42C,$C42D,$C42E,$C42F
 		dc.w	$C430,$C431,$C432,$C433,$C563,$C564,$C565,$C566
 		dc.w	$4428,$4429,$442A,$442B,$442C,$442D,$442E,$442F
@@ -26942,7 +27008,7 @@ Map16Delta_NGHz:
 ; [ Begin ]
 ;=============================================================================== 
 Map16Delta_Null: 
-		dc.w	0 ; Null 
+		dc.w	$0 ; Null 
 ;===============================================================================
 ; Null Mappings 16x16 Delta 
 ; [ End ]
@@ -27405,7 +27471,7 @@ loc_3CB88:
 ;===============================================================================
 HudUpdate: 
 		nop
-		lea	($C00000),a6
+		lea	(VDP_data_port),a6
 		tst.w	($FFFFFFD8).w
 		bne.w	loc_3CD3C
 		tst.w	($FFFFFFFA).w
@@ -27434,7 +27500,7 @@ loc_3CBDA:
 		bne.s	loc_3CC38
 		lea	($FFFFFE22).w,a1
 		cmp.l	#$93B3B,(a1)+
-		beq.w	Time_Over
+		beq	Time_Over 
 		addq.b	#1,-(a1)
 		cmp.b	#$3C,(a1)
 		bcs.s	loc_3CC38
@@ -27465,7 +27531,7 @@ loc_3CC46:
 		tst.b	($FFFFF7D6).w
 		beq.s	loc_3CC78
 		clr.b	($FFFFF7D6).w
-		move.l	#$64000002,($C00004)
+		move.l	#$64000002,(VDP_control_port)
 		moveq	#0,d1
 		move.w	($FFFFFF8E).w,d1
 		bsr.w	loc_3D018
@@ -27519,7 +27585,7 @@ loc_3CCD2:
 		tst.b	($FFFFF7D6).w
 		beq.s	loc_3CD04
 		clr.b	($FFFFF7D6).w
-		move.l	#$64000002,($C00004)
+		move.l	#$64000002,(VDP_control_port)
 		moveq	#0,d1
 		move.w	($FFFFFF8E).w,d1
 		bsr.w	loc_3D018
@@ -27619,16 +27685,16 @@ loc_3CDFC:
 		rts
 ;--------------------------------------------------------------------------------
 loc_3CDFE:
-		move.l	#$5F400003,($C00004)
+		move.l	#$5F400003,(VDP_control_port)
 		lea	loc_3CE84(pc),a2
 		move.w	#2,d2
 		bra.s	loc_3CE34
 Head_Up_Display_Base: 
-		lea	($C00000),a6
+		lea	(VDP_data_port),a6
 		bsr.w	loc_3D086
 		tst.w	($FFFFFFD8).w
 		bne.s	loc_3CE60
-		move.l	#$5C400003,($C00004)
+		move.l	#$5C400003,(VDP_control_port)
 		lea	loc_3CE78(pc),a2
 		move.w	#$E,d2
 loc_3CE34:
@@ -27658,11 +27724,11 @@ loc_3CE60:
 		move.w	#$160,d3
 		jmp	DMA_68KtoVRAM 
 loc_3CE78:
-		dc.b	$16,$FF,$FF,$FF,$FF,$FF,$FF,0,0,$14,0,0
+		dc.b	$16,$FF,$FF,$FF,$FF,$FF,$FF,$0,$0,$14,$0,$0
 loc_3CE84:
-		dc.b	$FF,$FF,0,0
+		dc.b	$FF,$FF,$0,$0
 loc_3CE88:
-		move.l	#$5C400003,($C00004)
+		move.l	#$5C400003,(VDP_control_port)
 		move.w	($FFFFEE00).w,d1
 		swap.w	d1
 		move.w	($FFFFB008).w,d1
@@ -27747,8 +27813,8 @@ loc_3CF3C:
 ;--------------------------------------------------------------------------------
 ;-------------------------------------------------------------------------------
 Time_Count_Down: 
-		move.l	#$5F800003,($C00004)
-		lea	($C00000),a6
+		move.l	#$5F800003,(VDP_control_port)
+		lea	(VDP_data_port),a6
 		lea	(loc_3CFB0),a2
 		moveq	#1,d6
 		moveq	#0,d4
@@ -28030,7 +28096,7 @@ loc_3D8D4:
 		bne.s	loc_3D8FE
 		move.b	#$C,($FFFFFE0A).w
 		move.b	#$F,($FFFFFE0B).w
-		bra	loc_3D97A
+		bra.w	loc_3D97A
 loc_3D8FE:
 		subq.b	#1,($FFFFFE0A).w
 		bne.s	loc_3D91A
@@ -28098,7 +28164,7 @@ loc_3D996:
 		bhi.s	loc_3D9AE
 		move.b	#0,($FFFFFE06).w
 loc_3D9AE:
-		bra	loc_3DA8C
+		bra.w	loc_3DA8C
 loc_3D9B2:
 		btst	#5,($FFFFF605).w
 		beq.s	loc_3D9F6
@@ -28187,20 +28253,20 @@ Debug_Index:
 Debug_Null: 
 		dc.w	(((Debug_Null_End-debug_Null-$2)/$8)) ; Auto Detect Number of Objects Esrael L. G. Neto 
 		dc.l	($25<<$18)|Rings_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$26BC 
 		dc.l	($26<<$18)|Monitors_Mappings 
-		dc.b	$8,0
+		dc.b	$8,$0
 		dc.w	$680
 Debug_Null_End: 
 ;------------------------------------------------------------------------------- 
 Debug_GHz: 
 		dc.w	(((Debug_GHz_End-debug_GHz-$2)/$8)) ; Auto Detect Number of Objects Esrael L. G. Neto 
 		dc.l	($25<<$18)|Rings_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$26BC
 		dc.l	($26<<$18)|Monitors_Mappings 
-		dc.b	$8,0
+		dc.b	$8,$0
 		dc.w	$680
 		dc.l	($79<<$18)|Star_Post_Mappings 
 		dc.b	$1,00
@@ -28209,7 +28275,7 @@ Debug_GHz:
 		dc.b	$9,$1
 		dc.w	$26BC
 		dc.l	($49<<$18)|Waterfall_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$239E
 		dc.l	($49<<$18)|Waterfall_Mappings 
 		dc.b	$2,$3
@@ -28218,16 +28284,16 @@ Debug_GHz:
 		dc.b	$4,$5
 		dc.w	$239E
 		dc.l	($18<<$18)|GHz_Platform_Mappings 
-		dc.b	$1,0
+		dc.b	$1,$0
 		dc.w	$4000
 		dc.l	($18<<$18)|GHz_Platform_Mappings 
 		dc.b	$9A,$1
 		dc.w	$4000
 		dc.l	($36<<$18)|Spikes_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$2434
 		dc.l	($41<<$18)|Springs_Mappings 
-		dc.b	$81,0
+		dc.b	$81,$0
 		dc.w	$45C
 		dc.l	($41<<$18)|Springs_Mappings 
 		dc.b	$90,$3
@@ -28242,26 +28308,26 @@ Debug_GHz:
 		dc.b	$40,$A
 		dc.w	$43C
 		dc.l	($4B<<$18)|Buzzer_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$3D2
 		dc.l	($5C<<$18)|Masher_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$414
 		dc.l	($9D<<$18)|Coconuts_Mappings 
-		dc.b	$1E,0
+		dc.b	$1E,$0
 		dc.w	$3EE
 		dc.l	($3E<<$18)|Egg_Prison_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$2680
 Debug_GHz_End:
 ;------------------------------------------------------------------------------- 
 Debug_Mz: 
 		dc.w	(((Debug_Mz_End-debug_Mz-$2)/$8)) ; Auto Detect Number of Objects Esrael L. G. Neto
 		dc.l	($25<<$18)|Rings_Mappings 
-		dc.b	0,0 
+		dc.b	$0,$0 
 		dc.w	$26BC
 		dc.l	($26<<$18)|Monitors_Mappings 
-		dc.b	$8,0
+		dc.b	$8,$0
 		dc.w	$680 
 		dc.l	($79<<$18)|Star_Post_Mappings 
 		dc.b	$1,00
@@ -28273,46 +28339,46 @@ Debug_Mz:
 		dc.b	$1,$7
 		dc.w	$6000
 		dc.l	($64<<$18)|Pistons_Mappings 
-		dc.b	$1,0
+		dc.b	$1,$0
 		dc.w	$2000
 		dc.l	($64<<$18)|Pistons_Mappings 
 		dc.b	$11,$1
 		dc.w	$2000
 		dc.l	($65<<$18)|Mz_Platform_Mappings 
-		dc.b	$80,0
+		dc.b	$80,$0
 		dc.w	$6000
 		dc.l	($65<<$18)|Mz_Platform_Mappings 
 		dc.b	$13,$1
 		dc.w	$6000
 		dc.l	($47<<$18)|Switch_Mappings 
-		dc.b	0,$2
+		dc.b	$0,$2
 		dc.w	$424
 		dc.l	($2D<<$18)|Automatic_Door_Mappings 
 		dc.b	$1,$1
 		dc.w	$6000
 		dc.l	($66<<$18)|Springs_Wall_Mappings 
-		dc.b	$1,0
+		dc.b	$1,$0
 		dc.w	$8680
 		dc.l	($66<<$18)|Springs_Wall_Mappings 
 		dc.b	$11,$1
 		dc.w	$8680
 		dc.l	($68<<$18)|Block_Harpon_Mappings 
-		dc.b	0,$4
+		dc.b	$0,$4
 		dc.w	$6414
 		dc.l	($69<<$18)|Screw_Nut_Mappings 
-		dc.b	$4,0
+		dc.b	$4,$0
 		dc.w	$2500
 		dc.l	($6A<<$18)|Mz_Platform_Mappings 
-		dc.b	0,$1
+		dc.b	$0,$1
 		dc.w	$6000
 		dc.l	($6B<<$18)|Mz_Platform_Mappings 
 		dc.b	$7,$1
 		dc.w	$6000
 		dc.l	($6D<<$18)|Block_Harpon_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$241C
 		dc.l	($6E<<$18)|Machine_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$6000
 		dc.l	($6E<<$18)|Machine_Mappings 
 		dc.b	$10,$1
@@ -28321,13 +28387,13 @@ Debug_Mz:
 		dc.b	$20,$2
 		dc.w	$6000
 		dc.l	($70<<$18)|Rotating_Gears_Mappings 
-		dc.b	$10,0
+		dc.b	$10,$0
 		dc.w	$E378
 		dc.l	($71<<$18)|Mz_Lava_Bubble_Mappings 
 		dc.b	$22,$5
 		dc.w	$4536
 		dc.l	($1C<<$18)|Mz_Misc_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$43FD
 		dc.l	($1C<<$18)|Mz_Misc_Mappings 
 		dc.b	$1,$1
@@ -28336,19 +28402,19 @@ Debug_Mz:
 		dc.b	$3,$2
 		dc.w	$23FD
 		dc.l	($65<<$18)|Mz_Platform_Mappings 
-		dc.b	$B0,0
+		dc.b	$B0,$0
 		dc.w	$6000 
 		dc.l	($9F<<$18)|Shellcracker_Mappings 
-		dc.b	$24,0
+		dc.b	$24,$0
 		dc.w	$31C
 		dc.l	($A4<<$18)|Asteron_Mappings 
-		dc.b	$2E,0
+		dc.b	$2E,$0
 		dc.w	$8368
 		dc.l	($A1<<$18)|Slicer_Mappings 
-		dc.b	$28,0
+		dc.b	$28,$0
 		dc.w	$243C
 		dc.l	($31<<$18)|Lava_Attributes_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$8680
 		dc.l	($31<<$18)|Lava_Attributes_Mappings 
 		dc.b	$1,$1
@@ -28357,26 +28423,26 @@ Debug_Mz:
 		dc.b	$2,$2
 		dc.w	$8680
 		dc.l	($3E<<$18)|Egg_Prison_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$2680
 Debug_Mz_End: 
 ;------------------------------------------------------------------------------- 
 Debug_SFz: 
 		dc.w	(((Debug_SFz_End-debug_SFz-$2)/$8)) ; Auto Detect Number of Objects Esrael L. G. Neto
 		dc.l	($25<<$18)|Rings_Mappings 
-		dc.b	0,0 
+		dc.b	$0,$0 
 		dc.w	$26BC 
 		dc.l	($26<<$18)|Monitors_Mappings 
-		dc.b	$8,0
+		dc.b	$8,$0
 		dc.w	$680 
 		dc.l	($8B<<$18)|Layer_Switch_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$6BC 
 		dc.l	($79<<$18)|Star_Post_Mappings 
 		dc.b	$1,00
 		dc.w	$47C 
 		dc.l	($B3<<$18)|Clouds_Mappings 
-		dc.b	$5E,0
+		dc.b	$5E,$0
 		dc.w	$454F
 		dc.l	($B3<<$18)|Clouds_Mappings 
 		dc.b	$60,$1
@@ -28385,13 +28451,13 @@ Debug_SFz:
 		dc.b	$62,$2
 		dc.w	$454F
 		dc.l	($B4<<$18)|Vertical_Helix_Mappings 
-		dc.b	$64,0
+		dc.b	$64,$0
 		dc.w	$A561
 		dc.l	($B5<<$18)|Horizontal_Helix_Mappings 
-		dc.b	$66,0
+		dc.b	$66,$0
 		dc.w	$A3CD
 		dc.l	($B5<<$18)|Horizontal_Helix_Mappings 
-		dc.b	$68,0
+		dc.b	$68,$0
 		dc.w	$A3CD
 		dc.l	($AD<<$18)|Clucker_Mappings 
 		dc.b	$42,$C
@@ -28400,80 +28466,80 @@ Debug_SFz:
 		dc.b	$44,$B
 		dc.w	$379
 		dc.l	($B6<<$18)|Platform_Helix_Mappings 
-		dc.b	$6A,0
+		dc.b	$6A,$0
 		dc.w	$A393
 		dc.l	($B6<<$18)|Platform_Helix_Mappings 
-		dc.b	$6C,0
+		dc.b	$6C,$0
 		dc.w	$A393
 		dc.l	($B6<<$18)|Platform_Helix_Mappings 
-		dc.b	$6E,0
+		dc.b	$6E,$0
 		dc.w	$A393
 		dc.l	($B6<<$18)|Platform_Helix_Mappings 
-		dc.b	$70,0
+		dc.b	$70,$0
 		dc.w	$A393
 		dc.l	($B7<<$18)|Vertical_Large_Laser_Mappings 
-		dc.b	$72,0
+		dc.b	$72,$0
 		dc.w	$C39F
 		dc.l	($B8<<$18)|SFz_Cannon_Mappings 
-		dc.b	$74,0
+		dc.b	$74,$0
 		dc.w	$3AB
 		dc.l	($B9<<$18)|Laser_Mappings 
-		dc.b	$76,0
+		dc.b	$76,$0
 		dc.w	$C3C3
 		dc.l	($BA<<$18)|Conveyor_Belt_Wheels_Mappings 
-		dc.b	$78,0
+		dc.b	$78,$0
 		dc.w	$C3EA
 		dc.l	($BC<<$18)|Ship_Boost_Mappings 
-		dc.b	$7C,0
+		dc.b	$7C,$0
 		dc.w	$4465
 		dc.l	($BD<<$18)|SFz_Elevators_Mappings 
-		dc.b	$7E,0
+		dc.b	$7E,$0
 		dc.w	$E40E
 		dc.l	($BD<<$18)|SFz_Elevators_Mappings 
-		dc.b	$80,0
+		dc.b	$80,$0
 		dc.w	$E40E
 		dc.l	($BE<<$18)|Hatchway_Mappings 
-		dc.b	$82,0
+		dc.b	$82,$0
 		dc.w	$E41A
 		dc.l	($BF<<$18)|Engine_Part_Mappings 
-		dc.b	$84,0
+		dc.b	$84,$0
 		dc.w	$E450
 		dc.l	($C0<<$18)|Speed_Booster_Mappings 
-		dc.b	$8,0
+		dc.b	$8,$0
 		dc.w	$A45C
 		dc.l	($C1<<$18)|Breakable_Wall_Mappings 
-		dc.b	$88,0
+		dc.b	$88,$0
 		dc.w	$E48C
 		dc.l	($C2<<$18)|SFz_Boss_Access_Switch_Mappings 
-		dc.b	$8A,0
+		dc.b	$8A,$0
 		dc.w	$A461
 		dc.l	($19<<$18)|Rotating_Platforms_Mappings 
 		dc.b	$38,$3
 		dc.w	$A46D
 		dc.l	($D9<<$18)|Rings_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$26BC
 		dc.l	($80<<$18)|Chain_Hook_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$23FE
 		dc.l	($3E<<$18)|Egg_Prison_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$2680
 Debug_SFz_End: 
 ;------------------------------------------------------------------------------- 
 Debug_HTz: 
 		dc.w	(((Debug_HTz_End-debug_HTz-$2)/$8)) ; Auto Detect Number of Objects Esrael L. G. Neto
 		dc.l	($25<<$18)|Rings_Mappings 
-		dc.b	0,0 
+		dc.b	$0,$0 
 		dc.w	$26BC
 		dc.l	($26<<$18)|Monitors_Mappings 
-		dc.b	$8,0
+		dc.b	$8,$0
 		dc.w	$680 
 		dc.l	($79<<$18)|Star_Post_Mappings 
 		dc.b	$1,00
 		dc.w	$47C 
 		dc.l	($84<<$18)|Layer_Switch_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$6BC 
 		dc.l	($84<<$18)|Layer_Switch_Mappings 
 		dc.b	$4,$4
@@ -28482,28 +28548,28 @@ Debug_HTz:
 		dc.b	$9,$1
 		dc.w	$26BC
 		dc.l	($18<<$18)|GHz_Platform_Mappings 
-		dc.b	$1,0
+		dc.b	$1,$0
 		dc.w	$4000
 		dc.l	($18<<$18)|GHz_Platform_Mappings 
 		dc.b	$9A,$1
 		dc.w	$4000
 		dc.l	($36<<$18)|Spikes_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$2434
 		dc.l	($14<<$18)|See_Saw_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$3C6
 		dc.l	($2D<<$18)|Automatic_Door_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$2426
 		dc.l	($2F<<$18)|Breakable_Floor_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$C000
 		dc.l	($20<<$18)|Lava_Bubble_Mappings 
 		dc.b	$44,$2
 		dc.w	$8416 
 		dc.l	($41<<$18)|Springs_Mappings 
-		dc.b	$81,0
+		dc.b	$81,$0
 		dc.w	$45C 
 		dc.l	($41<<$18)|Springs_Mappings 
 		dc.b	$90,$3
@@ -28518,7 +28584,7 @@ Debug_HTz:
 		dc.b	$40,$A
 		dc.w	$43C
 		dc.l	($16<<$18)|Teleferics_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$43E6
 		dc.l	($1C<<$18)|Teleferics_Mappings 
 		dc.b	$4,$3
@@ -28527,16 +28593,16 @@ Debug_HTz:
 		dc.b	$5,$4
 		dc.w	$43E6
 		dc.l	($1C<<$18)|HTz_Misc_Mappings 
-		dc.b	$7,0
+		dc.b	$7,$0
 		dc.w	$4000
 		dc.l	($1C<<$18)|HTz_Misc_Mappings 
 		dc.b	$8,$1
 		dc.w	$4000
 		dc.l	($32<<$18)|HTz_Rock_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$43B2
 		dc.l	($31<<$18)|Lava_Attributes_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$8680
 		dc.l	($31<<$18)|Lava_Attributes_Mappings 
 		dc.b	$1,$1
@@ -28548,23 +28614,23 @@ Debug_HTz:
 		dc.b	$E,$2
 		dc.w	$637E
 		dc.l	($92<<$18)|Spiker_Mappings 
-		dc.b	$A,0
-		dc.w	0
+		dc.b	$A,$0
+		dc.w	$0
 		dc.l	($95<<$18)|Sol_Mappings 
-		dc.b	0,0
-		dc.w	0
+		dc.b	$0,$0
+		dc.w	$0
 		dc.l	($3E<<$18)|Egg_Prison_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$2680
 Debug_HTz_End: 
 ;------------------------------------------------------------------------------- 
 Debug_HPz: 
 		dc.w	(((Debug_HPz_End-debug_HPz-$2)/$8)) ; Auto Detect Number of Objects Esrael L. G. Neto
 		dc.l	($25<<$18)|Rings_Mappings 
-		dc.b	0,0 
+		dc.b	$0,$0 
 		dc.w	$26BC
 		dc.l	($26<<$18)|Monitors_Mappings 
-		dc.b	$8,0
+		dc.b	$8,$0
 		dc.w	$680 
 		dc.l	($79<<$18)|Star_Post_Mappings 
 		dc.b	$1,00
@@ -28576,65 +28642,65 @@ Debug_HPz:
 		dc.b	$4,$4
 		dc.w	$E315
 		dc.l	($1A<<$18)|HPz_Collapsing_Platforms_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$434A
 		dc.l	($3<<$18)|Layer_Switch_Mappings 
 		dc.b	$9,$1
 		dc.w	$26BC 
 		dc.l	($4F<<$18)|Dinobot_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$500
 		dc.l	($4C<<$18)|Batbot_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$2530
 		dc.l	($4D<<$18)|Rhinobot_Mappings 
-		dc.b	0,0 
+		dc.b	$0,$0 
 		dc.w	$23B2 
 		dc.l	($3E<<$18)|Egg_Prison_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$2680 
 Debug_HPz_End: 
 ;-------------------------------------------------------------------------------
 Debug_OOz: 
 		dc.w	(((Debug_OOz_End-debug_OOz-$2)/$8)) ; Auto Detect Number of Objects Esrael L. G. Neto
 		dc.l	($25<<$18)|Rings_Mappings 
-		dc.b	0,0 
+		dc.b	$0,$0 
 		dc.w	$26BC
 		dc.l	($26<<$18)|Monitors_Mappings 
-		dc.b	$8,0
+		dc.b	$8,$0
 		dc.w	$680 
 		dc.l	($79<<$18)|Star_Post_Mappings 
 		dc.b	$1,00
 		dc.w	$47C 
 		dc.l	($33<<$18)|Touch_Booster_Mappings 
-		dc.b	$1,0
+		dc.b	$1,$0
 		dc.w	$632C
 		dc.l	($43<<$18)|Giant_Spikeball_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$C30C
 		dc.l	($19<<$18)|Rotating_Platforms_Mappings 
 		dc.b	$23,$2
 		dc.w	$62F4
 		dc.l	($45<<$18)|Spring_Push_Boost_Mappings 
-		dc.b	$2,0
+		dc.b	$2,$0
 		dc.w	$43C5
 		dc.l	($45<<$18)|Spring_Push_Boost_Mappings 
 		dc.b	$12,$A
 		dc.w	$43C5
 		dc.l	($46<<$18)|Spring_Ball_Mappings 
-		dc.b	0,$1
+		dc.b	$0,$1
 		dc.w	$6354
 		dc.l	($47<<$18)|Switch_Mappings 
-		dc.b	0,$2
+		dc.b	$0,$2
 		dc.w	$424
 		dc.l	($15<<$18)|OOz_Swing_Platforms_Mappings 
 		dc.b	$88,$1
 		dc.w	$43E3
 		dc.l	($3D<<$18)|Break_Boost_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$6332
 		dc.l	($48<<$18)|Cannon_Mappings 
-		dc.b	$80,0
+		dc.b	$80,$0
 		dc.w	$6368
 		dc.l	($48<<$18)|Cannon_Mappings 
 		dc.b	$81,$1
@@ -28646,22 +28712,22 @@ Debug_OOz:
 		dc.b	$83,$3
 		dc.w	$6368
 		dc.l	($1F<<$18)|OOz_Collapsing_Platforms_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$639D
 		dc.l	($3F<<$18)|Vertical_Fan_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$6403
 		dc.l	($3F<<$18)|Horizontal_Fan_Mappings 
-		dc.b	$80,0
+		dc.b	$80,$0
 		dc.w	$6403
 		dc.l	($50<<$18)|Aquis_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$2500 
 		dc.l	($4A<<$18)|Octus_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$2538
 		dc.l	($1C<<$18)|OOz_Misc_Mappings 
-		dc.b	$A,0
+		dc.b	$A,$0
 		dc.w	$4346
 		dc.l	($1C<<$18)|OOz_Misc_Mappings 
 		dc.b	$B,$1
@@ -28679,7 +28745,7 @@ Debug_OOz:
 		dc.b	$F,$5
 		dc.w	$4346
 		dc.l	($1C<<$18)|OOz_Misc_Mappings_01 
-		dc.b	$10,0
+		dc.b	$10,$0
 		dc.w	$4346
 		dc.l	($1C<<$18)|OOz_Misc_Mappings_01 
 		dc.b	$11,$1
@@ -28694,99 +28760,99 @@ Debug_OOz:
 		dc.b	$14,$4
 		dc.w	$4346
 		dc.l	($3E<<$18)|Egg_Prison_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$2680 
 Debug_OOz_End: 
 ;-------------------------------------------------------------------------------
 Debug_DHz: 
 		dc.w	(((Debug_DHz_End-debug_DHz-$2)/$8)) ; Auto Detect Number of Objects Esrael L. G. Neto
 		dc.l	($25<<$18)|Rings_Mappings 
-		dc.b	0,0 
+		dc.b	$0,$0 
 		dc.w	$26BC
 		dc.l	($26<<$18)|Monitors_Mappings 
-		dc.b	$8,0
+		dc.b	$8,$0
 		dc.w	$680 
 		dc.l	($79<<$18)|Star_Post_Mappings 
 		dc.b	$1,00
 		dc.w	$47C 
 		dc.l	($15<<$18)|DHz_Swing_Platforms_Mappings 
 		dc.b	$48,$2
-		dc.w	0
+		dc.w	$0
 		dc.l	($1F<<$18)|DHz_Collapsing_Platforms_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$63F4 
 		dc.l	($73<<$18)|Rotating_Rings_Mappings 
-		dc.b	$F5,0
+		dc.b	$F5,$0
 		dc.w	$26BC 
 		dc.l	($6A<<$18)|Rotating_Boxes_Mappings 
-		dc.b	$18,0
+		dc.b	$18,$0
 		dc.w	$63D4
 		dc.l	($2A<<$18)|Up_Down_Pillar_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$4000
 		dc.l	($36<<$18)|Spikes_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$2434 
 		dc.l	($36<<$18)|Spikes_Mappings 
 		dc.b	$40,$4
 		dc.w	$242C 
 		dc.l	($41<<$18)|Springs_Mappings 
-		dc.b	$81,0
+		dc.b	$81,$0
 		dc.w	$45C 
 		dc.l	($41<<$18)|Springs_Mappings 
 		dc.b	$90,$3
 		dc.w	$470 
 		dc.l	($40<<$18)|Diagonal_Spring_Mappings 
-		dc.b	$1,0
+		dc.b	$1,$0
 		dc.w	$440
 		dc.l	($74<<$18)|Invisible_Block_Mappings 
-		dc.b	$11,0
+		dc.b	$11,$0
 		dc.w	$8680
 		dc.l	($75<<$18)|Spikeball_Chain_Mappings 
 		dc.b	$18,$2
 		dc.w	$2000
 		dc.l	($76<<$18)|Platform_Spikes_Mappings 
-		dc.b	0,0
-		dc.w	0
+		dc.b	$0,$0
+		dc.w	$0
 		dc.l	($77<<$18)|Dhz_Bridge_Mappings 
-		dc.b	$1,0
+		dc.b	$1,$0
 		dc.w	$643C
 		dc.l	($7F<<$18)|Vines_Switch_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$640E
 		dc.l	($80<<$18)|Vines_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$641E
 		dc.l	($81<<$18)|Vertical_Bridge_Mappings 
-		dc.b	0,$1
+		dc.b	$0,$1
 		dc.w	$643C
 		dc.l	($7A<<$18)|DHz_Swing_Platforms_Mappings 
-		dc.b	$12,0
-		dc.w	0
+		dc.b	$12,$0
+		dc.w	$0
 		dc.l	($A3<<$18)|Flasher_Mappings 
-		dc.b	$2C,0
+		dc.b	$2C,$0
 		dc.w	$83A8
 		dc.l	($9E<<$18)|Crawlton_Mappings 
-		dc.b	$22,0
+		dc.b	$22,$0
 		dc.w	$23C0
 		dc.l	($3E<<$18)|Egg_Prison_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$2680 
 Debug_DHz_End: 
 ;-------------------------------------------------------------------------------
 Debug_CNz: 
 		dc.w	(((Debug_CNz_End-debug_CNz-$2)/$8)) ; Auto Detect Number of Objects Esrael L. G. Neto
 		dc.l	($25<<$18)|Rings_Mappings 
-		dc.b	0,0 
+		dc.b	$0,$0 
 		dc.w	$26BC
 		dc.l	($26<<$18)|Monitors_Mappings 
-		dc.b	$8,0
+		dc.b	$8,$0
 		dc.w	$680 
 		dc.l	($79<<$18)|Star_Post_Mappings 
 		dc.b	$1,00
 		dc.w	$47C 
 		dc.l	($84<<$18)|Layer_Switch_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$6BC 
 		dc.l	($84<<$18)|Layer_Switch_Mappings 
 		dc.b	$4,$4
@@ -28798,43 +28864,43 @@ Debug_CNz:
 		dc.b	$D,$5
 		dc.w	$26BC
 		dc.l	($44<<$18)|Red_Ball_Bumper_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$439A
 		dc.l	($85<<$18)|Diagonal_Pinball_Spring_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$422
 		dc.l	($85<<$18)|Vertical_Pinball_Spring_Mappings 
-		dc.b	$81,0
+		dc.b	$81,$0
 		dc.w	$402
 		dc.l	($86<<$18)|Flippers_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$43B2
 		dc.l	($86<<$18)|Flippers_Mappings 
 		dc.b	$1,$4
 		dc.w	$43B2
 		dc.l	($D2<<$18)|Green_Platform_Mappings 
-		dc.b	$1,0
+		dc.b	$1,$0
 		dc.w	$437C
 		dc.l	($D3<<$18)|Spikeball_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$380
 		dc.l	($D4<<$18)|Blue_Box_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$436C
 		dc.l	($D4<<$18)|Blue_Box_Mappings 
-		dc.b	$2,0
+		dc.b	$2,$0
 		dc.w	$436C
 		dc.l	($D5<<$18)|CNz_Elevator_Mappings 
-		dc.b	$18,0
+		dc.b	$18,$0
 		dc.w	$4384
 		dc.l	($D6<<$18)|Slot_Machine_Starter_Mappings 
-		dc.b	$1,0
+		dc.b	$1,$0
 		dc.w	$388
 		dc.l	($D7<<$18)|Blue_Bumper_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$4394
 		dc.l	($D8<<$18)|Green_Bumper_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$43E6
 		dc.l	($D8<<$18)|Green_Bumper_Mappings 
 		dc.b	$40,$1
@@ -28843,53 +28909,53 @@ Debug_CNz:
 		dc.b	$80,$2
 		dc.w	$43E6
 		dc.l	($C8<<$18)|Crawl_Mappings 
-		dc.b	$AC,0
+		dc.b	$AC,$0
 		dc.w	$8340
 		dc.l	($3E<<$18)|Egg_Prison_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$2680
 Debug_CNz_End: 
 ;-------------------------------------------------------------------------------
 Debug_CPz: 
 		dc.w	(((Debug_CPz_End-debug_CPz-$2)/$8)) ; Auto Detect Number of Objects Esrael L. G. Neto
 		dc.l	($25<<$18)|Rings_Mappings 
-		dc.b	0,0 
+		dc.b	$0,$0 
 		dc.w	$26BC
 		dc.l	($26<<$18)|Monitors_Mappings 
-		dc.b	$8,0
+		dc.b	$8,$0
 		dc.w	$680 
 		dc.l	($79<<$18)|Star_Post_Mappings 
 		dc.b	$1,00
 		dc.w	$47C 
 		dc.l	($B<<$18)|Open_Close_Platform_Mappings 
-		dc.b	$70,0
+		dc.b	$70,$0
 		dc.w	$E3B0
 		dc.l	($1B<<$18)|CPz_Speed_Booster_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$E39C
 		dc.l	($1D<<$18)|Worms_Mappings 
-		dc.b	$5,0
+		dc.b	$5,$0
 		dc.w	$E43C
 		dc.l	($19<<$18)|Rotating_Platforms_Mappings 
-		dc.b	$6,0
+		dc.b	$6,$0
 		dc.w	$63A0
 		dc.l	($2D<<$18)|Automatic_Door_Mappings 
 		dc.b	$2,$2
 		dc.w	$2394
 		dc.l	($32<<$18)|CPz_Tunel_Obstacle_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$6430
 		dc.l	($6B<<$18)|CPz_Block_Mappings 
-		dc.b	$10,0 
+		dc.b	$10,$0 
 		dc.w	$6418
 		dc.l	($78<<$18)|CPz_Block_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$6418
 		dc.l	($7A<<$18)|Platform_Horizontal_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$E418
 		dc.l	($7B<<$18)|Spring_Tubes_Mappings 
-		dc.b	$2,0
+		dc.b	$2,$0
 		dc.w	$3E0
 		dc.l	($3<<$18)|Layer_Switch_Mappings 
 		dc.b	$9,$1
@@ -28898,10 +28964,10 @@ Debug_CPz:
 		dc.b	$D,$5
 		dc.w	$26BC
 		dc.l	($36<<$18)|Spikes_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$2434 
 		dc.l	($41<<$18)|Springs_Mappings 
-		dc.b	$81,0
+		dc.b	$81,$0
 		dc.w	$45C 
 		dc.l	($41<<$18)|Springs_Mappings 
 		dc.b	$90,$3
@@ -28910,53 +28976,53 @@ Debug_CPz:
 		dc.b	$A0,$6
 		dc.w	$45C
 		dc.l	($40<<$18)|Diagonal_Spring_Mappings 
-		dc.b	$1,0
+		dc.b	$1,$0
 		dc.w	$440
 		dc.l	($A5<<$18)|Lander_Mappings 
-		dc.b	$32,0
+		dc.b	$32,$0
 		dc.w	$252D
 		dc.l	($A6<<$18)|Lander_Mappings 
 		dc.b	$32,$3
 		dc.w	$252D
 		dc.l	($A7<<$18)|Grabber_Mappings 
-		dc.b	$36,0
+		dc.b	$36,$0
 		dc.w	$A500
 		dc.l	($3E<<$18)|Egg_Prison_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$2680
 Debug_CPz_End:
 ;-------------------------------------------------------------------------------
 Debug_NGHz: 
 		dc.w	(((Debug_NGHz_End-debug_NGHz-$2)/$8)) ; Auto Detect Number of Objects Esrael L. G. Neto
 		dc.l	($25<<$18)|Rings_Mappings 
-		dc.b	0,0 
+		dc.b	$0,$0 
 		dc.w	$26BC
 		dc.l	($26<<$18)|Monitors_Mappings 
-		dc.b	$8,0
+		dc.b	$8,$0
 		dc.w	$680 
 		dc.l	($79<<$18)|Star_Post_Mappings 
 		dc.b	$1,00
 		dc.w	$47C 
 		dc.l	($15<<$18)|NGHz_Swing_Platforms_Mappings 
 		dc.b	$88,$2
-		dc.w	0
+		dc.w	$0
 		dc.l	($18<<$18)|NGHz_Platform_Mappings 
-		dc.b	$1,0
+		dc.b	$1,$0
 		dc.w	$4000
 		dc.l	($18<<$18)|NGHz_Platform_Mappings 
 		dc.b	$9A,$1
 		dc.w	$4000
 		dc.l	($22<<$18)|Arrow_Shooter_Mappings 
-		dc.b	0,$1
+		dc.b	$0,$1
 		dc.w	$417
 		dc.l	($23<<$18)|Pillar_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$2000
 		dc.l	($2B<<$18)|Raising_Pillar_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$2000
 		dc.l	($2C<<$18)|Lava_Attributes_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$8680
 		dc.l	($2C<<$18)|Lava_Attributes_Mappings 
 		dc.b	$1,$1
@@ -28965,10 +29031,10 @@ Debug_NGHz:
 		dc.b	$2,$2
 		dc.w	$8680
 		dc.l	($40<<$18)|Diagonal_Spring_Mappings 
-		dc.b	$1,0
+		dc.b	$1,$0
 		dc.w	$440
 		dc.l	($41<<$18)|Springs_Mappings 
-		dc.b	$81,0
+		dc.b	$81,$0
 		dc.w	$45C 
 		dc.l	($41<<$18)|Springs_Mappings 
 		dc.b	$90,$3
@@ -28980,56 +29046,56 @@ Debug_NGHz:
 		dc.b	$9,$1
 		dc.w	$26BC
 		dc.l	($36<<$18)|Spikes_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$2434 
 		dc.l	($2D<<$18)|Automatic_Door_Mappings 
 		dc.b	$3,$3
 		dc.w	$23F8
 		dc.l	($1F<<$18)|NGHz_Collapsing_Platforms_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$4000
 		dc.l	($82<<$18)|Falling_Pillar_Mappings 
-		dc.b	$3,0
-		dc.w	0
+		dc.b	$3,$0
+		dc.w	$0
 		dc.l	($82<<$18)|Falling_Pillar_Mappings 
 		dc.b	$11,$1
-		dc.w	0
+		dc.w	$0
 		dc.l	($83<<$18)|NGHz_Swing_Platforms_Mappings 
 		dc.b	$10,$1
-		dc.w	0
+		dc.w	$0
 		dc.l	($24<<$18)|Sonic_Underwater_Mappings 
 		dc.b	$81,$E
 		dc.w	$855B
 		dc.l	($91<<$18)|Chop_Chop_Mappings 
-		dc.b	$8,0
+		dc.b	$8,$0
 		dc.w	$253B
 		dc.l	($8C<<$18)|Whisp_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$A500
 		dc.l	($8D<<$18)|Grounder_Mappings 
-		dc.b	$2,0
+		dc.b	$2,$0
 		dc.w	$A509
 		dc.l	($8E<<$18)|Grounder_Mappings 
-		dc.b	$2,0
+		dc.b	$2,$0
 		dc.w	$A509
 		dc.l	($3E<<$18)|Egg_Prison_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$2680
 Debug_NGHz_End: 
 ;-------------------------------------------------------------------------------
 Debug_SCz: 
 		dc.w	(((Debug_SCz_End-debug_SCz-$2)/$8)) ; Auto Detect Number of Objects Esrael L. G. Neto
 		dc.l	($25<<$18)|Rings_Mappings 
-		dc.b	0,0 
+		dc.b	$0,$0 
 		dc.w	$26BC
 		dc.l	($26<<$18)|Monitors_Mappings 
-		dc.b	$8,0
+		dc.b	$8,$0
 		dc.w	$680 
 		dc.l	($8B<<$18)|Layer_Switch_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$6BC
 		dc.l	($B3<<$18)|Clouds_Mappings 
-		dc.b	$5E,0
+		dc.b	$5E,$0
 		dc.w	$454F
 		dc.l	($B3<<$18)|Clouds_Mappings 
 		dc.b	$60,$1
@@ -29038,25 +29104,25 @@ Debug_SCz:
 		dc.b	$62,$2
 		dc.w	$454F
 		dc.l	($B4<<$18)|Vertical_Helix_Mappings 
-		dc.b	$64,0
+		dc.b	$64,$0
 		dc.w	$A561
 		dc.l	($B5<<$18)|Horizontal_Helix_Mappings 
-		dc.b	$66,0
+		dc.b	$66,$0
 		dc.w	$A3CD
 		dc.l	($B5<<$18)|Horizontal_Helix_Mappings 
-		dc.b	$68,0
+		dc.b	$68,$0
 		dc.w	$A3CD
 		dc.l	($9A<<$18)|Turtloid_Mappings 
-		dc.b	$16,0
+		dc.b	$16,$0
 		dc.w	$38A
 		dc.l	($AC<<$18)|Balkiry_Mappings 
-		dc.b	$40,0
+		dc.b	$40,$0
 		dc.w	$565
 		dc.l	($99<<$18)|Nebula_Mappings 
-		dc.b	$12,0
+		dc.b	$12,$0
 		dc.w	$A36E
 		dc.l	($3E<<$18)|Egg_Prison_Mappings 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$2680 
 Debug_SCz_End: 
 ;------------------------------------------------------------------------------- 
@@ -29399,7 +29465,7 @@ PLC_11:
 PLC_11_End: 
 ;------------------------------------------------------------------------------- 
 HTz_Sprs_0: 
-PLC_12:
+PLC_12: 
 		dc.w	(((PLC_12_End-PLC_12-$2)/$6)-$1) ; Auto Detect Number of Sprites Esrael L. G. Neto
 		dc.l	Hill_Top_8x8_Tiles 
 		dc.w	$3F80
@@ -30104,7 +30170,7 @@ PLC_42_PB_End:
 		bhi.s	loc_3EBE2
 		move.b	#0,($FFFFFE06).w
 loc_3EBE2:
-		bra	loc_3ECC0
+		bra.w	loc_3ECC0
 		btst	#5,($FFFFF605).w
 		beq.s	loc_3EC2A
 		jsr	SingleObjectLoad+$13C0 
@@ -30193,20 +30259,20 @@ Debug_Index_Previous_Build:
 Debug_Null_PB: 
 		dc.w	(((Debug_Null_PB_End-debug_Null_PB-$2)/$8)) ; Auto Detect Number of Objects Esrael L. G. Neto 
 		dc.l	($25<<$18)|Rings_Mappings+$13B8 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$26BC 
 		dc.l	($26<<$18)|Monitors_Mappings+$13B2 
-		dc.b	$8,0
+		dc.b	$8,$0
 		dc.w	$680
 Debug_Null_PB_End: 
 ;------------------------------------------------------------------------------- 
 Debug_GHz_PB: 
 		dc.w	(((Debug_GHz_PB_End-debug_GHz_PB-$2)/$8)) ; Auto Detect Number of Objects Esrael L. G. Neto 
 		dc.l	($25<<$18)|Rings_Mappings+$13B8 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$26BC
 		dc.l	($26<<$18)|Monitors_Mappings+$13B2 
-		dc.b	$8,0
+		dc.b	$8,$0
 		dc.w	$680
 		dc.l	($79<<$18)|Star_Post_Mappings+$13BE 
 		dc.b	$1,00
@@ -30215,7 +30281,7 @@ Debug_GHz_PB:
 		dc.b	$9,$1
 		dc.w	$26BC
 		dc.l	($49<<$18)|Waterfall_Mappings+$129C 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$239E
 		dc.l	($49<<$18)|Waterfall_Mappings+$129C 
 		dc.b	$2,$3
@@ -30224,16 +30290,16 @@ Debug_GHz_PB:
 		dc.b	$4,$5
 		dc.w	$239E
 		dc.l	($18<<$18)|GHz_Platform_Mappings+$13B8
-		dc.b	$1,0
+		dc.b	$1,$0
 		dc.w	$4000
 		dc.l	($18<<$18)|GHz_Platform_Mappings+$13B8
 		dc.b	$9A,$1
 		dc.w	$4000
 		dc.l	($36<<$18)|Spikes_Mappings+$13C8
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$2434
 		dc.l	($41<<$18)|Springs_Mappings+$13C0 
-		dc.b	$81,0
+		dc.b	$81,$0
 		dc.w	$45C
 		dc.l	($41<<$18)|Springs_Mappings+$13C0 
 		dc.b	$90,$3
@@ -30244,30 +30310,30 @@ Debug_GHz_PB:
 		dc.l	($41<<$18)|Springs_Mappings+$13C0 
 		dc.b	$30,$7
 		dc.w	$43C
-		dc.l	($41<<$18)|Springs_Mappings+$13C0
+		dc.l	($41<<$18)|Springs_Mappings+$13C0 
 		dc.b	$40,$A
 		dc.w	$43C
 		dc.l	($4B<<$18)|Buzzer_Mappings+$1278
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$3D2
 		dc.l	($5C<<$18)|Masher_Mappings+$1278 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$414
 		dc.l	($9D<<$18)|Coconuts_Mappings+$1220
-		dc.b	$1E,0
+		dc.b	$1E,$0
 		dc.w	$3EE
 		dc.l	($3E<<$18)|Egg_Prison_Mappings+$1218 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$2680
 Debug_GHz_PB_End:
 ;------------------------------------------------------------------------------- 
 Debug_Mz_PB: 
 		dc.w	(((Debug_Mz_PB_End-debug_Mz_PB-$2)/$8)) ; Auto Detect Number of Objects Esrael L. G. Neto
 		dc.l	($25<<$18)|Rings_Mappings+$13B8 
-		dc.b	0,0 
+		dc.b	$0,$0 
 		dc.w	$26BC
 		dc.l	($26<<$18)|Monitors_Mappings+$13B2 
-		dc.b	$8,0
+		dc.b	$8,$0
 		dc.w	$680 
 		dc.l	($79<<$18)|Star_Post_Mappings+$13BE
 		dc.b	$1,00
@@ -30279,46 +30345,46 @@ Debug_Mz_PB:
 		dc.b	$1,$7
 		dc.w	$6000
 		dc.l	($64<<$18)|Pistons_Mappings+$12AC 
-		dc.b	$1,0
+		dc.b	$1,$0
 		dc.w	$2000
 		dc.l	($64<<$18)|Pistons_Mappings+$12AC 
 		dc.b	$11,$1
 		dc.w	$2000
 		dc.l	($65<<$18)|Mz_Platform_Mappings+$12AE
-		dc.b	$80,0
+		dc.b	$80,$0
 		dc.w	$6000
 		dc.l	($65<<$18)|Mz_Platform_Mappings+$12AE
 		dc.b	$13,$1
 		dc.w	$6000
 		dc.l	($47<<$18)|Switch_Mappings+$12AC 
-		dc.b	0,$2
+		dc.b	$0,$2
 		dc.w	$424
 		dc.l	($2D<<$18)|Automatic_Door_Mappings+$13B8
 		dc.b	$1,$1
 		dc.w	$6000
 		dc.l	($66<<$18)|Springs_Wall_Mappings+$12AC 
-		dc.b	$1,0
+		dc.b	$1,$0
 		dc.w	$8680
 		dc.l	($66<<$18)|Springs_Wall_Mappings+$12AC 
 		dc.b	$11,$1
 		dc.w	$8680
 		dc.l	($68<<$18)|Block_Harpon_Mappings+$12AC 
-		dc.b	0,$4
+		dc.b	$0,$4
 		dc.w	$6414
 		dc.l	($69<<$18)|Screw_Nut_Mappings+$12AC 
-		dc.b	$4,0
+		dc.b	$4,$0
 		dc.w	$2500
 		dc.l	($6A<<$18)|Mz_Platform_Mappings+$12AE
-		dc.b	0,$1
+		dc.b	$0,$1
 		dc.w	$6000
 		dc.l	($6B<<$18)|Mz_Platform_Mappings+$12AE
 		dc.b	$7,$1
 		dc.w	$6000
 		dc.l	($6D<<$18)|Block_Harpon_Mappings+$12AC
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$241C
 		dc.l	($6E<<$18)|Machine_Mappings+$12AC
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$6000
 		dc.l	($6E<<$18)|Machine_Mappings+$12AC
 		dc.b	$10,$1
@@ -30327,13 +30393,13 @@ Debug_Mz_PB:
 		dc.b	$20,$2
 		dc.w	$6000
 		dc.l	($70<<$18)|Rotating_Gears_Mappings+$12AC 
-		dc.b	$10,0
+		dc.b	$10,$0
 		dc.w	$E378
 		dc.l	($71<<$18)|Mz_Lava_Bubble_Mappings+$13B8
 		dc.b	$22,$5
 		dc.w	$4536
 		dc.l	($1C<<$18)|Mz_Misc_Mappings+$13B8
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$43FD
 		dc.l	($1C<<$18)|Mz_Misc_Mappings+$13B8
 		dc.b	$1,$1
@@ -30342,19 +30408,19 @@ Debug_Mz_PB:
 		dc.b	$3,$2
 		dc.w	$23FD
 		dc.l	($65<<$18)|Mz_Platform_Mappings+$12AE 
-		dc.b	$B0,0
+		dc.b	$B0,$0
 		dc.w	$6000 
 		dc.l	($9F<<$18)|Shellcracker_Mappings+$1220
-		dc.b	$24,0
+		dc.b	$24,$0
 		dc.w	$31C
 		dc.l	($A4<<$18)|Asteron_Mappings+$1220 
-		dc.b	$2E,0
+		dc.b	$2E,$0
 		dc.w	$8368
 		dc.l	($A1<<$18)|Slicer_Mappings+$1220 
-		dc.b	$28,0
+		dc.b	$28,$0
 		dc.w	$243C
 		dc.l	($31<<$18)|Lava_Attributes_Mappings+$129C
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$8680
 		dc.l	($31<<$18)|Lava_Attributes_Mappings+$129C
 		dc.b	$1,$1
@@ -30363,26 +30429,26 @@ Debug_Mz_PB:
 		dc.b	$2,$2
 		dc.w	$8680
 		dc.l	($3E<<$18)|Egg_Prison_Mappings+$1218 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$2680
 Debug_Mz_PB_End: 
 ;------------------------------------------------------------------------------- 
 Debug_SFz_PB: 
 		dc.w	(((Debug_SFz_PB_End-debug_SFz_PB-$2)/$8)) ; Auto Detect Number of Objects Esrael L. G. Neto
 		dc.l	($25<<$18)|Rings_Mappings+$13B8 
-		dc.b	0,0 
+		dc.b	$0,$0 
 		dc.w	$26BC 
 		dc.l	($26<<$18)|Monitors_Mappings+$13B2 
-		dc.b	$8,0
+		dc.b	$8,$0
 		dc.w	$680 
 		dc.l	($8B<<$18)|Layer_Switch_Mappings+$1298 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$6BC 
 		dc.l	($79<<$18)|Star_Post_Mappings+$13BE
 		dc.b	$1,00
 		dc.w	$47C 
 		dc.l	($B3<<$18)|Clouds_Mappings+$1220 
-		dc.b	$5E,0
+		dc.b	$5E,$0
 		dc.w	$454F
 		dc.l	($B3<<$18)|Clouds_Mappings+$1220 
 		dc.b	$60,$1
@@ -30391,13 +30457,13 @@ Debug_SFz_PB:
 		dc.b	$62,$2
 		dc.w	$454F
 		dc.l	($B4<<$18)|Vertical_Helix_Mappings+$1220 
-		dc.b	$64,0
+		dc.b	$64,$0
 		dc.w	$A561
 		dc.l	($B5<<$18)|Horizontal_Helix_Mappings+$1220
-		dc.b	$66,0
+		dc.b	$66,$0
 		dc.w	$A3CD
 		dc.l	($B5<<$18)|Horizontal_Helix_Mappings+$1220 
-		dc.b	$68,0
+		dc.b	$68,$0
 		dc.w	$A3CD
 		dc.l	($AD<<$18)|Clucker_Mappings+$1220 
 		dc.b	$42,$C
@@ -30406,80 +30472,80 @@ Debug_SFz_PB:
 		dc.b	$44,$B
 		dc.w	$379
 		dc.l	($B6<<$18)|Platform_Helix_Mappings+$1220 
-		dc.b	$6A,0
+		dc.b	$6A,$0
 		dc.w	$A393
 		dc.l	($B6<<$18)|Platform_Helix_Mappings+$1220 
-		dc.b	$6C,0
+		dc.b	$6C,$0
 		dc.w	$A393
 		dc.l	($B6<<$18)|Platform_Helix_Mappings+$1220 
-		dc.b	$6E,0
+		dc.b	$6E,$0
 		dc.w	$A393
 		dc.l	($B6<<$18)|Platform_Helix_Mappings+$1220 
-		dc.b	$70,0
+		dc.b	$70,$0
 		dc.w	$A393
 		dc.l	($B7<<$18)|Vertical_Large_Laser_Mappings+$1220 
-		dc.b	$72,0
+		dc.b	$72,$0
 		dc.w	$C39F
 		dc.l	($B8<<$18)|SFz_Cannon_Mappings+$1220 
-		dc.b	$74,0
+		dc.b	$74,$0
 		dc.w	$3AB
 		dc.l	($B9<<$18)|Laser_Mappings+$1220 
-		dc.b	$76,0
+		dc.b	$76,$0
 		dc.w	$C3C3
 		dc.l	($BA<<$18)|Conveyor_Belt_Wheels_Mappings+$1220
-		dc.b	$78,0
+		dc.b	$78,$0
 		dc.w	$C3EA
 		dc.l	($BC<<$18)|Ship_Boost_Mappings+$1220 
-		dc.b	$7C,0
+		dc.b	$7C,$0
 		dc.w	$4465
 		dc.l	($BD<<$18)|SFz_Elevators_Mappings+$1220 
-		dc.b	$7E,0
+		dc.b	$7E,$0
 		dc.w	$E40E
 		dc.l	($BD<<$18)|SFz_Elevators_Mappings+$1220 
-		dc.b	$80,0
+		dc.b	$80,$0
 		dc.w	$E40E
 		dc.l	($BE<<$18)|Hatchway_Mappings+$1220 
-		dc.b	$82,0
+		dc.b	$82,$0
 		dc.w	$E41A
 		dc.l	($BF<<$18)|Engine_Part_Mappings+$1220 
-		dc.b	$84,0
+		dc.b	$84,$0
 		dc.w	$E450
 		dc.l	($C0<<$18)|Speed_Booster_Mappings+$1220 
-		dc.b	$8,0
+		dc.b	$8,$0
 		dc.w	$A45C
 		dc.l	($C1<<$18)|Breakable_Wall_Mappings+$1220 
-		dc.b	$88,0
+		dc.b	$88,$0
 		dc.w	$E48C
 		dc.l	($C2<<$18)|SFz_Boss_Access_Switch_Mappings+$121A 
-		dc.b	$8A,0
+		dc.b	$8A,$0
 		dc.w	$A461
 		dc.l	($19<<$18)|Rotating_Platforms_Mappings+$12AC 
 		dc.b	$38,$3
 		dc.w	$A46D
 		dc.l	($D9<<$18)|Rings_Mappings+$13B8 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$26BC
 		dc.l	($80<<$18)|Chain_Hook_Mappings+$12A2 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$23FE
 		dc.l	($3E<<$18)|Egg_Prison_Mappings+$1218 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$2680
 Debug_SFz_PB_End: 
 ;------------------------------------------------------------------------------- 
 Debug_HTz_PB: 
 		dc.w	(((Debug_HTz_PB_End-debug_HTz_PB-$2)/$8)) ; Auto Detect Number of Objects Esrael L. G. Neto
 		dc.l	($25<<$18)|Rings_Mappings+$13B8 
-		dc.b	0,0 
+		dc.b	$0,$0 
 		dc.w	$26BC
 		dc.l	($26<<$18)|Monitors_Mappings+$13B2 
-		dc.b	$8,0
+		dc.b	$8,$0
 		dc.w	$680 
 		dc.l	($79<<$18)|Star_Post_Mappings+$13BE
 		dc.b	$1,00
 		dc.w	$47C 
 		dc.l	($84<<$18)|Layer_Switch_Mappings+$1298 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$6BC 
 		dc.l	($84<<$18)|Layer_Switch_Mappings+$1298 
 		dc.b	$4,$4
@@ -30488,28 +30554,28 @@ Debug_HTz_PB:
 		dc.b	$9,$1
 		dc.w	$26BC
 		dc.l	($18<<$18)|GHz_Platform_Mappings+$13B8
-		dc.b	$1,0
+		dc.b	$1,$0
 		dc.w	$4000
 		dc.l	($18<<$18)|GHz_Platform_Mappings+$13B8 
 		dc.b	$9A,$1
 		dc.w	$4000
 		dc.l	($36<<$18)|Spikes_Mappings+$13C8
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$2434
 		dc.l	($14<<$18)|See_Saw_Mappings+$12B0 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$3C6
 		dc.l	($2D<<$18)|Automatic_Door_Mappings+$13B8
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$2426
 		dc.l	($2F<<$18)|Breakable_Floor_Mappings+$12AC
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$C000
 		dc.l	($20<<$18)|Lava_Bubble_Mappings+$12AC 
 		dc.b	$44,$2
 		dc.w	$8416 
 		dc.l	($41<<$18)|Springs_Mappings+$13C0 
-		dc.b	$81,0
+		dc.b	$81,$0
 		dc.w	$45C 
 		dc.l	($41<<$18)|Springs_Mappings+$13C0 
 		dc.b	$90,$3
@@ -30524,7 +30590,7 @@ Debug_HTz_PB:
 		dc.b	$40,$A
 		dc.w	$43C
 		dc.l	($16<<$18)|Teleferics_Mappings+$12B0 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$43E6
 		dc.l	($1C<<$18)|Teleferics_Mappings+$12B0 
 		dc.b	$4,$3
@@ -30533,16 +30599,16 @@ Debug_HTz_PB:
 		dc.b	$5,$4
 		dc.w	$43E6
 		dc.l	($1C<<$18)|HTz_Misc_Mappings+$13B8 
-		dc.b	$7,0
+		dc.b	$7,$0
 		dc.w	$4000
 		dc.l	($1C<<$18)|HTz_Misc_Mappings+$13B8 
 		dc.b	$8,$1
 		dc.w	$4000
 		dc.l	($32<<$18)|HTz_Rock_Mappings+$12AC
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$43B2
 		dc.l	($31<<$18)|Lava_Attributes_Mappings+$129C
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$8680
 		dc.l	($31<<$18)|Lava_Attributes_Mappings+$129C
 		dc.b	$1,$1
@@ -30554,23 +30620,23 @@ Debug_HTz_PB:
 		dc.b	$E,$2
 		dc.w	$637E
 		dc.l	($92<<$18)|Spiker_Mappings+$1220 
-		dc.b	$A,0
-		dc.w	0
+		dc.b	$A,$0
+		dc.w	$0
 		dc.l	($95<<$18)|Sol_Mappings+$1220 
-		dc.b	0,0
-		dc.w	0
+		dc.b	$0,$0
+		dc.w	$0
 		dc.l	($3E<<$18)|Egg_Prison_Mappings+$1218 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$2680
 Debug_HTz_PB_End: 
 ;------------------------------------------------------------------------------- 
 Debug_HPz_PB: 
 		dc.w	(((Debug_HPz_PB_End-debug_HPz_PB-$2)/$8)) ; Auto Detect Number of Objects Esrael L. G. Neto
 		dc.l	($25<<$18)|Rings_Mappings+$13B8
-		dc.b	0,0 
+		dc.b	$0,$0 
 		dc.w	$26BC
 		dc.l	($26<<$18)|Monitors_Mappings+$13B2 
-		dc.b	$8,0
+		dc.b	$8,$0
 		dc.w	$680 
 		dc.l	($79<<$18)|Star_Post_Mappings+$13BE 
 		dc.b	$1,00
@@ -30582,65 +30648,65 @@ Debug_HPz_PB:
 		dc.b	$4,$4
 		dc.w	$E315
 		dc.l	($1A<<$18)|HPz_Collapsing_Platforms_Mappings+$13B8
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$434A
 		dc.l	($3<<$18)|Layer_Switch_Mappings+$1298 
 		dc.b	$9,$1
 		dc.w	$26BC 
 		dc.l	($4F<<$18)|Dinobot_Mappings+$1278
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$500
 		dc.l	($4C<<$18)|Batbot_Mappings+$1278 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$2530
 		dc.l	($4D<<$18)|Rhinobot_Mappings+$1278 
-		dc.b	0,0 
+		dc.b	$0,$0 
 		dc.w	$23B2 
 		dc.l	($3E<<$18)|Egg_Prison_Mappings+$1218 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$2680 
 Debug_HPz_PB_End: 
 ;-------------------------------------------------------------------------------
 Debug_OOz_PB: 
 		dc.w	(((Debug_OOz_PB_End-debug_OOz_PB-$2)/$8)) ; Auto Detect Number of Objects Esrael L. G. Neto
 		dc.l	($25<<$18)|Rings_Mappings+$13B8 
-		dc.b	0,0 
+		dc.b	$0,$0 
 		dc.w	$26BC
 		dc.l	($26<<$18)|Monitors_Mappings+$13B2 
-		dc.b	$8,0
+		dc.b	$8,$0
 		dc.w	$680 
 		dc.l	($79<<$18)|Star_Post_Mappings+$13BE
 		dc.b	$1,00
 		dc.w	$47C 
 		dc.l	($33<<$18)|Touch_Booster_Mappings+$12AC 
-		dc.b	$1,0
+		dc.b	$1,$0
 		dc.w	$632C
 		dc.l	($43<<$18)|Giant_Spikeball_Mappings+$12AC 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$C30C
 		dc.l	($19<<$18)|Rotating_Platforms_Mappings+$12AC 
 		dc.b	$23,$2
 		dc.w	$62F4
 		dc.l	($45<<$18)|Spring_Push_Boost_Mappings+$12AC 
-		dc.b	$2,0
+		dc.b	$2,$0
 		dc.w	$43C5
 		dc.l	($45<<$18)|Spring_Push_Boost_Mappings+$12AC 
 		dc.b	$12,$A
 		dc.w	$43C5
 		dc.l	($46<<$18)|Spring_Ball_Mappings+$12AC 
-		dc.b	0,$1
+		dc.b	$0,$1
 		dc.w	$6354
 		dc.l	($47<<$18)|Switch_Mappings+$12AC 
-		dc.b	0,$2
+		dc.b	$0,$2
 		dc.w	$424
 		dc.l	($15<<$18)|OOz_Swing_Platforms_Mappings+$13B8
 		dc.b	$88,$1
 		dc.w	$43E3
 		dc.l	($3D<<$18)|Break_Boost_Mappings+$12AC 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$6332
 		dc.l	($48<<$18)|Cannon_Mappings+$12AC 
-		dc.b	$80,0
+		dc.b	$80,$0
 		dc.w	$6368
 		dc.l	($48<<$18)|Cannon_Mappings+$12AC 
 		dc.b	$81,$1
@@ -30652,22 +30718,22 @@ Debug_OOz_PB:
 		dc.b	$83,$3
 		dc.w	$6368
 		dc.l	($1F<<$18)|OOz_Collapsing_Platforms_Mappings+$13B8
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$639D
 		dc.l	($3F<<$18)|Vertical_Fan_Mappings+$12A0 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$6403
 		dc.l	($3F<<$18)|Horizontal_Fan_Mappings+$12A0 
-		dc.b	$80,0
+		dc.b	$80,$0
 		dc.w	$6403
 		dc.l	($50<<$18)|Aquis_Mappings+$1278
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$2500 
 		dc.l	($4A<<$18)|Octus_Mappings+$1278 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$2538
 		dc.l	($1C<<$18)|OOz_Misc_Mappings+$13B8 
-		dc.b	$A,0
+		dc.b	$A,$0
 		dc.w	$4346
 		dc.l	($1C<<$18)|OOz_Misc_Mappings+$13B8 
 		dc.b	$B,$1
@@ -30685,7 +30751,7 @@ Debug_OOz_PB:
 		dc.b	$F,$5
 		dc.w	$4346
 		dc.l	($1C<<$18)|OOz_Misc_Mappings_01+$13B8 
-		dc.b	$10,0
+		dc.b	$10,$0
 		dc.w	$4346
 		dc.l	($1C<<$18)|OOz_Misc_Mappings_01+$13B8 
 		dc.b	$11,$1
@@ -30700,99 +30766,99 @@ Debug_OOz_PB:
 		dc.b	$14,$4
 		dc.w	$4346
 		dc.l	($3E<<$18)|Egg_Prison_Mappings+$1218 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$2680 
 Debug_OOz_PB_End: 
 ;-------------------------------------------------------------------------------
 Debug_DHz_PB: 
 		dc.w	(((Debug_DHz_PB_End-debug_DHz_PB-$2)/$8)) ; Auto Detect Number of Objects Esrael L. G. Neto
 		dc.l	($25<<$18)|Rings_Mappings+$13B8
-		dc.b	0,0 
+		dc.b	$0,$0 
 		dc.w	$26BC
 		dc.l	($26<<$18)|Monitors_Mappings+$13B2 
-		dc.b	$8,0
+		dc.b	$8,$0
 		dc.w	$680 
 		dc.l	($79<<$18)|Star_Post_Mappings+$13BE 
 		dc.b	$1,00
 		dc.w	$47C 
 		dc.l	($15<<$18)|DHz_Swing_Platforms_Mappings+$13B8
 		dc.b	$48,$2
-		dc.w	0
+		dc.w	$0
 		dc.l	($1F<<$18)|DHz_Collapsing_Platforms_Mappings+$13B8
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$63F4 
 		dc.l	($73<<$18)|Rotating_Rings_Mappings+$12AC 
-		dc.b	$F5,0
+		dc.b	$F5,$0
 		dc.w	$26BC 
 		dc.l	($6A<<$18)|Rotating_Boxes_Mappings+$12AC 
-		dc.b	$18,0
+		dc.b	$18,$0
 		dc.w	$63D4
 		dc.l	($2A<<$18)|Up_Down_Pillar_Mappings+$13B8
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$4000
 		dc.l	($36<<$18)|Spikes_Mappings+$13C8
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$2434 
 		dc.l	($36<<$18)|Spikes_Mappings+$13C8
 		dc.b	$40,$4
 		dc.w	$242C 
 		dc.l	($41<<$18)|Springs_Mappings+$13C0 
-		dc.b	$81,0
+		dc.b	$81,$0
 		dc.w	$45C 
 		dc.l	($41<<$18)|Springs_Mappings+$13C0 
 		dc.b	$90,$3
 		dc.w	$470 
 		dc.l	($40<<$18)|Diagonal_Spring_Mappings+$12AC 
-		dc.b	$1,0
+		dc.b	$1,$0
 		dc.w	$440
 		dc.l	($74<<$18)|Invisible_Block_Mappings+$129C
-		dc.b	$11,0
+		dc.b	$11,$0
 		dc.w	$8680
 		dc.l	($75<<$18)|Spikeball_Chain_Mappings+$12AC 
 		dc.b	$18,$2
 		dc.w	$2000
 		dc.l	($76<<$18)|Platform_Spikes_Mappings+$12AC 
-		dc.b	0,0
-		dc.w	0
+		dc.b	$0,$0
+		dc.w	$0
 		dc.l	($77<<$18)|Dhz_Bridge_Mappings+$12AC 
-		dc.b	$1,0
+		dc.b	$1,$0
 		dc.w	$643C
 		dc.l	($7F<<$18)|Vines_Switch_Mappings+$12AC 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$640E
 		dc.l	($80<<$18)|Vines_Mappings+$12A2 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$641E
 		dc.l	($81<<$18)|Vertical_Bridge_Mappings+$12A0 
-		dc.b	0,$1
+		dc.b	$0,$1
 		dc.w	$643C
 		dc.l	($7A<<$18)|DHz_Swing_Platforms_Mappings+$13B8
-		dc.b	$12,0
-		dc.w	0
+		dc.b	$12,$0
+		dc.w	$0
 		dc.l	($A3<<$18)|Flasher_Mappings+$1220 
-		dc.b	$2C,0
+		dc.b	$2C,$0
 		dc.w	$83A8
 		dc.l	($9E<<$18)|Crawlton_Mappings+$1220 
-		dc.b	$22,0
+		dc.b	$22,$0
 		dc.w	$23C0
 		dc.l	($3E<<$18)|Egg_Prison_Mappings+$1218 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$2680 
 Debug_DHz_PB_End: 
 ;-------------------------------------------------------------------------------
 Debug_CNz_PB: 
 		dc.w	(((Debug_CNz_PB_End-debug_CNz_PB-$2)/$8)) ; Auto Detect Number of Objects Esrael L. G. Neto
 		dc.l	($25<<$18)|Rings_Mappings+$13B8
-		dc.b	0,0 
+		dc.b	$0,$0 
 		dc.w	$26BC
 		dc.l	($26<<$18)|Monitors_Mappings+$13B2 
-		dc.b	$8,0
+		dc.b	$8,$0
 		dc.w	$680 
 		dc.l	($79<<$18)|Star_Post_Mappings+$13BE 
 		dc.b	$1,00
 		dc.w	$47C 
 		dc.l	($84<<$18)|Layer_Switch_Mappings+$1298 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$6BC 
 		dc.l	($84<<$18)|Layer_Switch_Mappings+$1298 
 		dc.b	$4,$4
@@ -30804,43 +30870,43 @@ Debug_CNz_PB:
 		dc.b	$D,$5
 		dc.w	$26BC
 		dc.l	($44<<$18)|Red_Ball_Bumper_Mappings+$1274
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$439A
 		dc.l	($85<<$18)|Diagonal_Pinball_Spring_Mappings+$129C 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$422
 		dc.l	($85<<$18)|Vertical_Pinball_Spring_Mappings+$129C 
-		dc.b	$81,0
+		dc.b	$81,$0
 		dc.w	$402
 		dc.l	($86<<$18)|Flippers_Mappings+$1294 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$43B2
 		dc.l	($86<<$18)|Flippers_Mappings+$1294 
 		dc.b	$1,$4
 		dc.w	$43B2
 		dc.l	($D2<<$18)|Green_Platform_Mappings+$1294 
-		dc.b	$1,0
+		dc.b	$1,$0
 		dc.w	$437C
 		dc.l	($D3<<$18)|Spikeball_Mappings+$1294 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$380
 		dc.l	($D4<<$18)|Blue_Box_Mappings+$1294 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$436C
 		dc.l	($D4<<$18)|Blue_Box_Mappings+$1294 
-		dc.b	$2,0
+		dc.b	$2,$0
 		dc.w	$436C
 		dc.l	($D5<<$18)|CNz_Elevator_Mappings+$1294 
-		dc.b	$18,0
+		dc.b	$18,$0
 		dc.w	$4384
 		dc.l	($D6<<$18)|Slot_Machine_Starter_Mappings+$1276 
-		dc.b	$1,0
+		dc.b	$1,$0
 		dc.w	$388
 		dc.l	($D7<<$18)|Blue_Bumper_Mappings+$1278 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$4394
 		dc.l	($D8<<$18)|Green_Bumper_Mappings+$1278 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$43E6
 		dc.l	($D8<<$18)|Green_Bumper_Mappings+$1278 
 		dc.b	$40,$1
@@ -30849,53 +30915,53 @@ Debug_CNz_PB:
 		dc.b	$80,$2
 		dc.w	$43E6
 		dc.l	($C8<<$18)|Crawl_Mappings+$121A 
-		dc.b	$AC,0
+		dc.b	$AC,$0
 		dc.w	$8340
 		dc.l	($3E<<$18)|Egg_Prison_Mappings+$1218 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$2680
 Debug_CNz_PB_End: 
 ;-------------------------------------------------------------------------------
 Debug_CPz_PB: 
 		dc.w	(((Debug_CPz_PB_End-debug_CPz_PB-$2)/$8)) ; Auto Detect Number of Objects Esrael L. G. Neto
 		dc.l	($25<<$18)|Rings_Mappings+$13B8
-		dc.b	0,0 
+		dc.b	$0,$0 
 		dc.w	$26BC
 		dc.l	($26<<$18)|Monitors_Mappings+$13B2 
-		dc.b	$8,0
+		dc.b	$8,$0
 		dc.w	$680 
 		dc.l	($79<<$18)|Star_Post_Mappings+$13BE
 		dc.b	$1,00
 		dc.w	$47C 
 		dc.l	($B<<$18)|Open_Close_Platform_Mappings+$129C 
-		dc.b	$70,0
+		dc.b	$70,$0
 		dc.w	$E3B0
 		dc.l	($1B<<$18)|CPz_Speed_Booster_Mappings+$12AC
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$E39C
 		dc.l	($1D<<$18)|Worms_Mappings+$12AC 
-		dc.b	$5,0
+		dc.b	$5,$0
 		dc.w	$E43C
 		dc.l	($19<<$18)|Rotating_Platforms_Mappings+$12AC 
-		dc.b	$6,0
+		dc.b	$6,$0
 		dc.w	$63A0
 		dc.l	($2D<<$18)|Automatic_Door_Mappings+$13B8
 		dc.b	$2,$2
 		dc.w	$2394
 		dc.l	($32<<$18)|CPz_Tunel_Obstacle_Mappings+$12AC 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$6430
 		dc.l	($6B<<$18)|CPz_Block_Mappings+$12AC 
-		dc.b	$10,0 
+		dc.b	$10,$0 
 		dc.w	$6418
 		dc.l	($78<<$18)|CPz_Block_Mappings+$12AC 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$6418
 		dc.l	($7A<<$18)|Platform_Horizontal_Mappings+$12AC 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$E418
 		dc.l	($7B<<$18)|Spring_Tubes_Mappings+$12AC 
-		dc.b	$2,0
+		dc.b	$2,$0
 		dc.w	$3E0
 		dc.l	($3<<$18)|Layer_Switch_Mappings+$1298 
 		dc.b	$9,$1
@@ -30904,10 +30970,10 @@ Debug_CPz_PB:
 		dc.b	$D,$5
 		dc.w	$26BC
 		dc.l	($36<<$18)|Spikes_Mappings+$13C8
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$2434 
 		dc.l	($41<<$18)|Springs_Mappings+$13C0 
-		dc.b	$81,0
+		dc.b	$81,$0
 		dc.w	$45C 
 		dc.l	($41<<$18)|Springs_Mappings+$13C0 
 		dc.b	$90,$3
@@ -30916,53 +30982,53 @@ Debug_CPz_PB:
 		dc.b	$A0,$6
 		dc.w	$45C
 		dc.l	($40<<$18)|Diagonal_Spring_Mappings+$12AC
-		dc.b	$1,0
+		dc.b	$1,$0
 		dc.w	$440
 		dc.l	($A5<<$18)|Lander_Mappings+$1220 
-		dc.b	$32,0
+		dc.b	$32,$0
 		dc.w	$252D
 		dc.l	($A6<<$18)|Lander_Mappings+$1220 
 		dc.b	$32,$3
 		dc.w	$252D
 		dc.l	($A7<<$18)|Grabber_Mappings+$1220 
-		dc.b	$36,0
+		dc.b	$36,$0
 		dc.w	$A500
 		dc.l	($3E<<$18)|Egg_Prison_Mappings+$1218 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$2680
 Debug_CPz_PB_End:
 ;-------------------------------------------------------------------------------
 Debug_NGHz_PB: 
 		dc.w	(((Debug_NGHz_PB_End-debug_NGHz_PB-$2)/$8)) ; Auto Detect Number of Objects Esrael L. G. Neto
 		dc.l	($25<<$18)|Rings_Mappings+$13B8
-		dc.b	0,0 
+		dc.b	$0,$0 
 		dc.w	$26BC
 		dc.l	($26<<$18)|Monitors_Mappings+$13B2 
-		dc.b	$8,0
+		dc.b	$8,$0
 		dc.w	$680 
 		dc.l	($79<<$18)|Star_Post_Mappings+$13BE
 		dc.b	$1,00
 		dc.w	$47C 
 		dc.l	($15<<$18)|NGHz_Swing_Platforms_Mappings+$13B8 
 		dc.b	$88,$2
-		dc.w	0
+		dc.w	$0
 		dc.l	($18<<$18)|NGHz_Platform_Mappings+$13B8 
-		dc.b	$1,0
+		dc.b	$1,$0
 		dc.w	$4000
 		dc.l	($18<<$18)|NGHz_Platform_Mappings+$13B8 
 		dc.b	$9A,$1
 		dc.w	$4000
 		dc.l	($22<<$18)|Arrow_Shooter_Mappings+$12AC
-		dc.b	0,$1
+		dc.b	$0,$1
 		dc.w	$417
 		dc.l	($23<<$18)|Pillar_Mappings+$12AC 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$2000
 		dc.l	($2B<<$18)|Raising_Pillar_Mappings+$12AC 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$2000
 		dc.l	($2C<<$18)|Lava_Attributes_Mappings+$129C
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$8680
 		dc.l	($2C<<$18)|Lava_Attributes_Mappings+$129C
 		dc.b	$1,$1
@@ -30971,10 +31037,10 @@ Debug_NGHz_PB:
 		dc.b	$2,$2
 		dc.w	$8680
 		dc.l	($40<<$18)|Diagonal_Spring_Mappings+$12AC
-		dc.b	$1,0
+		dc.b	$1,$0
 		dc.w	$440
 		dc.l	($41<<$18)|Springs_Mappings+$13C0 
-		dc.b	$81,0
+		dc.b	$81,$0
 		dc.w	$45C 
 		dc.l	($41<<$18)|Springs_Mappings+$13C0 
 		dc.b	$90,$3
@@ -30986,56 +31052,56 @@ Debug_NGHz_PB:
 		dc.b	$9,$1
 		dc.w	$26BC
 		dc.l	($36<<$18)|Spikes_Mappings+$13C8
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$2434 
 		dc.l	($2D<<$18)|Automatic_Door_Mappings+$13B8
 		dc.b	$3,$3
 		dc.w	$23F8
 		dc.l	($1F<<$18)|NGHz_Collapsing_Platforms_Mappings+$13B8 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$4000
 		dc.l	($82<<$18)|Falling_Pillar_Mappings+$12A0 
-		dc.b	$3,0
-		dc.w	0
+		dc.b	$3,$0
+		dc.w	$0
 		dc.l	($82<<$18)|Falling_Pillar_Mappings+$12A0 
 		dc.b	$11,$1
-		dc.w	0
+		dc.w	$0
 		dc.l	($83<<$18)|NGHz_Swing_Platforms_Mappings+$13B8 
 		dc.b	$10,$1
-		dc.w	0
+		dc.w	$0
 		dc.l	($24<<$18)|Sonic_Underwater_Mappings+$1274
 		dc.b	$81,$E
 		dc.w	$855B
 		dc.l	($91<<$18)|Chop_Chop_Mappings+$1220 
-		dc.b	$8,0
+		dc.b	$8,$0
 		dc.w	$253B
 		dc.l	($8C<<$18)|Whisp_Mappings+$1220 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$A500
 		dc.l	($8D<<$18)|Grounder_Mappings+$1220 
-		dc.b	$2,0
+		dc.b	$2,$0
 		dc.w	$A509
 		dc.l	($8E<<$18)|Grounder_Mappings+$1220 
-		dc.b	$2,0
+		dc.b	$2,$0
 		dc.w	$A509
 		dc.l	($3E<<$18)|Egg_Prison_Mappings+$1218 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$2680
 Debug_NGHz_PB_End: 
 ;-------------------------------------------------------------------------------
 Debug_SCz_PB: 
 		dc.w	(((Debug_SCz_PB_End-debug_SCz_PB-$2)/$8)) ; Auto Detect Number of Objects Esrael L. G. Neto
 		dc.l	($25<<$18)|Rings_Mappings+$13B8
-		dc.b	0,0 
+		dc.b	$0,$0 
 		dc.w	$26BC
 		dc.l	($26<<$18)|Monitors_Mappings+$13B2 
-		dc.b	$8,0
+		dc.b	$8,$0
 		dc.w	$680 
 		dc.l	($8B<<$18)|Layer_Switch_Mappings+$1298 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$6BC
 		dc.l	($B3<<$18)|Clouds_Mappings+$1220 
-		dc.b	$5E,0
+		dc.b	$5E,$0
 		dc.w	$454F
 		dc.l	($B3<<$18)|Clouds_Mappings+$1220 
 		dc.b	$60,$1
@@ -31044,25 +31110,25 @@ Debug_SCz_PB:
 		dc.b	$62,$2
 		dc.w	$454F
 		dc.l	($B4<<$18)|Vertical_Helix_Mappings+$1220 
-		dc.b	$64,0
+		dc.b	$64,$0
 		dc.w	$A561
 		dc.l	($B5<<$18)|Horizontal_Helix_Mappings+$1220
-		dc.b	$66,0
+		dc.b	$66,$0
 		dc.w	$A3CD
 		dc.l	($B5<<$18)|Horizontal_Helix_Mappings+$1220
-		dc.b	$68,0
+		dc.b	$68,$0
 		dc.w	$A3CD
 		dc.l	($9A<<$18)|Turtloid_Mappings+$1220 
-		dc.b	$16,0
+		dc.b	$16,$0
 		dc.w	$38A
 		dc.l	($AC<<$18)|Balkiry_Mappings+$1220 
-		dc.b	$40,0
+		dc.b	$40,$0
 		dc.w	$565
 		dc.l	($99<<$18)|Nebula_Mappings+$1220 
-		dc.b	$12,0
+		dc.b	$12,$0
 		dc.w	$A36E
 		dc.l	($3E<<$18)|Egg_Prison_Mappings+$1218 
-		dc.b	0,0
+		dc.b	$0,$0
 		dc.w	$2680 
 Debug_SCz_PB_End: 
 		nop ; Filler
@@ -31216,7 +31282,7 @@ PLC_PB_00:
 		dc.w	$8F80
 		dc.l	Head_up_display_Sprites 
 		dc.w	$D940 
-		dc.l	Head_up_display_Sonic
+		dc.l	Head_up_display_Sonic 
 		dc.w	$FA80 
 		dc.l	Rings_Sprites 
 		dc.w	$D780
@@ -31232,8 +31298,8 @@ PLC_PB_00_End:
 
 ;===============================================================================
 ; Default Sprites - Loaded at begin of Level
-; [ Begin ]
-;===============================================================================
+; [ Begin ] 
+;=============================================================================== 
 Default_Level_PB_Sprs: 
 PLC_PB_01:
 		dc.w	(((PLC_PB_01_End-PLC_PB_01-$2)/$6)-$1) ; Auto Detect Number of Sprites Esrael L. G. Neto
@@ -32374,7 +32440,7 @@ Colision_Array_2:
 Green_Hill_Colision_1: 
 		incbin 'collide/ghz_col1.dat'
 ;------------------------------------------------------------------------------- 
-Green_Hill_Colision_2:
+Green_Hill_Colision_2: 
 		incbin 'collide/ghz_col2.dat'
 ;------------------------------------------------------------------------------- 
 Metropolis_Colision: 
@@ -32418,7 +32484,7 @@ Null_Colision:
 ;=============================================================================== 
 ; Level Layout
 ; [ Begin ]
-;===============================================================================
+;=============================================================================== 
 Level_Layout: 
 		dc.w	Ghz_Map_Act1-Level_Layout 
 		dc.w	Ghz_Map_Act2-Level_Layout 
@@ -32456,26 +32522,26 @@ Level_Layout:
 		dc.w	SCz_Map_Act2-Level_Layout 
 Ghz_Map_Act1: 
 		incbin 'levels/ghz_map1.kos'
-		dc.w	0,0,0,0 ; Filler
+		dc.w	$0,$0,$0,$0 ; Filler
 Ghz_Map_Act2: 
 		incbin 'levels/ghz_map2.kos'
-		dc.w	0,0,0,0 ; Filler
+		dc.w	$0,$0,$0,$0 ; Filler
 Mz_Map_Act1: 
 		incbin 'levels/mz_map1.kos'
-		dc.w	0,0,0,0 ; Filler
+		dc.w	$0,$0,$0,$0 ; Filler
 Mz_Map_Act2: 
 		incbin 'levels/mz_map2.kos'
-		dc.w	0,0,0,0,0 ; Filler
+		dc.w	$0,$0,$0,$0,$0 ; Filler
 Mz_Map_Act3: 
 Mz_Map_Act4:
 		incbin 'levels/mz_map3.kos'
-		dc.w	0,0,0,0,0 ; Filler
+		dc.w	$0,$0,$0,$0,$0 ; Filler
 SFz_Map_Act1: 
 SFz_Map_Act2:
 		incbin 'levels/sfz_map.kos'
 HTz_Map_Act1: 
 		incbin 'levels/htz_map1.kos'
-		dc.w	0,0,0 ; Filler
+		dc.w	$0,$0,$0 ; Filler
 HTz_Map_Act2: 
 		incbin 'levels/htz_map2.kos'
 HPz_Map_Act1: 
@@ -32483,38 +32549,38 @@ HPz_Map_Act2:
 		incbin 'levels/htz_map2.kos'
 OOz_Map_Act1: 
 		incbin 'levels/ooz_map1.kos'
-		dc.w	0 ; Filler
+		dc.w	$0 ; Filler
 OOz_Map_Act2: 
 		incbin 'levels/ooz_map2.kos'
-		dc.w	0,0,0,0,0,0,0 ; Filler 
+		dc.w	$0,$0,$0,$0,$0,$0,$0 ; Filler 
 DHz_Map_Act1: 
 		incbin 'levels/dhz_map1.kos'
-		dc.w	0,0,0,0,0 ; Filler 
+		dc.w	$0,$0,$0,$0,$0 ; Filler 
 DHz_Map_Act2: 
 		incbin 'levels/dhz_map2.kos'
-		dc.w	0,0,0,0,0,0,0 ; Filler 
+		dc.w	$0,$0,$0,$0,$0,$0,$0 ; Filler 
 CNz_Map_Act1: 
 		incbin 'levels/cnz_map1.kos'
-		dc.w	0,0,0,0,0,0,0 ; Filler 
+		dc.w	$0,$0,$0,$0,$0,$0,$0 ; Filler 
 CNz_Map_Act2: 
 		incbin 'levels/cnz_map2.kos'
-		dc.w	0,0,0,0,0,0 ; Filler
+		dc.w	$0,$0,$0,$0,$0,$0 ; Filler
 CPz_Map_Act1: 
 		incbin 'levels/cpz_map1.kos'
-		dc.w	0,0 ; Filler
+		dc.w	$0,$0 ; Filler
 CPz_Map_Act2: 
 		incbin 'levels/cpz_map2.kos'
-		dc.w	0,0,0,0,0,0,0 ; Filler 
+		dc.w	$0,$0,$0,$0,$0,$0,$0 ; Filler 
 DEz_Map_Act1: 
 DEz_Map_Act2: 
 		incbin 'levels/dez_map.kos'
-		dc.w	0 ; Filler
+		dc.w	$0 ; Filler
 NGHz_Map_Act1: 
 		incbin 'levels/nghz_map1.kos'
-		dc.w	0,0,0 ; Filler 
+		dc.w	$0,$0,$0 ; Filler 
 NGHz_Map_Act2: 
 		incbin 'levels/nghz_map2.kos'
-		dc.w	0,0 ; Filler 
+		dc.w	$0,$0 ; Filler 
 SCz_Map_Act1: 
 SCz_Map_Act2:
 		incbin 'levels/scz_map.kos'
@@ -32746,7 +32812,7 @@ Sonic_Mappings:
 		dc.w	loc_714AC-Sonic_Mappings
 		dc.w	loc_714CE-Sonic_Mappings
 loc_6FD8C:
-		dc.w	0
+		dc.w	$0
 loc_6FD8E:
 		dc.w	$4
 		dc.l	$E4050000,$FFF8,$EC030004,$2FFF0
@@ -33112,7 +33178,7 @@ loc_706FA:
 		dc.l	$F20B0000,$FFF0,$FA01000C,$60008
 loc_7070C:
 		dc.w	$3
-		dc.l	$E4010000,0,$F40B0002,$1FFF0
+		dc.l	$E4010000,$0,$F40B0002,$1FFF0
 		dc.l	$F401000E,$70008
 loc_70726:
 		dc.w	$3
@@ -33793,7 +33859,7 @@ Sonic_Dyn_Script:
 		dc.w	loc_71D7E-Sonic_Dyn_Script
 		dc.w	loc_71D88-Sonic_Dyn_Script
 loc_7168C:
-		dc.w	0
+		dc.w	$0
 loc_7168E:
 		dc.w	$4
 		dc.w	$3000,$3004,$5008,$500E
@@ -34578,7 +34644,7 @@ Miles_Mappings:
 		dc.w	loc_74458-Miles_Mappings
 		dc.w	loc_74462-Miles_Mappings
 loc_73AF8:
-		dc.w	0
+		dc.w	$0
 loc_73AFA:
 		dc.w	$2
 		dc.l	$F0090000,$FFF4,$90006,$3FFF4
@@ -34733,7 +34799,7 @@ loc_73E74:
 		dc.l	$4010000,$FFEB,$F40F0002,$1FFF3
 loc_73E86:
 		dc.w	$3
-		dc.l	$E2010000,0,$FA010002,$1FFF0
+		dc.l	$E2010000,$0,$FA010002,$1FFF0
 		dc.l	$F20F0004,$2FFF8
 loc_73EA0:
 		dc.w	$2
@@ -35177,7 +35243,7 @@ Miles_Dyn_Script:
 		dc.w	loc_74776-Miles_Dyn_Script
 		dc.w	loc_7477A-Miles_Dyn_Script
 loc_74582:
-		dc.w	0
+		dc.w	$0
 loc_74584:
 		dc.w	$2
 		dc.w	$5000,$5006
@@ -35942,21 +36008,21 @@ Green_Hill_16x16_Map:
 		cnop	0,4 ; Filler 
 Green_Hill_8x8_Tiles: 
 		incbin 'artkos/ghz_8.kos'
-		dc.w	0,0,0,0,0,0,0 ; Filler 
+		dc.w	$0,$0,$0,$0,$0,$0,$0 ; Filler 
 Hill_Top_16x16_Map: 
 		incbin 'map16/htz_16.dat'
 Hill_Top_8x8_Tiles: 
 		incbin 'artnem/htz_8.nem'
 Green_Hill_128x128_Map: 
 		incbin 'map128/ghz_128.kos' 
-		dc.w	0,0,0,0,0,0 ; Filler 
+		dc.w	$0,$0,$0,$0,$0,$0 ; Filler 
 ;------------------------------------------------------------------------------- 
 Metropolis_16x16_Map: 
 		incbin 'map16/mz_16.kos'
-		dc.w	0,0,0,0 ; Filler 
+		dc.w	$0,$0,$0,$0 ; Filler 
 Metropolis_8x8_Tiles: 
 		incbin 'artkos/mz_8.kos'
-		dc.w	0,0,0,0 ; Filler 
+		dc.w	$0,$0,$0,$0 ; Filler 
 Metropolis_128x128_Map: 
 		incbin 'map128/mz_128.kos'
 		cnop	0,4 ; Filler 
@@ -35967,63 +36033,63 @@ Hidden_Palace_128x128_Map:
 ;------------------------------------------------------------------------------- 
 Oil_Ocean_16x16_Map: 
 		incbin 'map16/ooz_16.kos'
-		dc.w	0,0,0,0 ; Filler 
+		dc.w	$0,$0,$0,$0 ; Filler 
 Oil_Ocean_8x8_Tiles: 
 		incbin 'artkos/ooz_8.kos'
-		dc.w	0,0,0,0,0,0,0 ; Filler 
+		dc.w	$0,$0,$0,$0,$0,$0,$0 ; Filler 
 Oil_Ocean_128x128_Map: 
 		incbin 'map128/ooz_128.kos'
 ;------------------------------------------------------------------------------- 
 Dust_Hill_16x16_Map: 
 		incbin 'map16/dhz_16.kos'
-		dc.w	0,0 ; Filler 
+		dc.w	$0,$0 ; Filler 
 Dust_Hill_8x8_Tiles: 
 		incbin 'artkos/dhz_8.kos'
-		dc.w	0,0,0,0,0 ; Filler 
+		dc.w	$0,$0,$0,$0,$0 ; Filler 
 Dust_Hill_128x128_Map: 
 		incbin 'map128/dhz_128.kos'
-		dc.w	0,0 ; Filler 
+		dc.w	$0,$0 ; Filler 
 ;------------------------------------------------------------------------------- 
 Casino_Night_16x16_Map: 
 		incbin 'map16/cnz_16.kos'
 		cnop	0,4 ; Filler 
 Casino_Night_8x8_Tiles: 
 		incbin 'artkos/cnz_8.kos'
-		dc.w	0,0,0 ; Filler 
+		dc.w	$0,$0,$0 ; Filler 
 Casino_Night_128x128_Map: 
 		incbin 'map128/cnz_128.kos'
-		dc.w	0,0,0 ; Filler 
+		dc.w	$0,$0,$0 ; Filler 
 ;------------------------------------------------------------------------------- 
 Chemical_Plant_16x16_Map: 
 		incbin 'map16/cpz_16.kos'
-		dc.w	0,0,0,0,0 ; Filler 
+		dc.w	$0,$0,$0,$0,$0 ; Filler 
 Chemical_Plant_8x8_Tiles: 
 		incbin 'artkos/cpz_8.kos'
-		dc.w	0,0,0,0,0,0,0; Filler 
+		dc.w	$0,$0,$0,$0,$0,$0,$0; Filler 
 Chemical_Plant_128x128_Map: 
 		incbin 'map128/cpz_128.kos'
 		cnop	0,4 ; Filler 
 ;------------------------------------------------------------------------------- 
 Neo_Green_Hill_16x16_Map: 
 		incbin 'map16/nghz_16.kos'
-		dc.w	0,0,0 ; Filler 
+		dc.w	$0,$0,$0 ; Filler 
 Neo_Green_Hill_8x8_Tiles: 
 		incbin 'artkos/nghz_8.kos'
 Neo_Green_Hill_128x128_Map 
 		incbin 'map128/nghz_128.kos'
-		dc.w	0,0,0 ; Filler 
+		dc.w	$0,$0,$0 ; Filler 
 ;------------------------------------------------------------------------------- 
 Sky_Fortress_16x16_Map: 
 		incbin 'map16/sfz_16.kos'
-		dc.w	0,0,0,0 ; Filler 
+		dc.w	$0,$0,$0,$0 ; Filler 
 Sky_Fortress_8x8_Tiles: 
 		incbin 'artkos/sfz_8.kos' 
-		dc.w	0,0,0,0,0,0 ; Filler 
+		dc.w	$0,$0,$0,$0,$0,$0 ; Filler 
 Robotnik_Ship_Spr:
 		incbin 'data/sfz/rbtnkshp.nem' 
 Sky_Fortress_128x128_Map: 
 		incbin 'map128/sfz_128.kos' 
-		dc.w	0,0,0,0 ; Filler 
+		dc.w	$0,$0,$0,$0 ; Filler 
 ;-------------------------------------------------------------------------------
 loc_C8310:
 		incbin 'specialstage/0x0C8310.dat'
@@ -36139,7 +36205,7 @@ loc_D9FF4:
 		incbin 'specialstage/0x0D9FF4.dat' 
 SS_Tiles_8x8_Tiles: 
 		incbin 'specialstage/ss_8.kos' 
-		dc.w	0,0 ; Filler 
+		dc.w	$0,$0 ; Filler 
 SS_Background_8x8_Tiles: 
 		incbin 'specialstage/backgnd8.nem'
 SS_Mappings_01: 
@@ -36174,10 +36240,10 @@ SS_Sonic_Miles:
 		incbin 'specialstage/soncmils.nem'
 SS_Mapings_00: 
 		incbin 'specialstage/ss_map_0.kos'
-		dc.w	0,0,0,0,0,0 ; Filler 
+		dc.w	$0,$0,$0,$0,$0,$0 ; Filler 
 SS_Mapings_01: 
 		incbin 'specialstage/ss_map_1.kos' 
-		dc.w	0 ; Filler
+		dc.w	$0 ; Filler
 SS_Mapings_02: 
 		incbin 'specialstage/ss_map_2.kos'
 Unk_loc_E16AA:
@@ -36221,7 +36287,7 @@ Objects_Layout:
 		dc.w	NGHz_2_Objects_Layout-Objects_Layout 
 		dc.w	SCz_1_Objects_Layout-Objects_Layout 
 		dc.w	SCz_2_Objects_Layout-Objects_Layout 
-		dc.w	$FFFF,0,0 ; The Game will crash if these bytes are missing 
+		dc.w	$FFFF,$0,$0 ; The Game will crash if these bytes are missing 
 GHz_1_Objects_Layout: 
 		incbin 'data/ghz/obj_act1.dat'
 GHz_2_Objects_Layout: 
@@ -36236,7 +36302,7 @@ Mz_4_Objects_Layout:
 SFz_1_Objects_Layout: 
 		incbin 'data/sfz/obj_act.dat'
 SFz_2_Objects_Layout: 
-		dc.w	$FFFF,0,0
+		dc.w	$FFFF,$0,$0
 HTz_1_Objects_Layout: 
 		incbin 'data/htz/obj_act1.dat' 
 HTz_2_Objects_Layout: 
@@ -36244,9 +36310,9 @@ HTz_2_Objects_Layout:
 HPz_1_Objects_Layout: 
 		incbin 'data/hpz/obj_act.dat' 
 HPz_2_Objects_Layout: 
-		dc.w	$FFFF,0,0
+		dc.w	$FFFF,$0,$0
 ; Left Over Unused 
-		dc.w	$FFFF,0,0
+		dc.w	$FFFF,$0,$0
 OOz_1_Objects_Layout: 
 		incbin 'data/ooz/obj_act1.dat' 
 OOz_2_Objects_Layout: 
@@ -36266,7 +36332,7 @@ CPz_2_Objects_Layout:
 DEz_1_Objects_Layout: 
 		incbin 'data/dez/obj_act.dat'
 DEz_2_Objects_Layout: 
-		dc.w	$FFFF,0,0
+		dc.w	$FFFF,$0,$0
 NGHz_1_Objects_Layout: 
 		incbin 'data/nghz/obj_act1.dat' 
 NGHz_2_Objects_Layout: 
@@ -36274,9 +36340,9 @@ NGHz_2_Objects_Layout:
 SCz_1_Objects_Layout: 
 		incbin 'data/scz/obj_act.dat' 
 SCz_2_Objects_Layout: 
-		dc.w	$FFFF,0,0
+		dc.w	$FFFF,$0,$0
 Null_Objects_Layout: 
-		dc.w	$FFFF,0,0
+		dc.w	$FFFF,$0,$0
 ;===============================================================================
 ; Objects_Layout
 ; [ End ]
@@ -36455,8 +36521,8 @@ Sound_Driver:
 		move SR,-(sp)
 		movem.l	d0-d7/a0-a6,-(sp)
 		move	#$2700,sr
-		lea	($A11100),a3
-		lea	($A11200),a2
+		lea	(Z80_Bus_Request),a3
+		lea	(Z80_Reset),a2
 		moveq	#0,d2
 		move.w	#$100,d1
 		move.w	d1,(a3)
@@ -36481,9 +36547,9 @@ loc_EC04A:
 		lea	Z80_Driver(pc),a6 
 		move.w	#$F6B,d7
 		moveq	#0,d6
-		lea	($A00000),a5
+		lea	(Z80_RAM),a5
 		moveq	#0,d5
-		lea	($A00000),a4
+		lea	(Z80_RAM),a4
 loc_EC062: 
 		lsr.w	#1,d6
 		btst	#8,d6
@@ -36497,7 +36563,7 @@ loc_EC074:
 		jsr	loc_EC0DE(pc)
 		move.b	d0,(a5)+
 		addq.w	#1,d5
-		bra	loc_EC062
+		bra.w	loc_EC062
 loc_EC086:
 		jsr	loc_EC0DE(pc)
 		moveq	#0,d4
@@ -36523,7 +36589,7 @@ loc_EC086:
 loc_EC0C0: 
 		move.b	#0,(a5)+
 		dbra	d3,loc_EC0C0
-		bra	loc_EC062
+		bra.w	loc_EC062
 loc_EC0CC:
 		add.w	d3,d5
 		addq.w	#1,d5
@@ -36531,7 +36597,7 @@ loc_EC0D0:
 		move.b	0(a4,d4),(a5)+
 		addq.w	#1,d4
 		dbra	d3,loc_EC0D0
-		bra	loc_EC062
+		bra.w	loc_EC062
 loc_EC0DE:
 		move.b	(a6)+,d0
 		subq.w	#1,d7
@@ -36543,7 +36609,7 @@ loc_EC0E6:
 Z80_Driver: 
 		incbin 'sound/z80.sax'
 		
-		cnop 0,$ED100 
+		cnop $0,$ED100 
 DAC_Sample_00: 
 		incbin 'sound/dAC_00.bin'
 DAC_Sample_01: 
@@ -36591,19 +36657,19 @@ Music_9C_Ptr equ (Music_9C&$FFFF)|$8000
 Music_9D_Ptr equ (Music_9D&$FFFF)|$8000 
 Music_9E_Ptr equ (Music_9E&$FFFF)|$8000 
 Music_9F_Ptr equ (Music_9F&$FFFF)|$8000 
-
+ 
 ;------------------------------------------------------------------------------- 
-		cnop 0,$F0000
+		cnop $0,$F0000
 Music_9C_Idx: 
 		dc.w	(((Music_9C_Ptr>>$8)|(Music_9C_Ptr<<$8))&$FFFF) 
 Music_9C: 
 		incbin 'sound/cont_9C.sax' 
 ;------------------------------------------------------------------------------- 
-		cnop 0,$F1E8C
+		cnop $0,$F1E8C
 Sega_Snd: 
-		incbin 'sound/sega.snd'
+		incbin 'sound/sega.snd' 
 ;------------------------------------------------------------------------------- 
-		cnop 0,$F8000
+		cnop $0,$F8000 
 Music_81_To_9F: 
 		dc.w	(((Music_88_Ptr>>$8)|(Music_88_Ptr<<$8))&$FFFF) 
 		dc.w	(((Music_82_Ptr>>$8)|(Music_82_Ptr<<$8))&$FFFF)
@@ -36612,7 +36678,7 @@ Music_81_To_9F:
 		dc.w	(((Music_8B_Ptr>>$8)|(Music_8B_Ptr<<$8))&$FFFF)
 		dc.w	(((Music_83_Ptr>>$8)|(Music_83_Ptr<<$8))&$FFFF)
 		dc.w	(((Music_87_Ptr>>$8)|(Music_87_Ptr<<$8))&$FFFF) 
-		dc.w	(((Music_8A_Ptr>>$8)|(Music_8A_Ptr<<$8))&$FFFF)
+		dc.w	(((Music_8A_Ptr>>$8)|(Music_8A_Ptr<<$8))&$FFFF) 
 		dc.w	(((Music_92_Ptr>>$8)|(Music_92_Ptr<<$8))&$FFFF) 
 		dc.w	(((Music_91_Ptr>>$8)|(Music_91_Ptr<<$8))&$FFFF) 
 		dc.w	(((Music_95_Ptr>>$8)|(Music_95_Ptr<<$8))&$FFFF)
@@ -36696,8 +36762,8 @@ Music_9D: ; Emerald ( Uncompressed )
 		incbin 'sound/emrld_9D.snd'
 Music_9E: ; Credits ( Uncompressed ) 
 		incbin 'sound/credt_9E.snd'
-;-------------------------------------------------------------------------------
-Sfx_A0_Ptr equ (Sfx_A0&$FFFF)|$8000
+;------------------------------------------------------------------------------- 
+Sfx_A0_Ptr equ (Sfx_A0&$FFFF)|$8000 
 Sfx_A1_Ptr equ (Sfx_A1&$FFFF)|$8000 
 Sfx_A2_Ptr equ (Sfx_A2&$FFFF)|$8000 
 Sfx_A3_Ptr equ (Sfx_A3&$FFFF)|$8000 
@@ -37027,4 +37093,6 @@ Sfx_F0:
 ;===============================================================================
 ; Sound Driver
 ; [ End ]
-;===============================================================================
+;=============================================================================== 
+		
+		 
