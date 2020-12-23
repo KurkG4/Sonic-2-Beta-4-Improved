@@ -1,7 +1,5 @@
 ; Sonic 2 Beta 4 Disassembly (Version 1.0) By Esrael L. G. Neto (www.sonichacking.com)
-;
 ; "Sonic The Hedgehog 2 (Beta 4 - Sep 18,1992,16.26) (hidden-palace.org).bin" Rom by drx (http://www.hidden-palace.org/)
-; 
 ;
 ; Hidden Palace uses a copy of Hill Top 2's level layout
 ; Rhinobot's tiles were edited to use another palette
@@ -17,13 +15,13 @@
 
   include "macros.asm"
   include "Constants.asm"
-  
+
 ; ASSEMBLY OPTIONS:
 skipChecksumCheck = 0
 ;	| If 1, disables the unnecessary (and slow) bootup checksum calculation
 ;
 
-; Rom Start 	
+; Rom Start
 		dc.l	System_Stack,EntryPoint,BusError,addressError
 		dc.l	IllegalInstr,ZeroDivide,ChkInstr,TrapvInstr
 		dc.l	PrivilegeViolation,Trace,Line1010Emu,Line1111Emu
@@ -40,86 +38,86 @@ skipChecksumCheck = 0
 		dc.l	ErrorTrap,ErrorTrap,ErrorTrap,ErrorTrap
 		dc.l	ErrorTrap,ErrorTrap,ErrorTrap,ErrorTrap
 		dc.l	ErrorTrap,ErrorTrap,ErrorTrap,ErrorTrap
-Console:	dc.b    'SEGA MEGA DRIVE '
-Date:		dc.b    '(C)SEGA 1991.APR'
-Title_Local:	dc.b    'SONIC THE             HEDGEHOG 2                '
-Title_Int:	dc.b    'SONIC THE             HEDGEHOG 2                '
-Serial:		dc.b    'GM 00001051-00'
-Checksum:	dc.w    $264A
-IOSupport:	dc.b    'J               '
-ROMStart:	dc.l    0
-ROMEnd:		dc.l    $FFFFF
-RAMStart:	dc.l    $FF0000
-RAMEnd:		dc.l    $FFFFFF
-SRAMSupport:	dc.b    '                '
-Notes:		dc.b    '                                                '
-Region:		dc.b    'JUE             '    
-ErrorTrap: 
-		nop 
-		nop 
-		bra.s	ErrorTrap 
-EntryPoint: 
+		dc.b    'SEGA MEGA DRIVE '					; console name
+		dc.b    '(C)SEGA 1991.APR'					; release date (same as Sonic 1)
+		dc.b    'SONIC THE             HEDGEHOG 2                '	; title - domestic
+		dc.b    'SONIC THE             HEDGEHOG 2                '	; title - overseas
+		dc.b    'GM 00001051-00'                                        ; serial number
+Checksum:	dc.w    $264A							; checksum
+		dc.b    'J               '                                      ; I/O support
+		dc.l    0                                                       ; ROM start
+ROMEnd:		dc.l    $FFFFF                                                  ; ROM end (1 MB)
+		dc.l    $FF0000							; RAM start
+		dc.l    $FFFFFF							; RAM end
+		dc.b    '                '					; SRAM support (no SRAM)
+		dc.b    '                                                '	; Notes
+		dc.b    'JUE             '					; Reigon (Japanese, US, and Europe)
+ErrorTrap:
+		nop
+		nop
+		bra.s	ErrorTrap
+EntryPoint:
 		tst.l	Z80_Port_1_Control
-		bne.s	PortA_OK 
+		bne.s	PortA_OK
 		tst.w	Z80_Expansion_Control
-PortA_OK: 
-		bne.s	PortC_OK 
-		lea	InitValues(pc),a5 
-		movem.w	(a5)+,d5-d7 
-		movem.l	(a5)+,a0-a4 
+PortA_OK:
+		bne.s	PortC_OK
+		lea	InitValues(pc),a5
+		movem.w	(a5)+,d5-d7
+		movem.l	(a5)+,a0-a4
 		move.b	$FFFFEF01(a1),d0
 		and.b	#$F,d0
 		beq.s	SkipSecurity
-		move.l	#'SEGA',$2F00(a1) 
-SkipSecurity: 
+		move.l	#'SEGA',$2F00(a1)
+SkipSecurity:
 		move.w	(a4),d0
 		moveq	#0,d0
 		move.l	d0,a6
 		move.l	a6,USP
 		moveq	#$17,d1
-VDPInitLoop: 
+VDPInitLoop:
 		move.b	(a5)+,d5
 		move.w	d5,(a4)
 		add.w	d7,d5
-		dbra	d1,VDPInitLoop 
+		dbra	d1,VDPInitLoop
 		move.l	(a5)+,(a4)
-		move.w	d0,(a3) 
-		move.w	d7,(a1) 
+		move.w	d0,(a3)
+		move.w	d7,(a1)
 		move.w	d7,(a2)
-WaitForZ80: 
+WaitForZ80:
 		btst D0,(a1)
-		bne.s	WaitForZ80 
+		bne.s	WaitForZ80
 		moveq	#$25,d2
-Z80InitLoop: 
+Z80InitLoop:
 		move.b	(a5)+,(a0)+
-		dbra	d2,Z80InitLoop 
+		dbra	d2,Z80InitLoop
 		move.w	d0,(a2)
 		move.w	d0,(a1)
 		move.w	d7,(a2)
-ClearRAMLoop: 
+ClearRAMLoop:
 		move.l	d0,-(a6)
-		dbra	d6,ClearRAMLoop 
+		dbra	d6,ClearRAMLoop
 		move.l	(a5)+,(a4)
 		move.l	(a5)+,(a4)
-		moveq	#$1F,d3 
-ClearCRAMLoop: 
+		moveq	#$1F,d3
+ClearCRAMLoop:
 		move.l	d0,(a3)
-		dbra	d3,ClearCRAMLoop 
+		dbra	d3,ClearCRAMLoop
 		move.l	(a5)+,(a4)
-		moveq	#$13,d4 
-ClearVSRAMLoop: 
-		move.l	d0,(a3) 
-		dbra	d4,ClearVSRAMLoop 
+		moveq	#$13,d4
+ClearVSRAMLoop:
+		move.l	d0,(a3)
+		dbra	d4,ClearVSRAMLoop
 		moveq	#3,d5
-PSGInitLoop: 
-		move.b	(a5)+,$11(a3) 
-		dbra	d5,PSGInitLoop 
-		move.w	d0,(a2) 
+PSGInitLoop:
+		move.b	(a5)+,$11(a3)
+		dbra	d5,PSGInitLoop
+		move.w	d0,(a2)
 		movem.l	(a6),d0-a6
 		move	#$2700,sr
-PortC_OK: 
+PortC_OK:
 		bra.s	GameProgram
-InitValues: 
+InitValues:
 		dc.w	$8000,$3FFF,$100 ; Z80 RAM start	location
 		dc.l	Z80_RAM ; Z80 bus request
 		dc.l	Z80_Bus_Request ; Z80 reset
@@ -131,8 +129,8 @@ InitValues:
 		dc.w	$1127,$21,$2600,$F977,$EDB0,$DDE1,$FDE1,$ED47
 		dc.w	$ED4F,$D1E1,$F108,$D9C1,$D1E1,$F1F9,$F3ED,$5636
 		dc.w	$E9E9,$8104,$8F02,$C000,$0,$4000,$10,$9FBF
-		dc.w	$DFFF 
-GameProgram: 
+		dc.w	$DFFF
+GameProgram:
 		tst.w	(VDP_control_port)
 		btst	#6,($A1000D)
 		beq.s	ChecksumCheck
@@ -141,33 +139,33 @@ GameProgram:
 ChecksumCheck:
 
     if skipChecksumCheck=0	; checksum code
-		move.l	#ErrorTrap,a0 
-		move.l	#ROMEnd,a1 
-		move.l	(a1),d0 
+		move.l	#ErrorTrap,a0
+		move.l	#ROMEnd,a1
+		move.l	(a1),d0
 		move.l	#$7FFFF,d0
-		moveq	#0,d1 
-ChksumChkLoop: 
+		moveq	#0,d1
+ChksumChkLoop:
 		add.w	(a0)+,d1
-		cmp.l	a0,d0 
-		bcc.s	ChksumChkLoop 
-		move.l	#Checksum,a1 
+		cmp.l	a0,d0
+		bcc.s	ChksumChkLoop
+		move.l	#Checksum,a1
 		cmp.w	(a1),d1
 		nop     	; checksum error got nop'd out
 		nop
     endif
 		lea	(System_Stack).w,a6
-		moveq	#0,d7 
+		moveq	#0,d7
 		move.w	#$7F,d6
-ClearSomeRAMLoop: 
+ClearSomeRAMLoop:
 		move.l	d7,(a6)+
 
 		dbra	d6,ClearSomeRAMLoop
 		move.b	(Z80_Version),d0
 		and.b	#$C0,d0
-		move.b	d0,(Graphics_Flags).w	
+		move.b	d0,(Graphics_Flags).w
 		move.l	#'init',(Checksum_fourcc).w
-AlreadyInit: 
-		lea	($FF0000),a6 
+AlreadyInit:
+		lea	($FF0000),a6
 		moveq	#0,d7 
 		move.w	#$3F7F,d6 
 ClearRemainingRAMLoop: 
@@ -347,8 +345,9 @@ Error_WaitForC:
 		bne.w	Error_WaitForC
 		rts
 ;--------------------------------------------------------------------------------
-Art_Menu_Text: 
+Art_Menu_Text:
 		incbin 'artunc/art_menu.dat'
+		even
 Go_Versus_Mode_Menu: 
 		jmp	Versus_Mode_Menu 
 Go_Versus_Mode_Results: 
@@ -527,7 +526,7 @@ loc_D9C:
 		tst.b	($FFFFF622).w
 		beq.s	loc_E06
 		lea	(VDP_control_port),a5
-		tst.w	($FFFFF63A).w
+		tst.w	(Game_paused).w
 		bne.w	loc_E56
 		subq.b	#1,($FFFFF622).w
 		bne.s	loc_DCA
@@ -1007,38 +1006,9 @@ VBlank_Not2pMode:
 		lea	(VDP_data_port),a1
 		lea	($FFFFFA80).w,a0
 		move.l	#$C00000,4(a1)
+		rept 32
 		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
-		move.l	(a0)+,(a1)
+		endr
 		move.w	#$8ADF,4(a1)
 		movem.l	(sp)+,a0/a1
 		tst.b	($FFFFF64F).w
@@ -1274,21 +1244,21 @@ SoundDriverLoad:
 		rts
 ;--------------------------------------------------------------------------------
 Play_Music: 
-		move.b	d0,($FFFFFFE0).w
+		move.b	d0,(Music_to_play).w
 		rts
 ;--------------------------------------------------------------------------------
 Play_Sfx:
-		move.b	d0,($FFFFFFE1).w
+		move.b	d0,(SFX_to_play).w
 		rts
 ;--------------------------------------------------------------------------------
 Play_Unknow: 
-		move.b	d0,($FFFFFFE2).w
+		move.b	d0,(SFX_to_play_2).w
 		rts
 ;--------------------------------------------------------------------------------
 Play_Sfx_Ex:
-		tst.b	1(a0)
+		tst.b	render_flags(a0)
 		bpl.s	loc_188E
-		move.b	d0,($FFFFFFE1).w
+		move.b	d0,(SFX_to_play).w
 loc_188E:
 		rts
 ;--------------------------------------------------------------------------------
@@ -1298,15 +1268,15 @@ loc_188E:
 ;=============================================================================== 
 Pause: 
 		nop 
-		tst.b	($FFFFFE12).w
+		tst.b	(Life_count).w
 		beq	Unpause 
-		tst.w	($FFFFF63A).w
+		tst.w	(Game_paused).w
 		bne.s	Pause_AlreadyPaused 
 		btst	#7,(Ctrl_1_Press).w
 		beq.s	Pause_DoNothing 
 Pause_AlreadyPaused: 
-		move.w	#1,($FFFFF63A).w
-		move.b	#$FE,($FFFFFFE0).w
+		move.w	#1,(Game_paused).w
+		move.b	#$FE,(Music_to_play).w
 Pause_Loop: 
 		move.b	#$10,(Delay_Time).w
 		bsr.w	DelayProgram 
@@ -1326,15 +1296,15 @@ Pause_CheckStart:
 		btst	#7,(Ctrl_1_Press).w
 		beq.s	Pause_Loop 
 loc_18EE:
-		move.b	#$FF,($FFFFFFE0).w
+		move.b	#$FF,(Music_to_play).w
 Unpause: 
-		move.w	#0,($FFFFF63A).w
+		move.w	#0,(Game_paused).w
 Pause_DoNothing: 
 		rts
 ;--------------------------------------------------------------------------------
 loc_18FC:
-		move.w	#1,($FFFFF63A).w
-		move.b	#$FF,($FFFFFFE0).w
+		move.w	#1,(Game_paused).w
+		move.b	#$FF,(Music_to_play).w
 		rts
 ;--------------------------------------------------------------------------------
 ;===============================================================================
@@ -3807,7 +3777,7 @@ loc_41AE:
 		bne.s	Level_Select_Level 
 		move.b	#$10,(Game_Mode).w
 		clr.w	($FFFFFE10).w
-		move.b	#3,($FFFFFE12).w
+		move.b	#3,(Life_count).w
 		move.b	#3,($FFFFFEC6).w
 		moveq	#0,d0
 		move.w	d0,(Ring_count).w
@@ -3840,7 +3810,7 @@ Level_Select_Level:
 		move.w	d0,($FFFFFE10).w
 PlayLevel: 
 		move.b	#$C,(Game_Mode).w
-		move.b	#3,($FFFFFE12).w
+		move.b	#3,(Life_count).w
 		move.b	#3,($FFFFFEC6).w
 		moveq	#0,d0
 		move.w	d0,(Ring_count).w
@@ -3912,7 +3882,7 @@ loc_4336:
 		clr.w	($FFFFFE10).w
 		clr.b	(Current_Special_Stage).w
 loc_434A:
-		move.b	#3,($FFFFFE12).w
+		move.b	#3,(Life_count).w
 		move.b	#3,($FFFFFEC6).w
 		moveq	#0,d0
 		move.w	d0,(Ring_count).w
@@ -8100,7 +8070,7 @@ loc_84C0:
 ;--------------------------------------------------------------------------------
 loc_84EC:
 		move.b	#$C,(Game_Mode).w
-		move.b	#3,($FFFFFE12).w
+		move.b	#3,(Life_count).w
 		move.b	#3,($FFFFFEC6).w
 		moveq	#0,d0
 		move.w	d0,(Ring_count).w
@@ -14815,7 +14785,7 @@ loc_FCE0:
 		bset	#2,($FFFFFE1B).w
 		bne.s	loc_FD1A
 loc_FD0E:
-		addq.b	#1,($FFFFFE12).w
+		addq.b	#1,(Life_count).w
 		addq.b	#1,($FFFFFE1C).w
 		move.w	#$98,d0
 loc_FD1A:
@@ -27394,7 +27364,7 @@ loc_3CB1E:
 		cmp.l	($FFFFFFC0).w,d0
 		bcs.s	loc_3CB40
 		add.l	#$1388,($FFFFFFC0).w
-		addq.b	#1,($FFFFFE12).w
+		addq.b	#1,(Life_count).w
 		addq.b	#1,($FFFFFE1C).w
 		move.w	#$98,d0
 		jmp	Play_Music 
@@ -27470,7 +27440,7 @@ loc_3CBC6:
 loc_3CBDA:
 		tst.b	($FFFFFE1E).w
 		beq.s	loc_3CC38
-		tst.w	($FFFFF63A).w
+		tst.w	(Game_paused).w
 		bne.s	loc_3CC38
 		lea	($FFFFFE22).w,a1
 		cmp.l	#$93B3B,(a1)+
@@ -27570,7 +27540,7 @@ loc_3CCD2:
 		move.w	($FFFFF7D4).w,d1
 		bsr.w	loc_3D018
 loc_3CD04:
-		tst.w	($FFFFF63A).w
+		tst.w	(Game_paused).w
 		bne.s	loc_3CD3A
 		lea	($FFFFFE22).w,a1
 		cmp.l	#$93B3B,(a1)+
@@ -27591,7 +27561,7 @@ loc_3CD3A:
 		rts
 ;--------------------------------------------------------------------------------
 loc_3CD3C:
-		tst.w	($FFFFF63A).w
+		tst.w	(Game_paused).w
 		bne.w	loc_3CDCC
 		tst.b	($FFFFFE1E).w
 		beq.s	loc_3CD7A
@@ -27882,7 +27852,7 @@ loc_3D078:
 loc_3D086:
 		move.l	#$7BA00003,d0
 		moveq	#0,d1
-		move.b	($FFFFFE12).w,d1
+		move.b	(Life_count).w,d1
 loc_3D092:
 		lea	loc_3CFB0(pc),a2
 		moveq	#1,d6
@@ -36202,7 +36172,7 @@ Objects_Layout:
 		dc.w	$FFFF,$0,$0 ; The Game will crash if these bytes are missing 
 GHz_1_Objects_Layout: 
 		incbin 'data/ghz/obj_act1.dat'
-GHz_2_Objects_Layout: 
+GHz_2_Objects_Layout:
 		incbin 'data/ghz/obj_act2.dat'
 Mz_1_Objects_Layout: 
 		incbin 'data/mz/obj_act1.dat'
@@ -36220,27 +36190,27 @@ HTz_1_Objects_Layout:
 HTz_2_Objects_Layout: 
 		incbin 'data/htz/obj_act2.dat' 
 HPz_1_Objects_Layout: 
-		incbin 'data/hpz/obj_act.dat' 
+		incbin 'data/hpz/obj_act.dat'
 HPz_2_Objects_Layout: 
 		dc.w	$FFFF,$0,$0
 ; Left Over Unused 
 		dc.w	$FFFF,$0,$0
 OOz_1_Objects_Layout: 
-		incbin 'data/ooz/obj_act1.dat' 
+		incbin 'data/ooz/obj_act1.dat'
 OOz_2_Objects_Layout: 
 		incbin 'data/ooz/obj_act2.dat' 
 DHz_1_Objects_Layout: 
 		incbin 'data/dhz/obj_act1.dat' 
 DHz_2_Objects_Layout: 
 		incbin 'data/dhz/obj_act2.dat' 
-CNz_1_Objects_Layout: 
-		incbin 'data/cnz/obj_act1.dat' 
+CNz_1_Objects_Layout:
+		incbin 'objpos/cnz_act1.dat' 
 CNz_2_Objects_Layout: 
-		incbin 'data/cnz/obj_act2.dat' 
-CPz_1_Objects_Layout: 
-		incbin 'data/cpz/obj_act1.dat' 
-CPz_2_Objects_Layout: 
-		incbin 'data/cpz/obj_act2.dat' 
+		incbin 'objpos/cnz_act2.dat'
+CPz_1_Objects_Layout:
+		incbin 'objpos/cpz_act1.dat'
+CPz_2_Objects_Layout:
+		incbin 'objpos/cpz_act2.dat'
 DEz_1_Objects_Layout: 
 		incbin 'data/dez/obj_act.dat'
 DEz_2_Objects_Layout: 
@@ -36430,7 +36400,7 @@ Unk_loc_EB400:
 ; [ Begin ]
 ;=============================================================================== 
 Sound_Driver: 
-		move SR,-(sp)
+		move 	SR,-(sp)
 		movem.l	d0-d7/a0-a6,-(sp)
 		move	#$2700,sr
 		lea	(Z80_Bus_Request),a3
@@ -36439,30 +36409,30 @@ Sound_Driver:
 		move.w	#$100,d1
 		move.w	d1,(a3)
 		move.w	d1,(a2)
-loc_EC020: 
+loc_EC020:
 		btst D2,(a3)
 		bne.s	loc_EC020
 		jsr	loc_EC04A(pc)
 		btst	#0,($C00005)
-		sne ($A00007)
+		sne 	($A00007)
 		move.w	d2,(a2)
 		move.w	d2,(a3)
 		moveq	#$17,d0
-loc_EC03C: 
+loc_EC03C:
 		dbra	d0,loc_EC03C
 		move.w	d1,(a2)
 		movem.l	(sp)+,d0-d7/a0-a6
 		move (sp)+,sr
 		rts
 ;--------------------------------------------------------------------------------
-loc_EC04A: 
-		lea	Z80_Driver(pc),a6 
+loc_EC04A:
+		lea	Z80_Driver(pc),a6
 		move.w	#$F6B,d7
 		moveq	#0,d6
 		lea	(Z80_RAM),a5
 		moveq	#0,d5
 		lea	(Z80_RAM),a4
-loc_EC062: 
+loc_EC062:
 		lsr.w	#1,d6
 		btst	#8,d6
 		bne.s	loc_EC074
@@ -36498,14 +36468,14 @@ loc_EC086:
 		bcc.s	loc_EC0CC
 		add.w	d3,d5
 		addq.w	#1,d5
-loc_EC0C0: 
+loc_EC0C0:
 		move.b	#0,(a5)+
 		dbra	d3,loc_EC0C0
 		bra.w	loc_EC062
 loc_EC0CC:
 		add.w	d3,d5
 		addq.w	#1,d5
-loc_EC0D0: 
+loc_EC0D0:
 		move.b	0(a4,d4),(a5)+
 		addq.w	#1,d4
 		dbra	d3,loc_EC0D0
@@ -36518,70 +36488,39 @@ loc_EC0DE:
 loc_EC0E6:
 		rts
 ;--------------------------------------------------------------------------------
-Z80_Driver: 
+Z80_Driver:
 		incbin 'sound/z80.sax'
-		
-		cnop $0,$ED100 
-DAC_Sample_00: 
+		even
+
+		cnop $0,$ED100
+DAC_Sample_00:
 		incbin 'sound/dAC_00.bin'
-DAC_Sample_01: 
-		incbin 'sound/dAC_01.bin' 
-DAC_Sample_02: 
-		incbin 'sound/dAC_02.bin' 
-DAC_Sample_03: 
-		incbin 'sound/dAC_03.bin' 
-DAC_Sample_04: 
-		incbin 'sound/dAC_04.bin' 
-DAC_Sample_05: 
-		incbin 'sound/dAC_05.bin' 
-DAC_Sample_06: 
-		incbin 'sound/dAC_06.bin' 
-		 
-		
-Music_81_Ptr equ (Music_81&$FFFF)|$8000 
-Music_82_Ptr equ (Music_82&$FFFF)|$8000 
-Music_83_Ptr equ (Music_83&$FFFF)|$8000 
-Music_84_Ptr equ (Music_84&$FFFF)|$8000 
-Music_85_Ptr equ (Music_85&$FFFF)|$8000 
-Music_86_Ptr equ (Music_86&$FFFF)|$8000 
-Music_87_Ptr equ (Music_87&$FFFF)|$8000 
-Music_88_Ptr equ (Music_88&$FFFF)|$8000 
-Music_89_Ptr equ (Music_89&$FFFF)|$8000 
-Music_8A_Ptr equ (Music_8A&$FFFF)|$8000 
-Music_8B_Ptr equ (Music_8B&$FFFF)|$8000 
-Music_8C_Ptr equ (Music_8C&$FFFF)|$8000 
-Music_8D_Ptr equ (Music_8D&$FFFF)|$8000 
-Music_8E_Ptr equ (Music_8E&$FFFF)|$8000 
-Music_8F_Ptr equ (Music_8F&$FFFF)|$8000 
-Music_90_Ptr equ (Music_90&$FFFF)|$8000 
-Music_91_Ptr equ (Music_91&$FFFF)|$8000 
-Music_92_Ptr equ (Music_92&$FFFF)|$8000 
-Music_93_Ptr equ (Music_93&$FFFF)|$8000 
-Music_94_Ptr equ (Music_94&$FFFF)|$8000 
-Music_95_Ptr equ (Music_95&$FFFF)|$8000 
-Music_96_Ptr equ (Music_96&$FFFF)|$8000 
-Music_97_Ptr equ (Music_97&$FFFF)|$8000 
-Music_98_Ptr equ (Music_98&$FFFF)|$8000 
-Music_99_Ptr equ (Music_99&$FFFF)|$8000 
-Music_9A_Ptr equ (Music_9A&$FFFF)|$8000 
-Music_9B_Ptr equ (Music_9B&$FFFF)|$8000 
-Music_9C_Ptr equ (Music_9C&$FFFF)|$8000 
-Music_9D_Ptr equ (Music_9D&$FFFF)|$8000 
-Music_9E_Ptr equ (Music_9E&$FFFF)|$8000 
-Music_9F_Ptr equ (Music_9F&$FFFF)|$8000 
- 
-;------------------------------------------------------------------------------- 
-		cnop $0,$F0000
-Music_9C_Idx: 
-		dc.w	(((Music_9C_Ptr>>$8)|(Music_9C_Ptr<<$8))&$FFFF) 
-Music_9C: 
-		incbin 'sound/cont_9C.sax' 
-;------------------------------------------------------------------------------- 
-		cnop $0,$F1E8C
-Sega_Snd: 
-		incbin 'sound/sega.snd' 
-;------------------------------------------------------------------------------- 
-		cnop $0,$F8000 
+DAC_Sample_01:
+		incbin 'sound/dAC_01.bin'
+DAC_Sample_02:
+		incbin 'sound/dAC_02.bin'
+DAC_Sample_03:
+		incbin 'sound/dAC_03.bin'
+DAC_Sample_04:
+		incbin 'sound/dAC_04.bin'
+DAC_Sample_05:
+		incbin 'sound/dAC_05.bin'
+DAC_Sample_06:
+		incbin 'sound/dAC_06.bin'
+		even
+
+;-------------------------------------------------------------------------------
+		cnop 0,$F0000
+Music_9C_Idx:
+		dc.w	(((Music_9C_Ptr>>$8)|(Music_9C_Ptr<<$8))&$FFFF)
+Music_9C:
+		incbin 'sound/cont_9C.sax'
+;-------------------------------------------------------------------------------
+		cnop 0,$F1E8C
+Sega_Snd:
+		incbin 'sound/sega.snd'
+;-------------------------------------------------------------------------------
+		cnop 0,$F8000
 Music_81_To_9F: 
 		dc.w	(((Music_88_Ptr>>$8)|(Music_88_Ptr<<$8))&$FFFF) 
 		dc.w	(((Music_82_Ptr>>$8)|(Music_82_Ptr<<$8))&$FFFF)
@@ -36674,90 +36613,8 @@ Music_9D: ; Emerald ( Uncompressed )
 		incbin 'sound/emrld_9D.snd'
 Music_9E: ; Credits ( Uncompressed ) 
 		incbin 'sound/credt_9E.snd'
-;------------------------------------------------------------------------------- 
-Sfx_A0_Ptr equ (Sfx_A0&$FFFF)|$8000 
-Sfx_A1_Ptr equ (Sfx_A1&$FFFF)|$8000 
-Sfx_A2_Ptr equ (Sfx_A2&$FFFF)|$8000 
-Sfx_A3_Ptr equ (Sfx_A3&$FFFF)|$8000 
-Sfx_A4_Ptr equ (Sfx_A4&$FFFF)|$8000 
-Sfx_A5_Ptr equ (Sfx_A5&$FFFF)|$8000 
-Sfx_A6_Ptr equ (Sfx_A6&$FFFF)|$8000 
-Sfx_A7_Ptr equ (Sfx_A7&$FFFF)|$8000 
-Sfx_A8_Ptr equ (Sfx_A8&$FFFF)|$8000 
-Sfx_A9_Ptr equ (Sfx_A9&$FFFF)|$8000 
-Sfx_AA_Ptr equ (Sfx_AA&$FFFF)|$8000 
-Sfx_AB_Ptr equ (Sfx_AB&$FFFF)|$8000 
-Sfx_AC_Ptr equ (Sfx_AC&$FFFF)|$8000 
-Sfx_AD_Ptr equ (Sfx_AD&$FFFF)|$8000 
-Sfx_AE_Ptr equ (Sfx_AE&$FFFF)|$8000 
-Sfx_AF_Ptr equ (Sfx_AF&$FFFF)|$8000 
-Sfx_B0_Ptr equ (Sfx_B0&$FFFF)|$8000 
-Sfx_B1_Ptr equ (Sfx_B1&$FFFF)|$8000 
-Sfx_B2_Ptr equ (Sfx_B2&$FFFF)|$8000 
-Sfx_B3_Ptr equ (Sfx_B3&$FFFF)|$8000 
-Sfx_B4_Ptr equ (Sfx_B4&$FFFF)|$8000 
-Sfx_B5_Ptr equ (Sfx_B5&$FFFF)|$8000 
-Sfx_B6_Ptr equ (Sfx_B6&$FFFF)|$8000 
-Sfx_B7_Ptr equ (Sfx_B7&$FFFF)|$8000 
-Sfx_B8_Ptr equ (Sfx_B8&$FFFF)|$8000 
-Sfx_B9_Ptr equ (Sfx_B9&$FFFF)|$8000 
-Sfx_BA_Ptr equ (Sfx_BA&$FFFF)|$8000 
-Sfx_BB_Ptr equ (Sfx_BB&$FFFF)|$8000 
-Sfx_BC_Ptr equ (Sfx_BC&$FFFF)|$8000 
-Sfx_BD_Ptr equ (Sfx_BD&$FFFF)|$8000 
-Sfx_BE_Ptr equ (Sfx_BE&$FFFF)|$8000 
-Sfx_BF_Ptr equ (Sfx_BF&$FFFF)|$8000 
-Sfx_C0_Ptr equ (Sfx_C0&$FFFF)|$8000 
-Sfx_C1_Ptr equ (Sfx_C1&$FFFF)|$8000 
-Sfx_C2_Ptr equ (Sfx_C2&$FFFF)|$8000 
-Sfx_C3_Ptr equ (Sfx_C3&$FFFF)|$8000 
-Sfx_C4_Ptr equ (Sfx_C4&$FFFF)|$8000 
-Sfx_C5_Ptr equ (Sfx_C5&$FFFF)|$8000 
-Sfx_C6_Ptr equ (Sfx_C6&$FFFF)|$8000 
-Sfx_C7_Ptr equ (Sfx_C7&$FFFF)|$8000 
-Sfx_C8_Ptr equ (Sfx_C8&$FFFF)|$8000 
-Sfx_C9_Ptr equ (Sfx_C9&$FFFF)|$8000 
-Sfx_CA_Ptr equ (Sfx_CA&$FFFF)|$8000 
-Sfx_CB_Ptr equ (Sfx_CB&$FFFF)|$8000 
-Sfx_CC_Ptr equ (Sfx_CC&$FFFF)|$8000 
-Sfx_CD_Ptr equ (Sfx_CD&$FFFF)|$8000 
-Sfx_CE_Ptr equ (Sfx_CE&$FFFF)|$8000 
-Sfx_CF_Ptr equ (Sfx_CF&$FFFF)|$8000 
-Sfx_D0_Ptr equ (Sfx_D0&$FFFF)|$8000 
-Sfx_D1_Ptr equ (Sfx_D1&$FFFF)|$8000 
-Sfx_D2_Ptr equ (Sfx_D2&$FFFF)|$8000 
-Sfx_D3_Ptr equ (Sfx_D3&$FFFF)|$8000 
-Sfx_D4_Ptr equ (Sfx_D4&$FFFF)|$8000 
-Sfx_D5_Ptr equ (Sfx_D5&$FFFF)|$8000 
-Sfx_D6_Ptr equ (Sfx_D6&$FFFF)|$8000 
-Sfx_D7_Ptr equ (Sfx_D7&$FFFF)|$8000 
-Sfx_D8_Ptr equ (Sfx_D8&$FFFF)|$8000 
-Sfx_D9_Ptr equ (Sfx_D9&$FFFF)|$8000 
-Sfx_DA_Ptr equ (Sfx_DA&$FFFF)|$8000 
-Sfx_DB_Ptr equ (Sfx_DB&$FFFF)|$8000 
-Sfx_DC_Ptr equ (Sfx_DC&$FFFF)|$8000 
-Sfx_DD_Ptr equ (Sfx_DD&$FFFF)|$8000 
-Sfx_DE_Ptr equ (Sfx_DE&$FFFF)|$8000 
-Sfx_DF_Ptr equ (Sfx_DF&$FFFF)|$8000 
-Sfx_E0_Ptr equ (Sfx_E0&$FFFF)|$8000 
-Sfx_E1_Ptr equ (Sfx_E1&$FFFF)|$8000 
-Sfx_E2_Ptr equ (Sfx_E2&$FFFF)|$8000 
-Sfx_E3_Ptr equ (Sfx_E3&$FFFF)|$8000 
-Sfx_E4_Ptr equ (Sfx_E4&$FFFF)|$8000 
-Sfx_E5_Ptr equ (Sfx_E5&$FFFF)|$8000 
-Sfx_E6_Ptr equ (Sfx_E6&$FFFF)|$8000 
-Sfx_E7_Ptr equ (Sfx_E7&$FFFF)|$8000 
-Sfx_E8_Ptr equ (Sfx_E8&$FFFF)|$8000 
-Sfx_E9_Ptr equ (Sfx_E9&$FFFF)|$8000 
-Sfx_EA_Ptr equ (Sfx_EA&$FFFF)|$8000 
-Sfx_EB_Ptr equ (Sfx_EB&$FFFF)|$8000 
-Sfx_EC_Ptr equ (Sfx_EC&$FFFF)|$8000 
-Sfx_ED_Ptr equ (Sfx_ED&$FFFF)|$8000 
-Sfx_EE_Ptr equ (Sfx_EE&$FFFF)|$8000 
-Sfx_EF_Ptr equ (Sfx_EF&$FFFF)|$8000 
-Sfx_F0_Ptr equ (Sfx_F0&$FFFF)|$8000 
-;------------------------------------------------------------------------------- 
-Sfx_A0_To_F9: 
+;-------------------------------------------------------------------------------
+Sfx_A0_To_F9:
 		dc.w	(((Sfx_A0_Ptr>>$8)|(Sfx_A0_Ptr<<$8))&$FFFF) 
 		dc.w	(((Sfx_A1_Ptr>>$8)|(Sfx_A1_Ptr<<$8))&$FFFF) 
 		dc.w	(((Sfx_A2_Ptr>>$8)|(Sfx_A2_Ptr<<$8))&$FFFF) 
