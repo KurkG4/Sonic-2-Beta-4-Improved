@@ -8,7 +8,7 @@ loc_15F80:
 		jmp	debug_Mode	
 loc_15F8C:
 		moveq	#0,d0
-		move.b	$24(a0),d0
+		move.b	routine(a0),d0
 		move.w	Sonic_Index(pc,d0),d1 
 		jmp	Sonic_Index(pc,d1)	
 Sonic_Index: 
@@ -22,7 +22,7 @@ Sonic_Index:
 ; [ Begin ]
 ;===============================================================================	
 Sonic_Main: 
-		addq.b	#2,$24(a0)
+		addq.b	#2,routine(a0)
 		move.b	#$13,$16(a0)
 		move.b	#9,$17(a0)
 		move.l	#Sonic_Mappings,4(a0) 
@@ -247,7 +247,7 @@ Sonic_NotInWater:
 		move.w	#$30,($FFFFF762).w
 		move.w	#$100,($FFFFF764).w
 loc_1623E:
-		cmp.b	#4,$24(a0)
+		cmp.b	#4,routine(a0)
 		beq.s	loc_1624A
 		asl.w	$12(a0)
 loc_1624A:
@@ -346,7 +346,7 @@ loc_16320:
 ; [ Begin ]	
 ;===============================================================================	
 Sonic_MdRoll: 
-		tst.b	$39(a0)
+		tst.b	spindash_flag(a0)
 		bne.s	loc_16334
 		bsr	Sonic_Jump	
 loc_16334:
@@ -778,7 +778,7 @@ loc_167F4:
 loc_167F8:
 		tst.w	$14(a0)
 		bne.s	loc_16834
-		tst.b	$39(a0)
+		tst.b	spindash_flag(a0)
 		bne.s	loc_16822
 		bclr	#2,$22(a0)
 		move.b	#$13,$16(a0)
@@ -1081,7 +1081,7 @@ loc_16AE2:
 ;--------------------------------------------------------------------------------
 
 loc_16AE4:
-		tst.b	$39(a0)
+		tst.b	spindash_flag(a0)
 		bne.s	loc_16AF8
 		cmp.w	#$F040,$12(a0)
 		bge.s	loc_16AF8
@@ -1095,7 +1095,7 @@ loc_16AF8:
 ; [ Begin ]	
 ;===============================================================================	
 Sonic_Spindash: 
-		tst.b	$39(a0)
+		tst.b	spindash_flag(a0)
 		bne.s	loc_16B42
 		cmp.b	#8,$1C(a0)
 		bne.s	loc_16B40
@@ -1106,8 +1106,8 @@ Sonic_Spindash:
 		move.w	#$E0,d0
 		jsr	Play_Sfx	
 		addq.l	#4,sp
-		move.b	#1,$39(a0)
-		move.w	#0,$3A(a0)
+		move.b	#1,spindash_flag(a0)
+		move.w	#0,spindash_counter(a0)
 		cmp.b	#$C,$28(a0)
 		bcs.s	loc_16B40
 		move.b	#2,($FFFFB41C).w
@@ -1121,10 +1121,10 @@ loc_16B42:
 		move.b	#7,$17(a0)
 		move.b	#2,$1C(a0)
 		addq.w	#5,$C(a0)
-		move.b	#0,$39(a0)
+		move.b	#0,spindash_flag(a0)
 		move.w	#$2000,($FFFFEED0).w
 		moveq	#0,d0
-		move.b	$3A(a0),d0
+		move.b	spindash_counter(a0),d0
 		add.w	d0,d0
 		move.w	loc_16BAE(pc,d0),$14(a0)
 		tst.b	($FFFFFE19).w
@@ -1147,13 +1147,13 @@ loc_16BC0:
 		dc.w	$B00,$B80,$C00,$C80,$D00,$D80,$E00,$E80
 		dc.w	$F00
 loc_16BD2:
-		tst.w	$3A(a0)
+		tst.w	spindash_counter(a0)
 		beq.s	loc_16BEA
-		move.w	$3A(a0),d0
+		move.w	spindash_counter(a0),d0
 		lsr.w	#5,d0
-		sub.w	d0,$3A(a0)
+		sub.w	d0,spindash_counter(a0)
 		bcc.s	loc_16BEA
-		move.w	#0,$3A(a0)
+		move.w	#0,spindash_counter(a0)
 loc_16BEA:
 		move.b	($FFFFF603).w,d0
 		and.b	#$70,d0
@@ -1161,10 +1161,10 @@ loc_16BEA:
 		move.w	#$900,$1C(a0)
 		move.w	#$E0,d0
 		jsr	Play_Sfx	
-		add.w	#$200,$3A(a0)
-		cmp.w	#$800,$3A(a0)
+		add.w	#$200,spindash_counter(a0)
+		cmp.w	#$800,spindash_counter(a0)
 		bcs.s	loc_16C1A
-		move.w	#$800,$3A(a0)
+		move.w	#$800,spindash_counter(a0)
 loc_16C1A:
 		addq.l	#4,sp
 		rts
@@ -1521,7 +1521,7 @@ loc_16F26:
 ;--------------------------------------------------------------------------------
 
 loc_16F28:
-		tst.b	$39(a0)
+		tst.b	spindash_flag(a0)
 		bne.s	loc_16F58	
 		move.b	#0,$1C(a0)
 ;===============================================================================
@@ -1562,7 +1562,7 @@ loc_16F96:
 ; [ Begin ]
 ;===============================================================================
 Sonic_Hurt: 
-		tst.b	$25(a0)
+		tst.b	routine_secondary(a0)
 		bmi	loc_1701A
 		jsr	SpeedToPos	
 		add.w	#$30,$12(a0)
@@ -1599,9 +1599,9 @@ Sonic_HurtStop:
 		move.w	d0,$14(a0)
 		move.b	d0,$2A(a0)
 		move.b	#0,$1C(a0)
-		subq.b	#2,$24(a0)
+		subq.b	#2,routine(a0)
 		move.w	#$78,$30(a0)
-		move.b	#0,$39(a0)
+		move.b	#0,spindash_flag(a0)
 loc_17018:
 		rts
 ;--------------------------------------------------------------------------------
@@ -1611,8 +1611,8 @@ loc_17018:
 ; [ End ]	
 ;===============================================================================	
 loc_1701A:
-		subq.b	#2,$24(a0)
-		move.b	#0,$25(a0)
+		subq.b	#2,routine(a0)
+		move.b	#0,routine_secondary(a0)
 		bsr	CopySonicMovesForMiles	
 		bsr	Sonic_Animate	
 		bsr	Load_Sonic_Dynamic_PLC	
@@ -1639,25 +1639,25 @@ Sonic_Death:
 ; [ Begin ]	
 ;===============================================================================	
 Sonic_GameOver: 
-		move.b	#0,$39(a0)
+		move.b	#0,spindash_flag(a0)
 		move.w	($FFFFEECE).w,d0
 		add.w	#$100,d0
 		cmp.w	$C(a0),d0
 		bge	loc_17144
-		move.b	#8,$24(a0)
-		move.w	#$3C,$3A(a0)
+		move.b	#8,routine(a0)
+		move.w	#$3C,spindash_counter(a0)
 		addq.b	#1,($FFFFFE1C).w
 		subq.b	#1,($FFFFFE12).w
 		bne.s	loc_170BA
-		move.w	#0,$3A(a0)
-		move.b	#$39,($FFFFB080).w
-		move.b	#$39,($FFFFB0C0).w
+		move.w	#0,spindash_counter(a0)
+		move.b	#spindash_flag,($FFFFB080).w
+		move.b	#spindash_flag,($FFFFB0C0).w
 		move.b	#1,($FFFFB0DA).w
 		move.w	a0,($FFFFB0BE).w
 loc_1709A:	
-		clr.b	($FFFFFE1E).w
+		clr.b	(Update_HUD_timer).w
 		clr.b	($FFFFFECA).w
-		move.b	#8,$24(a0)
+		move.b	#8,routine(a0)
 		move.w	#$9B,d0
 		jsr	Play_Music	
 		moveq	#3,d0
@@ -1665,7 +1665,7 @@ loc_1709A:
 loc_170BA:
 		tst.b	($FFFFFE1A).w
 		beq.s	loc_170E4
-		move.w	#0,$3A(a0)
+		move.w	#0,spindash_counter(a0)
 		move.b	#$39,($FFFFB080).w
 		move.b	#$39,($FFFFB0C0).w
 		move.b	#2,($FFFFB09A).w
@@ -1675,7 +1675,7 @@ loc_170BA:
 loc_170E4:
 		tst.w	($FFFFFFD8).w
 		beq.s	loc_17144
-		move.b	#2,$24(a0)
+		move.b	#2,routine(a0)
 		move.w	($FFFFFE32).w,8(a0)
 		move.w	($FFFFFE34).w,$C(a0)
 		move.w	($FFFFFE3C).w,2(a0)
@@ -1689,7 +1689,7 @@ loc_170E4:
 		move.w	#0,$14(a0)
 		move.b	#2,$22(a0)
 		move.w	#0,$2E(a0)
-		move.w	#0,$3A(a0)
+		move.w	#0,spindash_counter(a0)
 loc_17144:
 		rts
 ;--------------------------------------------------------------------------------
