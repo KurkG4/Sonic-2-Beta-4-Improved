@@ -18290,7 +18290,7 @@ loc_14408:
 		move.w	($FFFFFE10).w,d0
 		ror.b	#1,d0
 		lsr.w	#6,d0
-		lea	(Objects_Layout),a0 
+		lea	(Objects_Layout),a0
 		move.l	a0,a1
 		add.w	0(a0,d0),a0
 		move.l	a0,($FFFFF770).w
@@ -32379,7 +32379,7 @@ Level_Layout:
 		dc.w	Mz_Map_Act1-Level_Layout 
 		dc.w	Mz_Map_Act2-Level_Layout 
 		dc.w	Mz_Map_Act3-Level_Layout 
-		dc.w	Mz_Map_Act4-Level_Layout 
+		dc.w	Mz_Map_Act4-Level_Layout
 		dc.w	SFz_Map_Act1-Level_Layout 
 		dc.w	SFz_Map_Act2-Level_Layout 
 		dc.w	HTz_Map_Act1-Level_Layout 
@@ -32469,7 +32469,7 @@ SCz_Map_Act2:
 ;-------------------------------------------------------------------------------
 HTz_1_2_Foreground_Previous_Build: 
 		incbin 'data/htz/htz_1_2.dat' 
-;=============================================================================== 
+;===============================================================================
 ; Level Layout
 ; [ End ]
 ;=============================================================================== 
@@ -35693,7 +35693,7 @@ End_Panel_Spr:
 Diagonal_Spring_1: 
 		incbin 'artnem/dspring1.nem' 
 Dhz_Horizontal_Spikes: 
-		incbin 'data/dhz/h_spikes.nem' 
+		incbin 'data/dhz/h_spikes.nem'
 Oxygen_Bubbles: 
 		incbin 'artnem/oxygen.nem' 
 Bubbles: 
@@ -36135,7 +36135,7 @@ Unk_loc_E16AA:
 ; [ Begin ]
 ;===============================================================================
 Objects_Layout: 
-		dc.w	GHz_1_Objects_Layout-Objects_Layout 
+		dc.w	GHz_1_Objects_Layout-Objects_Layout
 		dc.w	GHz_2_Objects_Layout-Objects_Layout 
 		dc.w	Null_Objects_Layout-Objects_Layout 
 		dc.w	Null_Objects_Layout-Objects_Layout 
@@ -36299,7 +36299,7 @@ Rings_Layout:
 		dc.w	HTz_1_Rings_Layout-Rings_Layout 
 		dc.w	HTz_2_Rings_Layout-Rings_Layout 
 		dc.w	HPz_1_Rings_Layout-Rings_Layout 
-		dc.w	HPz_2_Rings_Layout-Rings_Layout 
+		dc.w	HPz_2_Rings_Layout-Rings_Layout
 		dc.w	Null_5_Rings_Layout-Rings_Layout 
 		dc.w	Null_6_Rings_Layout-Rings_Layout 
 		dc.w	OOz_1_Rings_Layout-Rings_Layout 
